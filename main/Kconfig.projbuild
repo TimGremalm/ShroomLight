@@ -1,4 +1,4 @@
-menu "Example Configuration"
+menu "Shroom Light Configuration"
 
 config WIFI_SSID
     string "WiFi SSID"
@@ -16,7 +16,7 @@ config WIFI_PASSWORD
 
 config FIRMWARE_UPG_URL
     string "HTTP Server URL"
-    default "https://192.168.0.3:8070/hello-world.bin"
+    default "https://192.168.0.155:8070/shroomlight.bin"
 	help
 		HTTP Server IP to download the image file from.
 
