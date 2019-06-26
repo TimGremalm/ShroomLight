@@ -40,6 +40,7 @@ make flash
 ## Flash via OTA
 ### Setup web server using certificates
 ```bash
+cd build
 openssl s_server -WWW -key ../server_certs/ca_key.pem -cert ../server_certs/ca_cert.pem -port 8070
 ```
 ### Flash
