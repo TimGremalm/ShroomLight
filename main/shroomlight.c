@@ -19,6 +19,9 @@
 #include "esp_flash_partitions.h"
 #include "esp_partition.h"
 
+#include <stdio.h>
+#include "driver/gpio.h"
+
 #include "nvs.h"
 #include "nvs_flash.h"
 
@@ -27,6 +30,8 @@
 #define EXAMPLE_SERVER_URL CONFIG_FIRMWARE_UPG_URL
 #define BUFFSIZE 1024
 #define HASH_LEN 32 /* SHA-256 digest length */
+
+#define BLINK_GPIO 16
 
 static const char *TAG = "native_ota_example";
 /*an ota data write buffer ready to write to the flash*/
@@ -216,6 +221,20 @@ static void ota_example_task(void *pvParameter)
 	return ;
 }
 
+void blink_task(void *pvParameter) {
+	gpio_pad_select_gpio(BLINK_GPIO);
+	gpio_set_direction(BLINK_GPIO, GPIO_MODE_OUTPUT);
+	while(1) {
+		//printf("Flash\n");
+		//fflush(stdout);
+		int blinkms = 500;
+		gpio_set_level(BLINK_GPIO, 0);
+		vTaskDelay(blinkms / portTICK_PERIOD_MS);
+		gpio_set_level(BLINK_GPIO, 1);
+		vTaskDelay(blinkms / portTICK_PERIOD_MS);
+	}
+}
+
 void app_main()
 {
 	uint8_t sha_256[HASH_LEN] = { 0 };
@@ -252,5 +271,6 @@ void app_main()
 
 	initialise_wifi();
 	xTaskCreate(&ota_example_task, "ota_example_task", 8192, NULL, 5, NULL);
+	xTaskCreate(&blink_task, "blink_task", configMINIMAL_STACK_SIZE, NULL, 5, NULL);
 }
 
