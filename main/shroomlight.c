@@ -98,6 +98,7 @@ void ota_task(void *pvParameter) {
 		 vTaskDelay(30000 / portTICK_PERIOD_MS);
 		 ESP_LOGI(TAG, "Search for a new firmware...");
 		 ota_start();
+		 vTaskDelete(NULL);
 	}
 }
 
