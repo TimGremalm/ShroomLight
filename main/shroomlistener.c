@@ -16,8 +16,6 @@ void shroomlistenertask(void *pvParameters) {
 	shroomlistener_config_t listener_config = *(shroomlistener_config_t *) pvParameters;
 
 	ESP_LOGI(TAG, "Open server %d", listener_config.test);
-	//vTaskDelay(60000 / portTICK_PERIOD_MS);
-	vTaskDelay(5000 / portTICK_PERIOD_MS);
 
 	struct netconn *conn;
 	err_t err;

@@ -138,12 +138,14 @@ void app_main() {
 	}
 	ESP_ERROR_CHECK( err );
 
+	xTaskCreate(&blink_task, "blink_task", configMINIMAL_STACK_SIZE, NULL, 5, NULL);
+
 	//Configure shroomlistener
 	listenerconfig.test = 42;
 
 	initialise_wifi();
+	xEventGroupWaitBits(wifi_event_group, CONNECTED_BIT, false, true, portMAX_DELAY);
 	xTaskCreate(&ota_task, "ota_task", 8192, NULL, 5, NULL);
-	xTaskCreate(&blink_task, "blink_task", configMINIMAL_STACK_SIZE, NULL, 5, NULL);
 	xTaskCreate(&shroomlistenertask, "shroomlistenertask", 8192, &listenerconfig, 5, NULL);
 }
 
