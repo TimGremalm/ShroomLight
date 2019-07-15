@@ -53,7 +53,8 @@ def usage():
 	print ("--help : shows this help")
 
 def commandUsage():
-	print("r - restart shrooms")
+	print("q - Exit this command")
+	print("r - Restart shrooms")
 	print("o - Do a OTA (Over the air upgrade)")
 
 def parseArgs():
@@ -83,6 +84,9 @@ if __name__ == '__main__':
 			shroom.restart()
 		elif s == 'o':
 			shroom.ota()
+		elif s == 'q':
+			print('Exit')
+			shroom.stop()
 		else:
 			commandUsage()
 
