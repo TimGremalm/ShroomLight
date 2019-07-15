@@ -33,6 +33,8 @@
 
 #define BLINK_GPIO 16
 
+shroomlistener_config_t listenerconfig;
+
 static const char *TAG = "ShroomLight";
 
 /* FreeRTOS event group to signal when we are connected & ready to make a request */
@@ -136,9 +138,12 @@ void app_main() {
 	}
 	ESP_ERROR_CHECK( err );
 
+	//Configure shroomlistener
+	listenerconfig.test = 42;
+
 	initialise_wifi();
 	xTaskCreate(&ota_task, "ota_task", 8192, NULL, 5, NULL);
 	xTaskCreate(&blink_task, "blink_task", configMINIMAL_STACK_SIZE, NULL, 5, NULL);
-	xTaskCreate(&shroomlistenertask, "shroomlistenertask", 8192, NULL, 5, NULL);
+	xTaskCreate(&shroomlistenertask, "shroomlistenertask", 8192, &listenerconfig, 5, NULL);
 }
 

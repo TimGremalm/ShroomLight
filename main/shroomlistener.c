@@ -1,3 +1,5 @@
+#include "shroomlistener.h"
+
 #include "lwip/api.h"
 #include "lwip/err.h"
 #include "lwip/sockets.h"
@@ -11,7 +13,9 @@
 static const char *TAG = "Shroom Listener";
 
 void shroomlistenertask(void *pvParameters) {
-	printf("Open server");
+	shroomlistener_config_t listener_config = *(shroomlistener_config_t *) pvParameters;
+
+	ESP_LOGI(TAG, "Open server %d", listener_config.test);
 	//vTaskDelay(60000 / portTICK_PERIOD_MS);
 	vTaskDelay(5000 / portTICK_PERIOD_MS);
 
