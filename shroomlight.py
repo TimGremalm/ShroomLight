@@ -43,11 +43,18 @@ class ShroomLight:
 				print(data)
 		print("Stop listener")
 
+	def ota(self):
+		self.sock.sendto(b'YO OTA', self.sending_multicast_group)
+
 	def restart(self):
 		self.sock.sendto(b'YO restart', self.sending_multicast_group)
 
 def usage():
 	print ("--help : shows this help")
+
+def commandUsage():
+	print("r - restart shrooms")
+	print("o - Do a OTA (Over the air upgrade)")
 
 def parseArgs():
 	try:
@@ -72,6 +79,10 @@ if __name__ == '__main__':
 	print("Shroomlight")
 	while shroom.keepListening:
 		s = input("Shroom command: ")
-		if s == 'restart':
+		if s == 'r':
 			shroom.restart()
+		elif s == 'o':
+			shroom.ota()
+		else:
+			commandUsage()
 
