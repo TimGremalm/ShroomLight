@@ -35,7 +35,6 @@ void shroomlistenertask(void *pvParameters) {
 	}
 
 	ip_addr_t multiaddr;
-	//IP4_ADDR(&multiaddr, 239, 255, 0, 1); //IPv4 local scope multicast
 	IP_ADDR4(&multiaddr, 239, 255, 0, 1); //IPv4 local scope multicast
 
 	err = netconn_join_leave_group(conn, &multiaddr, &netif_default->ip_addr, NETCONN_JOIN);

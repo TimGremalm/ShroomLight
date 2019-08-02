@@ -27,6 +27,7 @@
 
 #include "ota.h"
 #include "shroomlistener.h"
+#include "light.h"
 
 #define EXAMPLE_WIFI_SSID CONFIG_WIFI_SSID
 #define EXAMPLE_WIFI_PASS CONFIG_WIFI_PASSWORD
@@ -139,6 +140,7 @@ void app_main() {
 	ESP_ERROR_CHECK( err );
 
 	xTaskCreate(&blink_task, "blink_task", configMINIMAL_STACK_SIZE, NULL, 5, NULL);
+	xTaskCreate(&lighttask, "lighttask", 8192, NULL, 5, NULL);
 
 	//Configure shroomlistener
 	listenerconfig.test = 42;
