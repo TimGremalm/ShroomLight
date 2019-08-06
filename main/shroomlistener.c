@@ -10,6 +10,11 @@
 
 #include "esp_log.h"
 
+#include <stdio.h>
+#include <string.h>
+
+#include "ota.h"
+
 static const char *TAG = "Shroom Listener";
 
 void shroomlistenertask(void *pvParameters) {
@@ -53,7 +58,15 @@ void shroomlistenertask(void *pvParameters) {
 			ESP_LOGE(TAG, "Failed to receive packet. err=%d", err);
 			continue;
 		}
-		ESP_LOGI(TAG, "Received packet");
+		ESP_LOGI(TAG, "Received packet %d", buf->p->tot_len);
+		if (strncmp(buf->p->payload, "YO restart", buf->p->tot_len) == 0) {
+			ESP_LOGI(TAG, "Restart");
+			esp_restart();
+		}
+		if (strncmp(buf->p->payload, "YO OTA", buf->p->tot_len) == 0) {
+			ESP_LOGI(TAG, "OTA");
+			ota_start();
+		}
 
 		netbuf_delete(buf);
 	}

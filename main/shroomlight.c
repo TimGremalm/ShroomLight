@@ -98,15 +98,6 @@ void blink_task(void *pvParameter) {
 	}
 }
 
-void ota_task(void *pvParameter) {
-	while (1) {
-		 vTaskDelay(30000 / portTICK_PERIOD_MS);
-		 ESP_LOGI(TAG, "Search for a new firmware...");
-		 ota_start();
-		 vTaskDelete(NULL);
-	}
-}
-
 void app_main() {
 	uint8_t sha_256[HASH_LEN] = { 0 };
 	esp_partition_t partition;
@@ -149,7 +140,6 @@ void app_main() {
 
 	initialise_wifi();
 	xEventGroupWaitBits(wifi_event_group, CONNECTED_BIT, false, true, portMAX_DELAY);
-	xTaskCreate(&ota_task, "ota_task", 8192, NULL, 5, NULL);
 	xTaskCreate(&shroomlistenertask, "shroomlistenertask", 8192, &listenerconfig, 5, NULL);
 }
 
