@@ -6,6 +6,8 @@
 #include "esp_flash_partitions.h"
 #include "esp_log.h"
 
+#include "statusblink.h"
+
 static const char *TAG = "Shroom OTA";
 
 /*an ota data write buffer ready to write to the flash*/
@@ -33,7 +35,8 @@ void ota_start() {
 	esp_ota_handle_t update_handle = 0 ;
 	const esp_partition_t *update_partition = NULL;
 
-	ESP_LOGI(TAG, "Starting OTA example...");
+	ESP_LOGI(TAG, "Start OTA");
+	setblinkstate(BLINKSTATE_OTA);
 
 	const esp_partition_t *configured = esp_ota_get_boot_partition();
 	const esp_partition_t *running = esp_ota_get_running_partition();
@@ -55,12 +58,14 @@ void ota_start() {
 	esp_http_client_handle_t client = esp_http_client_init(&config);
 	if (client == NULL) {
 		ESP_LOGE(TAG, "Failed to initialise HTTP connection");
+		setblinkstate(BLINKSTATE_Idle);
 		return;
 	}
 	err = esp_http_client_open(client, 0);
 	if (err != ESP_OK) {
 		ESP_LOGE(TAG, "Failed to open HTTP connection: %s", esp_err_to_name(err));
 		esp_http_client_cleanup(client);
+		setblinkstate(BLINKSTATE_Idle);
 		return;
 	}
 	esp_http_client_fetch_headers(client);
@@ -74,6 +79,7 @@ void ota_start() {
 	if (err != ESP_OK) {
 		ESP_LOGE(TAG, "esp_ota_begin failed (%s)", esp_err_to_name(err));
 		http_cleanup(client);
+		setblinkstate(BLINKSTATE_Idle);
 		return;
 	}
 	ESP_LOGI(TAG, "esp_ota_begin succeeded");
@@ -85,11 +91,13 @@ void ota_start() {
 		if (data_read < 0) {
 			ESP_LOGE(TAG, "Error: SSL data read error");
 			http_cleanup(client);
+			setblinkstate(BLINKSTATE_Idle);
 			return;
 		} else if (data_read > 0) {
 			err = esp_ota_write( update_handle, (const void *)ota_write_data, data_read);
 			if (err != ESP_OK) {
 				http_cleanup(client);
+				setblinkstate(BLINKSTATE_Idle);
 				return;
 			}
 			binary_file_length += data_read;
@@ -104,11 +112,13 @@ void ota_start() {
 	if (esp_ota_end(update_handle) != ESP_OK) {
 		ESP_LOGE(TAG, "esp_ota_end failed!");
 		http_cleanup(client);
+		setblinkstate(BLINKSTATE_Idle);
 		return;
 	}
 
 	if (esp_partition_check_identity(esp_ota_get_running_partition(), update_partition) == true) {
 		ESP_LOGI(TAG, "The current running firmware is same as the firmware just downloaded");
+		setblinkstate(BLINKSTATE_Idle);
 		return;
 	}
 
@@ -116,10 +126,12 @@ void ota_start() {
 	if (err != ESP_OK) {
 		ESP_LOGE(TAG, "esp_ota_set_boot_partition failed (%s)!", esp_err_to_name(err));
 		http_cleanup(client);
+		setblinkstate(BLINKSTATE_Idle);
 		return;
 	}
 	ESP_LOGI(TAG, "Prepare to restart system!");
 	esp_restart();
+	setblinkstate(BLINKSTATE_Idle);
 	return ;
 }
 
