@@ -20,22 +20,21 @@
 #include "esp_flash_partitions.h"
 
 #include <stdio.h>
-#include "driver/gpio.h"
 
 #include "nvs.h"
 #include "nvs_flash.h"
 
 #include "ota.h"
 #include "shroomlistener.h"
+#include "statusblink.h"
 #include "light.h"
 #include "pir.h"
 
 #define EXAMPLE_WIFI_SSID CONFIG_WIFI_SSID
 #define EXAMPLE_WIFI_PASS CONFIG_WIFI_PASSWORD
 
-#define BLINK_GPIO 16
-
 shroomlistener_config_t listenerconfig;
+statsblink_config_t statsblinkconfig;
 
 static const char *TAG = "ShroomLight";
 
@@ -86,18 +85,6 @@ static void initialise_wifi(void) {
 	ESP_ERROR_CHECK( esp_wifi_start() );
 }
 
-void blink_task(void *pvParameter) {
-	gpio_pad_select_gpio(BLINK_GPIO);
-	gpio_set_direction(BLINK_GPIO, GPIO_MODE_OUTPUT);
-	while(1) {
-		int blinkms = 500;
-		gpio_set_level(BLINK_GPIO, 0);
-		vTaskDelay(blinkms / portTICK_PERIOD_MS);
-		gpio_set_level(BLINK_GPIO, 1);
-		vTaskDelay(blinkms / portTICK_PERIOD_MS);
-	}
-}
-
 void app_main() {
 	uint8_t sha_256[HASH_LEN] = { 0 };
 	esp_partition_t partition;
@@ -131,7 +118,7 @@ void app_main() {
 	}
 	ESP_ERROR_CHECK( err );
 
-	xTaskCreate(&blink_task, "blink_task", configMINIMAL_STACK_SIZE, NULL, 5, NULL);
+	xTaskCreate(&statusblinktask, "statusblinktask", 8192, &statsblinkconfig, 5, NULL);
 	xTaskCreate(&lighttask, "lighttask", 8192, NULL, 5, NULL);
 	xTaskCreate(&pirtask, "pirtask", 8192, NULL, 5, NULL);
 

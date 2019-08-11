@@ -5,6 +5,8 @@
 #include "freertos/task.h"
 #include <driver/gpio.h>
 
+#include "statusblink.h"
+
 #define PIR_PIN			27
 
 static const char *TAG = "Shroom Pir";
@@ -21,8 +23,10 @@ void pirtask(void *pvParameters) {
 		if (previousPirState != pirState) {
 			if (pirState == 1) {
 				ESP_LOGI(TAG, "Pir Sens On");
+				setblinkstate(BLINKSTATE_Detect);
 			} else {
 				ESP_LOGI(TAG, "Pir Sens Off");
+				setblinkstate(BLINKSTATE_Idle);
 			}
 			previousPirState = pirState;
 		}

@@ -3,8 +3,9 @@
 #include "esp_log.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
-#include "apa106.h"
 #include <driver/gpio.h>
+
+#include "apa106.h"
 
 #define APA106_PIN		19
 #define LED_NUM			7
