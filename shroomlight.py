@@ -52,12 +52,15 @@ class ShroomLight:
 				print(data)
 		print("Stop multicast listener")
 
+	def information(self):
+		self.sock.sendto(b'information', self.sending_multicast_group)
+
 	def ota(self):
 		out = 'OTA %s' % self.getHttpBuild()
 		self.sock.sendto(out.encode(), self.sending_multicast_group)
 
 	def restart(self):
-		self.sock.sendto(b'YO restart', self.sending_multicast_group)
+		self.sock.sendto(b'restart', self.sending_multicast_group)
 
 	def webserver(self):
 		handler = http.server.SimpleHTTPRequestHandler
@@ -83,6 +86,7 @@ def usage():
 
 def commandUsage():
 	print("q - Exit this command")
+	print("i - Report MAC, version and physical grid address")
 	print("r - Restart shrooms")
 	print("o - Do a OTA (Over the air upgrade)")
 
@@ -111,6 +115,8 @@ if __name__ == '__main__':
 		s = input("Shroom command: ")
 		if s == 'r':
 			shroom.restart()
+		elif s == 'i':
+			shroom.information()
 		elif s == 'o':
 			shroom.ota()
 		elif s == 'q':

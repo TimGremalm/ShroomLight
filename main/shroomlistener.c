@@ -16,14 +16,18 @@
 #include "ota.h"
 
 static const char *TAG = "Shroom Listener";
+ip_addr_t multiaddr;
+struct netconn *conn;
+uint8_t mac[6];
+uint version = 2;
 
 void shroomlistenertask(void *pvParameters) {
 	shroomlistener_config_t listener_config = *(shroomlistener_config_t *) pvParameters;
 
 	ESP_LOGI(TAG, "Open server %d", listener_config.test);
 
-	struct netconn *conn;
 	err_t err;
+	esp_read_mac(mac, ESP_MAC_WIFI_STA);
 
 	/* Create a new connection handle */
 	conn = netconn_new(NETCONN_UDP);
@@ -39,7 +43,6 @@ void shroomlistenertask(void *pvParameters) {
 		return;
 	}
 
-	ip_addr_t multiaddr;
 	IP_ADDR4(&multiaddr, 239, 255, 0, 1); //IPv4 local scope multicast
 
 	err = netconn_join_leave_group(conn, &multiaddr, &netif_default->ip_addr, NETCONN_JOIN);
@@ -48,6 +51,7 @@ void shroomlistenertask(void *pvParameters) {
 		return;
 	}
 
+	shroom_send_info();
 	ESP_LOGI(TAG, "Listening for connections");
 
 	while(1) {
@@ -72,6 +76,10 @@ void shroomlistenertask(void *pvParameters) {
 			ESP_LOGI(TAG, "Restart");
 			esp_restart();
 		}
+		if (strncmp(pch, "information", 11) == 0) {
+			ESP_LOGI(TAG, "Information");
+			shroom_send_info();
+		}
 		if (strncmp(pch, "OTA", 3) == 0) {
 			//Next separator
 			pch = strtok(NULL, " ");
@@ -82,6 +90,30 @@ void shroomlistenertask(void *pvParameters) {
 		}
 
 		netbuf_delete(buf);
+	}
+}
+
+void shroom_send_info() {
+	char sbuf[100] = {0};
+	//Report MAC address, version and physical grid address
+	sprintf(sbuf, "Shroom %02x%02x%02x%02x%02x%02x Version %d Grid %d %d %d", mac[0], mac[1], mac[2], mac[3], mac[4], mac[5], version, 0, 0, 0);
+	shroom_send(sbuf);
+}
+
+void shroom_send(char * message) {
+	err_t err;
+	struct netbuf *sendbuf = netbuf_new();
+	if (sendbuf == NULL) {
+		ESP_LOGE(TAG, "send netbuf alloc failed");
+		return;
+	}
+	netbuf_alloc(sendbuf, strlen(message));
+	memcpy(sendbuf->p->payload, (void*)message, strlen(message));
+	err = netconn_sendto(conn, sendbuf, &multiaddr, 10420);
+	netbuf_delete(sendbuf);
+	if(err != ERR_OK) {
+		ESP_LOGE(TAG, "Failed to send packet. err=%d", err);
+		return;
 	}
 }
 
