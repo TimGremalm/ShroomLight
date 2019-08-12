@@ -59,13 +59,26 @@ void shroomlistenertask(void *pvParameters) {
 			continue;
 		}
 		ESP_LOGI(TAG, "Received packet %d", buf->p->tot_len);
-		if (strncmp(buf->p->payload, "YO restart", buf->p->tot_len) == 0) {
+
+		//Copy message for parsing
+		char message[buf->p->tot_len];
+		strcpy(message, buf->p->payload);
+
+		//Parse first space, the command
+		char * pch;
+		pch = strtok(message, " ");
+
+		if (strncmp(pch, "restart", 7) == 0) {
 			ESP_LOGI(TAG, "Restart");
 			esp_restart();
 		}
-		if (strncmp(buf->p->payload, "YO OTA", buf->p->tot_len) == 0) {
-			ESP_LOGI(TAG, "OTA");
-			ota_start();
+		if (strncmp(pch, "OTA", 3) == 0) {
+			//Next separator
+			pch = strtok(NULL, " ");
+			if (pch != NULL) {
+				ESP_LOGI(TAG, "OTA URL: %s", pch);
+				ota_start(pch);
+			}
 		}
 
 		netbuf_delete(buf);

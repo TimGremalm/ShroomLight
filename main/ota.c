@@ -29,7 +29,7 @@ void print_sha256 (const uint8_t *image_hash, const char *label) {
 	ESP_LOGI(TAG, "%s: %s", label, hash_print);
 }
 
-void ota_start() {
+void ota_start(char * url) {
 	esp_err_t err;
 	/* update handle : set by esp_ota_begin(), must be freed via esp_ota_end() */
 	esp_ota_handle_t update_handle = 0 ;
@@ -52,7 +52,7 @@ void ota_start() {
 	ESP_LOGI(TAG, "Start to Connect to Server....");
 
 	esp_http_client_config_t config = {
-		.url = EXAMPLE_SERVER_URL,
+		.url = url, // "http://192.168.43.2:8000/shroomlight.bin"
 		.cert_pem = (char *)server_cert_pem_start,
 	};
 	esp_http_client_handle_t client = esp_http_client_init(&config);

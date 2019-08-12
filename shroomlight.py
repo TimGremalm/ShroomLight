@@ -8,25 +8,34 @@ import select
 import sys
 import getopt
 import signal
+import http.server
+from subprocess import check_output
+import re
 
 class ShroomLight:
 	def __init__(self):
+		self.ip = self.getIP()
 		self.multicast_group = '239.255.0.1'
-		self.port = 10420
+		self.multicastport = 10420
+		self.webserverport = 8000
 		self.sending_multicast_group = ('239.255.0.1', 10420)
-		self.server_address = ('', self.port)
+		self.server_address = ('', self.multicastport)
 		self.keepListening = True
-		self.t = threading.Thread(target=self.listener, args=())
+		self.t = threading.Thread(target=self.multicastlistener, args=())
 		self.t.start()
+		self.httpdTread = threading.Thread(target=self.webserver, args=())
+		self.httpdTread.start()
 
 	def stopSignal(self, signum, frame):
 		print("Recives Signal, stop")
 		self.keepListening = False
+		self.httpd.shutdown()
 
 	def stop(self):
 		self.keepListening = False
+		self.httpd.shutdown()
 
-	def listener(self):
+	def multicastlistener(self):
 		self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 		self.sock.bind(self.server_address)
 
@@ -41,13 +50,33 @@ class ShroomLight:
 				data, address = self.sock.recvfrom(1024)
 				print('received %d bytes from %s' % (len(data), address))
 				print(data)
-		print("Stop listener")
+		print("Stop multicast listener")
 
 	def ota(self):
-		self.sock.sendto(b'YO OTA', self.sending_multicast_group)
+		out = 'OTA %s' % self.getHttpBuild()
+		self.sock.sendto(out.encode(), self.sending_multicast_group)
 
 	def restart(self):
 		self.sock.sendto(b'YO restart', self.sending_multicast_group)
+
+	def webserver(self):
+		handler = http.server.SimpleHTTPRequestHandler
+		server_address = ('', self.webserverport)
+		self.httpd = http.server.HTTPServer(server_address, handler)
+		self.httpd.timeout = 0.5
+		self.httpd.serve_forever(poll_interval=0.1)
+
+	def getIP(self):
+		hostnameIP = check_output(['hostname', '--all-ip-addresses'])
+		hostnameIPstring = hostnameIP.decode('utf-8')
+		extractedIPs = re.findall('\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}', hostnameIPstring)
+		return extractedIPs[0]
+
+	def getHttpBuild(self):
+		return 'http://%s:%d/build/shroomlight.bin' % (self.ip, self.webserverport)
+
+	def getHttpRoot(self):
+		return 'http://%s:%d/' % (self.ip, self.webserverport)
 
 def usage():
 	print ("--help : shows this help")
