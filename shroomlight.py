@@ -48,8 +48,7 @@ class ShroomLight:
 			ready = select.select([self.sock], [], [], 1)
 			if ready[0]:
 				data, address = self.sock.recvfrom(1024)
-				print('received %d bytes from %s' % (len(data), address))
-				print(data)
+				print('[%d] %s' % (len(data), data))
 		print("Stop multicast listener")
 
 	def information(self):

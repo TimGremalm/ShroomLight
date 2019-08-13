@@ -44,7 +44,7 @@ void statusblinktask(void *pvParameters) {
 				blink(100, 100);
 				break;
 			case BLINKSTATE_OTA:
-				blink(1000, 100);
+				blink(50, 50);
 				break;
 		}
 	}

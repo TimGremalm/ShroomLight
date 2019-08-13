@@ -19,7 +19,7 @@ static const char *TAG = "Shroom Listener";
 ip_addr_t multiaddr;
 struct netconn *conn;
 uint8_t mac[6];
-uint version = 2;
+uint version = 12;
 
 void shroomlistenertask(void *pvParameters) {
 	shroomlistener_config_t listener_config = *(shroomlistener_config_t *) pvParameters;
