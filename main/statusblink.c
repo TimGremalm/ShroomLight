@@ -20,9 +20,12 @@ void blink(int timeon, int timeoff) {
 }
 
 void setblinkstate(enum BLINKSTATE state) {
+	//If in OTA, blink should only prioritize te OTA blink
 	if (statsblink_config.state == BLINKSTATE_OTA) {
-		//If in OTA, blink should only prioritize te OTA blink
-		return;
+		//If it's a return to idle from failed OTA, let it set
+		if (state != BLINKSTATE_OTA_FAILED) {
+			return;
+		}
 	}
 	statsblink_config.state = state;
 }
@@ -45,6 +48,10 @@ void statusblinktask(void *pvParameters) {
 				break;
 			case BLINKSTATE_OTA:
 				blink(50, 50);
+				break;
+			case BLINKSTATE_OTA_FAILED:
+				blink(2000, 50);
+				setblinkstate(BLINKSTATE_Idle);
 				break;
 		}
 	}

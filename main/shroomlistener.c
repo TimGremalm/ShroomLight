@@ -19,7 +19,21 @@ static const char *TAG = "Shroom Listener";
 ip_addr_t multiaddr;
 struct netconn *conn;
 uint8_t mac[6];
-uint version = 12;
+char macstring[12];
+uint version = 39;
+
+int indexOf(char * str, char toFind) {
+	int i = 0;
+	while(*str) {
+		if (*str == toFind) {
+			return i;
+		}
+		i++;
+		str++;
+	}
+	// Return -1 as character not found
+	return -1;
+}
 
 void shroomlistenertask(void *pvParameters) {
 	shroomlistener_config_t listener_config = *(shroomlistener_config_t *) pvParameters;
@@ -28,6 +42,7 @@ void shroomlistenertask(void *pvParameters) {
 
 	err_t err;
 	esp_read_mac(mac, ESP_MAC_WIFI_STA);
+	sprintf(macstring, "%02x%02x%02x%02x%02x%02x", mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
 
 	/* Create a new connection handle */
 	conn = netconn_new(NETCONN_UDP);
@@ -64,31 +79,69 @@ void shroomlistenertask(void *pvParameters) {
 		}
 		ESP_LOGI(TAG, "Received packet %d", buf->p->tot_len);
 
-		//Copy message for parsing
-		char message[buf->p->tot_len];
-		strcpy(message, buf->p->payload);
-
-		//Parse first space, the command
-		char * pch;
-		pch = strtok(message, " ");
-
-		if (strncmp(pch, "restart", 7) == 0) {
+		if (strncmp(buf->p->payload, "restart", 7) == 0) {
 			ESP_LOGI(TAG, "Restart");
 			esp_restart();
 		}
-		if (strncmp(pch, "information", 11) == 0) {
+		if (strncmp(buf->p->payload, "information", 11) == 0) {
 			ESP_LOGI(TAG, "Information");
 			shroom_send_info();
 		}
-		if (strncmp(pch, "OTA", 3) == 0) {
-			//Next separator
-			pch = strtok(NULL, " ");
-			if (pch != NULL) {
-				ESP_LOGI(TAG, "OTA URL: %s", pch);
-				ota_start(pch);
+		if (strncmp(buf->p->payload, "OTA", 3) == 0) {
+			int FindSep;
+			FindSep = indexOf(buf->p->payload, (char)32);
+			if (FindSep < 1) {
+				//Didn't find second argment
+				netbuf_delete(buf);
+				continue;
+			}
+			char url[buf->p->tot_len - FindSep - 1];
+			int urlStart = FindSep + 1;
+			int urlLength = buf->p->tot_len - FindSep - 1;
+			ESP_LOGI(TAG, "URL Start: %d Len: %d", urlStart, urlLength);
+			memcpy(url, (char *)buf->p->payload + urlStart, urlLength);
+			ESP_LOGI(TAG, "OTA All URL: |%s|", url);
+			ota_start(url);
+		}
+		if (strncmp(buf->p->payload, "SOTA", 4) == 0) {
+			int sepMAC;
+			int sepURL;
+			sepMAC = indexOf((char *)buf->p->payload, (char)32);
+			if (sepMAC < 1) {
+				netbuf_delete(buf);
+				continue;
+			}
+			int macStart = sepMAC + 1;
+			sepURL = indexOf((char *)buf->p->payload+macStart, (char)32);
+			int urlStart = macStart + sepURL + 1;
+			int macLength = urlStart - macStart - 1;
+			int urlLength = buf->p->tot_len - urlStart;
+			//ESP_LOGI(TAG, "Separator MAC: %d", sepMAC);
+			//ESP_LOGI(TAG, "Separator URL: %d", sepURL);
+			//ESP_LOGI(TAG, "MAC Start: %d Len: %d", macStart, macLength);
+			//ESP_LOGI(TAG, "URL Start: %d Len: %d", urlStart, urlLength);
+			if (sepURL < 1) {
+				netbuf_delete(buf);
+				continue;
+			}
+			char messageMAC[macLength];
+			memset(&messageMAC, 0, sizeof(messageMAC));
+			char messageURL[46];
+			memset(&messageURL, 0, sizeof(messageURL));
+			memcpy(messageMAC, (char *)buf->p->payload+macStart, macLength);
+			memcpy(messageURL, (char *)buf->p->payload+urlStart, urlLength);
+			//ESP_LOGI(TAG, "MAC: |%s|", messageMAC);
+			//ESP_LOGI(TAG, "URL: |%s|", messageURL);
+/*
+SOTA b4e62dda5709 http://192.168.43.2:8000/build/shroomlight.bin
+*/
+			if (strncmp(messageMAC, macstring, 12) == 0) {
+				ESP_LOGI(TAG, "Specific OTA for: %s URL: %s", messageMAC, messageURL);
+				ota_start(messageURL);
+			} else {
+				ESP_LOGI(TAG, "Specific MAC not me");
 			}
 		}
-
 		netbuf_delete(buf);
 	}
 }

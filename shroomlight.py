@@ -13,6 +13,17 @@ from subprocess import check_output
 import re
 
 class ShroomLight:
+	def __init__(self, mac, version, gridx, gridy, gridz):
+		self.mac = mac
+		self.version = version
+		self.gridx = gridx
+		self.gridy = gridy
+		self.gridz = gridz
+
+	def __repr__(self):
+		return 'Shroom %s V%s %d %d %d' % (self.mac, self.version, self.gridx, self.gridy, self.gridz)
+
+class ShroomLights:
 	def __init__(self):
 		self.ip = self.getIP()
 		self.multicast_group = '239.255.0.1'
@@ -25,6 +36,7 @@ class ShroomLight:
 		self.t.start()
 		self.httpdTread = threading.Thread(target=self.webserver, args=())
 		self.httpdTread.start()
+		self.shrooms = {}
 
 	def stopSignal(self, signum, frame):
 		print("Recives Signal, stop")
@@ -48,11 +60,38 @@ class ShroomLight:
 			ready = select.select([self.sock], [], [], 1)
 			if ready[0]:
 				data, address = self.sock.recvfrom(1024)
-				print('[%d] %s' % (len(data), data))
+				self.parseMulticast(data)
 		print("Stop multicast listener")
+
+	def parseMulticast(self, data):
+		print('[%d] %s' % (len(data), data))
+		message = data.decode('utf-8')
+		args = message.split()
+		#Parse shroom
+		if len(args) == 8 and args[0] == 'Shroom' and args[2] == 'Version' and args[4] == 'Grid':
+			mac = args[1]
+			version = args[3]
+			x = int(args[5])
+			y = int(args[6])
+			z = int(args[7])
+			if mac in self.shrooms:
+				#Just modify
+				self.shrooms[mac].version = version
+				self.shrooms[mac].gridx = x
+				self.shrooms[mac].gridy = y
+				self.shrooms[mac].gridz = z
+			else:
+				#Create new
+				self.shrooms[mac] = ShroomLight(mac, version, x, y, z)
+			#print(self.shrooms[mac])
+
 
 	def information(self):
 		self.sock.sendto(b'information', self.sending_multicast_group)
+
+	def otaspecific(self, mac):
+		out = 'SOTA %s %s' % (mac, self.getHttpBuild())
+		self.sock.sendto(out.encode(), self.sending_multicast_group)
 
 	def ota(self):
 		out = 'OTA %s' % self.getHttpBuild()
@@ -80,14 +119,22 @@ class ShroomLight:
 	def getHttpRoot(self):
 		return 'http://%s:%d/' % (self.ip, self.webserverport)
 
+	def findMac(self, searchkey):
+		out = []
+		for key in self.shrooms.keys():
+			if re.match('.*'+searchkey+'.*', key):
+				out.append(key)
+		return out
+
 def usage():
 	print ("--help : shows this help")
 
 def commandUsage():
-	print("q - Exit this command")
-	print("i - Report MAC, version and physical grid address")
-	print("r - Restart shrooms")
-	print("o - Do a OTA (Over the air upgrade)")
+	print("q     - Exit this command")
+	print("i     - Report MAC, version and physical grid address")
+	print("r     - Restart shrooms")
+	print("o     - Do a OTA (Over the air upgrade)")
+	print("s MAC - Do a OTA on a specific ShroomLight")
 
 def parseArgs():
 	try:
@@ -106,21 +153,35 @@ def parseArgs():
 if __name__ == '__main__':
 	parseArgs()
 	import time
-	shroom = ShroomLight()
-	signal.signal(signal.SIGINT, shroom.stopSignal)
-	signal.signal(signal.SIGTERM, shroom.stopSignal)
+	shroomcommander = ShroomLights()
+	signal.signal(signal.SIGINT, shroomcommander.stopSignal)
+	signal.signal(signal.SIGTERM, shroomcommander.stopSignal)
 	print("Shroomlight")
-	while shroom.keepListening:
+	shroomcommander.information()
+	while shroomcommander.keepListening:
 		s = input("Shroom command: ")
+		args = s.split()
 		if s == 'r':
-			shroom.restart()
+			shroomcommander.restart()
 		elif s == 'i':
-			shroom.information()
+			shroomcommander.information()
 		elif s == 'o':
-			shroom.ota()
+			shroomcommander.ota()
+		elif s.startswith('s') and len(args) == 2:
+			#print('Specific OTA |%s|' % args[1])
+			res = shroomcommander.findMac(args[1])
+			if len(res) == 0:
+				print('No MAC address found by %s' % args[1])
+				continue
+			if len(res) > 1:
+				print('%s matced too many MAC addresses %s' % (args[1], res))
+				continue
+			print('Specific OTA %s' % res[0])
+			shroomcommander.otaspecific(res[0])
+
 		elif s == 'q':
 			print('Exit')
-			shroom.stop()
+			shroomcommander.stop()
 		else:
 			commandUsage()
 

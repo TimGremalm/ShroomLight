@@ -58,14 +58,14 @@ void ota_start(char * url) {
 	esp_http_client_handle_t client = esp_http_client_init(&config);
 	if (client == NULL) {
 		ESP_LOGE(TAG, "Failed to initialise HTTP connection");
-		setblinkstate(BLINKSTATE_Idle);
+		setblinkstate(BLINKSTATE_OTA_FAILED);
 		return;
 	}
 	err = esp_http_client_open(client, 0);
 	if (err != ESP_OK) {
 		ESP_LOGE(TAG, "Failed to open HTTP connection: %s", esp_err_to_name(err));
 		esp_http_client_cleanup(client);
-		setblinkstate(BLINKSTATE_Idle);
+		setblinkstate(BLINKSTATE_OTA_FAILED);
 		return;
 	}
 	esp_http_client_fetch_headers(client);
@@ -79,7 +79,7 @@ void ota_start(char * url) {
 	if (err != ESP_OK) {
 		ESP_LOGE(TAG, "esp_ota_begin failed (%s)", esp_err_to_name(err));
 		http_cleanup(client);
-		setblinkstate(BLINKSTATE_Idle);
+		setblinkstate(BLINKSTATE_OTA_FAILED);
 		return;
 	}
 	ESP_LOGI(TAG, "esp_ota_begin succeeded");
@@ -91,13 +91,13 @@ void ota_start(char * url) {
 		if (data_read < 0) {
 			ESP_LOGE(TAG, "Error: SSL data read error");
 			http_cleanup(client);
-			setblinkstate(BLINKSTATE_Idle);
+			setblinkstate(BLINKSTATE_OTA_FAILED);
 			return;
 		} else if (data_read > 0) {
 			err = esp_ota_write( update_handle, (const void *)ota_write_data, data_read);
 			if (err != ESP_OK) {
 				http_cleanup(client);
-				setblinkstate(BLINKSTATE_Idle);
+				setblinkstate(BLINKSTATE_OTA_FAILED);
 				return;
 			}
 			binary_file_length += data_read;
@@ -112,13 +112,13 @@ void ota_start(char * url) {
 	if (esp_ota_end(update_handle) != ESP_OK) {
 		ESP_LOGE(TAG, "esp_ota_end failed!");
 		http_cleanup(client);
-		setblinkstate(BLINKSTATE_Idle);
+		setblinkstate(BLINKSTATE_OTA_FAILED);
 		return;
 	}
 
 	if (esp_partition_check_identity(esp_ota_get_running_partition(), update_partition) == true) {
 		ESP_LOGI(TAG, "The current running firmware is same as the firmware just downloaded");
-		setblinkstate(BLINKSTATE_Idle);
+		setblinkstate(BLINKSTATE_OTA_FAILED);
 		return;
 	}
 
@@ -126,7 +126,7 @@ void ota_start(char * url) {
 	if (err != ESP_OK) {
 		ESP_LOGE(TAG, "esp_ota_set_boot_partition failed (%s)!", esp_err_to_name(err));
 		http_cleanup(client);
-		setblinkstate(BLINKSTATE_Idle);
+		setblinkstate(BLINKSTATE_OTA_FAILED);
 		return;
 	}
 	ESP_LOGI(TAG, "Prepare to restart system!");
