@@ -20,7 +20,7 @@ ip_addr_t multiaddr;
 struct netconn *conn;
 uint8_t mac[6];
 char macstring[12];
-uint version = 39;
+uint version = 40;
 
 int indexOf(char * str, char toFind) {
 	int i = 0;

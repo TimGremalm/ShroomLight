@@ -11,6 +11,7 @@ import signal
 import http.server
 from subprocess import check_output
 import re
+import time
 
 class ShroomLight:
 	def __init__(self, mac, version, gridx, gridy, gridz):
@@ -134,6 +135,7 @@ def commandUsage():
 	print("i     - Report MAC, version and physical grid address")
 	print("r     - Restart shrooms")
 	print("o     - Do a OTA (Over the air upgrade)")
+	print("c     - Do a OTA for detected units one at a time")
 	print("s MAC - Do a OTA on a specific ShroomLight")
 
 def parseArgs():
@@ -167,6 +169,22 @@ if __name__ == '__main__':
 			shroomcommander.information()
 		elif s == 'o':
 			shroomcommander.ota()
+		elif s == 'c':
+			for mac in shroomcommander.shrooms.keys():
+				shroomcommander.otaspecific(mac)
+				previousversion = shroomcommander.shrooms[mac].version
+				start = time.time()
+				delta = 0
+				timeout = 30
+				while previousversion == shroomcommander.shrooms[mac].version and delta < timeout:
+					delta = time.time() - start
+					#Sleep until unit is updated
+					print("Wait for OTA of %s %0.2f" % (mac, delta))
+					time.sleep(10.5)
+				if delta > timeout:
+					print("OTA timeout")
+			print("OTA done")
+
 		elif s.startswith('s') and len(args) == 2:
 			#print('Specific OTA |%s|' % args[1])
 			res = shroomcommander.findMac(args[1])
