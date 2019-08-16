@@ -13,6 +13,7 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "version.h"
 #include "ota.h"
 
 static const char *TAG = "Shroom Listener";
@@ -20,7 +21,6 @@ ip_addr_t multiaddr;
 struct netconn *conn;
 uint8_t mac[6];
 char macstring[12];
-uint version = 40;
 
 int indexOf(char * str, char toFind) {
 	int i = 0;
