@@ -81,7 +81,7 @@ void shroomlistenertask(void *pvParameters) {
 
 		//Arguments
 		char argCommand[50];
-		char argMac[12];
+		char argMac[13];
 		int argLightMode;
 		int argX;
 		int argY;
@@ -98,7 +98,6 @@ void shroomlistenertask(void *pvParameters) {
 		while (sepNext != -1) {
 			sepCounter++;
 			sepNext = indexOf((char *)buf->p->payload + sepStart + 1, (char)32);
-			//ESP_LOGI(TAG, "Sep Start: %d Next: %d", sepStart, sepNext);
 			if (sepNext == -1) {
 				//No more arguments
 				argStart = sepStart + 1;
@@ -111,13 +110,12 @@ void shroomlistenertask(void *pvParameters) {
 			}
 			memset(argMessage, 0, sizeof(argMessage));
 			memcpy(argMessage, (char *)buf->p->payload+argStart, argLength);
-			//ESP_LOGI(TAG, "Arg Start: %d Len: %d", argStart, argLength);
-			ESP_LOGI(TAG, "Arg %d: |%s|", sepCounter, argMessage);
+			//ESP_LOGI(TAG, "Arg %d: |%s|", sepCounter, argMessage);
 
 			//Analyze argments
 			if (sepCounter == 1) {
+				memset(argCommand, 0, sizeof(argCommand));
 				memcpy(argCommand, argMessage, argLength);
-				ESP_LOGI(TAG, "Got command: %s", argCommand);
 			}
 			if (sepCounter == 2) {
 				if (strncmp(argCommand, "OTA", 3) == 0) {
