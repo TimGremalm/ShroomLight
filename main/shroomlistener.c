@@ -79,67 +79,145 @@ void shroomlistenertask(void *pvParameters) {
 		}
 		ESP_LOGI(TAG, "Received packet %d", buf->p->tot_len);
 
-		if (strncmp(buf->p->payload, "restart", 7) == 0) {
+		//Arguments
+		char argCommand[50];
+		char argMac[12];
+		int argLightMode;
+		int argX;
+		int argY;
+		int argZ;
+		char argURL[100];
+
+		//Parse argments
+		int sepCounter = 0;
+		int sepStart = -1;
+		int sepNext = 0;
+		int argStart = 0;
+		int argLength = 0;
+		char argMessage[50];
+		while (sepNext != -1) {
+			sepCounter++;
+			sepNext = indexOf((char *)buf->p->payload + sepStart + 1, (char)32);
+			//ESP_LOGI(TAG, "Sep Start: %d Next: %d", sepStart, sepNext);
+			if (sepNext == -1) {
+				//No more arguments
+				argStart = sepStart + 1;
+				argLength = buf->p->tot_len - argStart;
+			} else {
+				//More arguments to be excpected
+				argStart = sepStart + 1;
+				argLength = sepNext;
+				sepStart += sepNext + 1;
+			}
+			memset(argMessage, 0, sizeof(argMessage));
+			memcpy(argMessage, (char *)buf->p->payload+argStart, argLength);
+			//ESP_LOGI(TAG, "Arg Start: %d Len: %d", argStart, argLength);
+			ESP_LOGI(TAG, "Arg %d: |%s|", sepCounter, argMessage);
+
+			//Analyze argments
+			if (sepCounter == 1) {
+				memcpy(argCommand, argMessage, argLength);
+				ESP_LOGI(TAG, "Got command: %s", argCommand);
+			}
+			if (sepCounter == 2) {
+				if (strncmp(argCommand, "OTA", 3) == 0) {
+					memset(argURL, 0, sizeof(argURL));
+					memcpy(argURL, argMessage, argLength);
+				}
+				if (strncmp(argCommand, "SOTA", 4) == 0 ||
+					strncmp(argCommand, "LIGHTMODE", 9) == 0 ||
+					strncmp(argCommand, "TRIGGER", 7) == 0 ||
+					strncmp(argCommand, "SETGRID", 7) == 0) {
+					memset(argMac, 0, sizeof(argMac));
+					memcpy(argMac, argMessage, argLength);
+				}
+			}
+			if (sepCounter == 3) {
+				if (strncmp(argCommand, "SOTA", 4) == 0) {
+					memset(argURL, 0, sizeof(argURL));
+					memcpy(argURL, argMessage, argLength);
+				}
+				if (strncmp(argCommand, "LIGHTMODE", 9) == 0) {
+					argLightMode = atoi(argMessage);
+				}
+				if (strncmp(argCommand, "TRIGGER", 7) == 0 ||
+					strncmp(argCommand, "SETGRID", 7) == 0) {
+					argX = atoi(argMessage);
+				}
+			}
+			if (sepCounter == 4) {
+				if (strncmp(argCommand, "TRIGGER", 7) == 0 ||
+					strncmp(argCommand, "SETGRID", 7) == 0) {
+					argY = atoi(argMessage);
+				}
+			}
+			if (sepCounter == 5) {
+				if (strncmp(argCommand, "TRIGGER", 7) == 0 ||
+					strncmp(argCommand, "SETGRID", 7) == 0) {
+					argZ = atoi(argMessage);
+				}
+			}
+		}
+		//Act on arguments
+		if (strncmp(argCommand, "restart", 7) == 0) {
 			ESP_LOGI(TAG, "Restart");
 			esp_restart();
 		}
-		if (strncmp(buf->p->payload, "information", 11) == 0) {
+		if (strncmp(argCommand, "information", 11) == 0) {
 			ESP_LOGI(TAG, "Information");
 			shroom_send_info();
 		}
-		if (strncmp(buf->p->payload, "OTA", 3) == 0) {
-			int FindSep;
-			FindSep = indexOf(buf->p->payload, (char)32);
-			if (FindSep < 1) {
-				//Didn't find second argment
-				netbuf_delete(buf);
-				continue;
-			}
-			char url[buf->p->tot_len - FindSep - 1];
-			int urlStart = FindSep + 1;
-			int urlLength = buf->p->tot_len - FindSep - 1;
-			ESP_LOGI(TAG, "URL Start: %d Len: %d", urlStart, urlLength);
-			memcpy(url, (char *)buf->p->payload + urlStart, urlLength);
-			ESP_LOGI(TAG, "OTA All URL: |%s|", url);
-			ota_start(url);
-		}
-		if (strncmp(buf->p->payload, "SOTA", 4) == 0) {
-			int sepMAC;
-			int sepURL;
-			sepMAC = indexOf((char *)buf->p->payload, (char)32);
-			if (sepMAC < 1) {
-				netbuf_delete(buf);
-				continue;
-			}
-			int macStart = sepMAC + 1;
-			sepURL = indexOf((char *)buf->p->payload+macStart, (char)32);
-			int urlStart = macStart + sepURL + 1;
-			int macLength = urlStart - macStart - 1;
-			int urlLength = buf->p->tot_len - urlStart;
-			//ESP_LOGI(TAG, "Separator MAC: %d", sepMAC);
-			//ESP_LOGI(TAG, "Separator URL: %d", sepURL);
-			//ESP_LOGI(TAG, "MAC Start: %d Len: %d", macStart, macLength);
-			//ESP_LOGI(TAG, "URL Start: %d Len: %d", urlStart, urlLength);
-			if (sepURL < 1) {
-				netbuf_delete(buf);
-				continue;
-			}
-			char messageMAC[macLength];
-			memset(&messageMAC, 0, sizeof(messageMAC));
-			char messageURL[46];
-			memset(&messageURL, 0, sizeof(messageURL));
-			memcpy(messageMAC, (char *)buf->p->payload+macStart, macLength);
-			memcpy(messageURL, (char *)buf->p->payload+urlStart, urlLength);
-			//ESP_LOGI(TAG, "MAC: |%s|", messageMAC);
-			//ESP_LOGI(TAG, "URL: |%s|", messageURL);
-/*
-SOTA b4e62dda5709 http://192.168.43.2:8000/build/shroomlight.bin
-*/
-			if (strncmp(messageMAC, macstring, 12) == 0) {
-				ESP_LOGI(TAG, "Specific OTA for: %s URL: %s", messageMAC, messageURL);
-				ota_start(messageURL);
+		if (strncmp(argCommand, "OTA", 3) == 0) {
+			if (sepCounter != 2) {
+				ESP_LOGE(TAG, "OTA takes 1 argument, got %d", sepCounter-1);
 			} else {
-				ESP_LOGI(TAG, "Specific MAC not me");
+				ESP_LOGI(TAG, "OTA All URL: |%s|", argURL);
+				ota_start(argURL);
+			}
+		}
+		if (strncmp(argCommand, "SOTA", 4) == 0) {
+			if (sepCounter != 3) {
+				ESP_LOGE(TAG, "SOTA takes 2 arguments, got %d", sepCounter-1);
+			} else {
+				if (strncmp(argMac, macstring, 12) == 0) {
+					ESP_LOGI(TAG, "Specific OTA for: %s URL: %s", argMac, argURL);
+					ota_start(argURL);
+				} else {
+					ESP_LOGI(TAG, "Specific MAC not me");
+				}
+			}
+		}
+		if (strncmp(argCommand, "LIGHTMODE", 9) == 0) {
+			if (sepCounter != 3) {
+				ESP_LOGE(TAG, "LIGHTMODE takes 2 arguments, got %d", sepCounter-1);
+			} else {
+				if (strncmp(argMac, macstring, 12) == 0) {
+					ESP_LOGI(TAG, "Light Mode for: %s Mode: %d", argMac, argLightMode);
+				} else {
+					ESP_LOGI(TAG, "Specific MAC not me");
+				}
+			}
+		}
+		if (strncmp(argCommand, "TRIGGER", 7) == 0) {
+			if (sepCounter != 5) {
+				ESP_LOGE(TAG, "TRIGGER takes 4 arguments, got %d", sepCounter-1);
+			} else {
+				if (strncmp(argMac, macstring, 12) == 0) {
+					ESP_LOGI(TAG, "Trigger %s X: %d Y: %d Z: %d", argMac, argX, argY, argZ);
+				} else {
+					ESP_LOGI(TAG, "Specific MAC not me");
+				}
+			}
+		}
+		if (strncmp(argCommand, "SETGRID", 7) == 0) {
+			if (sepCounter != 5) {
+				ESP_LOGE(TAG, "SETGRID takes 4 arguments, got %d", sepCounter-1);
+			} else {
+				if (strncmp(argMac, macstring, 12) == 0) {
+					ESP_LOGI(TAG, "Set grid on %s to X: %d Y: %d Z: %d", argMac, argX, argY, argZ);
+				} else {
+					ESP_LOGI(TAG, "Specific MAC not me");
+				}
 			}
 		}
 		netbuf_delete(buf);

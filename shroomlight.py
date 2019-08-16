@@ -90,6 +90,21 @@ class ShroomLights:
 	def information(self):
 		self.sock.sendto(b'information', self.sending_multicast_group)
 
+	def lightmode(self, mac, mode):
+		out = 'LIGHTMODE %s %d' % (mac, mode)
+		self.sock.sendto(out.encode(), self.sending_multicast_group)
+
+	def triggershroom(self, mac):
+		x = self.shrooms[mac].gridx
+		y = self.shrooms[mac].gridy
+		z = self.shrooms[mac].gridz
+		out = 'TRIGGER %s %d %d %d' % (mac, x, y, z)
+		self.sock.sendto(out.encode(), self.sending_multicast_group)
+
+	def setgridaddress(self, mac, x, y, z):
+		out = 'SETGRID %s %d %d %d' % (mac, x, y, z)
+		self.sock.sendto(out.encode(), self.sending_multicast_group)
+
 	def otaspecific(self, mac):
 		out = 'SOTA %s %s' % (mac, self.getHttpBuild())
 		self.sock.sendto(out.encode(), self.sending_multicast_group)
@@ -131,12 +146,15 @@ def usage():
 	print ("--help : shows this help")
 
 def commandUsage():
-	print("q     - Exit this command")
-	print("i     - Report MAC, version and physical grid address")
-	print("r     - Restart shrooms")
-	print("o     - Do a OTA (Over the air upgrade)")
-	print("c     - Do a OTA for detected units one at a time")
-	print("s MAC - Do a OTA on a specific ShroomLight")
+	print("q           - Exit this command")
+	print("i           - Report MAC, version and physical grid address")
+	print("r           - Restart shrooms")
+	print("o           - Do a OTA (Over the air upgrade)")
+	print("c           - Do a OTA for detected units one at a time")
+	print("s MAC       - Do a OTA on a specific ShroomLight")
+	print("l MAC Mode  - Set light mode")
+	print("t MAC       - Trigger shroom")
+	print("x MAC X Y Z - Set shroom grid address")
 
 def parseArgs():
 	try:
@@ -163,6 +181,8 @@ if __name__ == '__main__':
 	while shroomcommander.keepListening:
 		s = input("Shroom command: ")
 		args = s.split()
+		if s == 'h':
+			commandUsage()
 		if s == 'r':
 			shroomcommander.restart()
 		elif s == 'i':
@@ -196,10 +216,46 @@ if __name__ == '__main__':
 				continue
 			print('Specific OTA %s' % res[0])
 			shroomcommander.otaspecific(res[0])
-
+		elif s.startswith('l') and len(args) == 3:
+			res = shroomcommander.findMac(args[1])
+			if len(res) == 0:
+				print('No MAC address found by %s' % args[1])
+				continue
+			if len(res) > 1:
+				print('%s matced too many MAC addresses %s' % (args[1], res))
+				continue
+			mode = int(args[2])
+			print('Light Mode MAC %s to %d' % (res[0], mode))
+			shroomcommander.lightmode(res[0], int(args[2]))
+		elif s.startswith('t') and len(args) == 2:
+			res = shroomcommander.findMac(args[1])
+			if len(res) == 0:
+				print('No MAC address found by %s' % args[1])
+				continue
+			if len(res) > 1:
+				print('%s matced too many MAC addresses %s' % (args[1], res))
+				continue
+			x = shroomcommander.shrooms[res[0]].gridx
+			y = shroomcommander.shrooms[res[0]].gridy
+			z = shroomcommander.shrooms[res[0]].gridz
+			print('Trigger shroom %s %d %d %d' % (res[0], x, y, z))
+			shroomcommander.triggershroom(res[0])
+		elif s.startswith('x') and len(args) == 5:
+			res = shroomcommander.findMac(args[1])
+			if len(res) == 0:
+				print('No MAC address found by %s' % args[1])
+				continue
+			if len(res) > 1:
+				print('%s matced too many MAC addresses %s' % (args[1], res))
+				continue
+			x = int(args[2])
+			y = int(args[3])
+			z = int(args[4])
+			print('Set shroom %s grid to %d %d %d' % (res[0], x, y, z))
+			shroomcommander.setgridaddress(res[0], x, y, z)
 		elif s == 'q':
 			print('Exit')
 			shroomcommander.stop()
 		else:
-			commandUsage()
+			print('Not a valid command. Type h for help.')
 
