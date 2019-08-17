@@ -25,9 +25,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.98994949"
-     inkscape:cx="17.217277"
-     inkscape:cy="193.85501"
+     inkscape:zoom="1.979899"
+     inkscape:cx="127.33321"
+     inkscape:cy="117.06485"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -172,12 +172,13 @@
          inkscape:transform-center-x="-0.16510322" />
     </g>
     <g
-       id="g2916">
+       id="g2916"
+       style="stroke:#1c1eff;stroke-opacity:1">
       <path
          inkscape:transform-center-x="-0.23597248"
          transform="rotate(-30,51.725301,256.84414)"
          sodipodi:type="star"
-         style="fill:none;stroke:#000000;stroke-width:0.4;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         style="fill:none;stroke:#1c1eff;stroke-width:0.4;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          id="path815-09-1-3-5"
          sodipodi:sides="6"
          sodipodi:cx="51.725304"
@@ -195,7 +196,7 @@
          inkscape:transform-center-x="-0.23597248"
          transform="rotate(-30,51.725301,256.84414)"
          sodipodi:type="star"
-         style="fill:none;stroke:#000000;stroke-width:0.10000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         style="fill:none;stroke:#1c1eff;stroke-width:0.10000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          id="path815-09-1-3-5-8"
          sodipodi:sides="6"
          sodipodi:cx="43.165047"
@@ -213,7 +214,7 @@
          inkscape:transform-center-x="-0.23597248"
          transform="rotate(-30,51.725301,256.84414)"
          sodipodi:type="star"
-         style="fill:none;stroke:#000000;stroke-width:0.10000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         style="fill:none;stroke:#1c1eff;stroke-width:0.10000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          id="path815-09-1-3-5-1"
          sodipodi:sides="6"
          sodipodi:cx="60.285557"
@@ -231,7 +232,7 @@
          inkscape:transform-center-x="-0.23597248"
          transform="rotate(-30,51.725301,256.84414)"
          sodipodi:type="star"
-         style="fill:none;stroke:#000000;stroke-width:0.10000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         style="fill:none;stroke:#1c1eff;stroke-width:0.10000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          id="path815-09-1-3-5-0"
          sodipodi:sides="6"
          sodipodi:cx="56.005424"
@@ -249,7 +250,7 @@
          inkscape:transform-center-x="-0.23597248"
          transform="rotate(-30,51.725301,256.84414)"
          sodipodi:type="star"
-         style="fill:none;stroke:#000000;stroke-width:0.10000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         style="fill:none;stroke:#1c1eff;stroke-width:0.10000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          id="path815-09-1-3-5-2"
          sodipodi:sides="6"
          sodipodi:cx="47.445183"
@@ -267,7 +268,7 @@
          inkscape:transform-center-x="-0.23597248"
          transform="rotate(-30,51.725301,256.84414)"
          sodipodi:type="star"
-         style="fill:none;stroke:#000000;stroke-width:0.10000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         style="fill:none;stroke:#1c1eff;stroke-width:0.10000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          id="path815-09-1-3-5-29"
          sodipodi:sides="6"
          sodipodi:cx="56.005424"
@@ -285,7 +286,7 @@
          inkscape:transform-center-x="-0.23597248"
          transform="rotate(-30,51.725301,256.84414)"
          sodipodi:type="star"
-         style="fill:none;stroke:#000000;stroke-width:0.10000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         style="fill:none;stroke:#1c1eff;stroke-width:0.10000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          id="path815-09-1-3-5-7"
          sodipodi:sides="6"
          sodipodi:cx="47.445171"
@@ -301,11 +302,12 @@
          inkscape:transform-center-y="0.4087159" />
     </g>
     <g
-       id="g2996">
+       id="g2996"
+       style="stroke:#f103ff;stroke-opacity:1">
       <path
          transform="rotate(-30,70.136507,374.84517)"
          sodipodi:type="star"
-         style="fill:none;stroke:#4942bd;stroke-width:0.4;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         style="fill:none;stroke:#f103ff;stroke-width:0.4;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          id="path815-09-1-3-5-5"
          sodipodi:sides="6"
          sodipodi:cx="108.91233"
@@ -322,7 +324,7 @@
       <path
          transform="rotate(-30,70.136507,374.84517)"
          sodipodi:type="star"
-         style="fill:none;stroke:#4942bd;stroke-width:0.10000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         style="fill:none;stroke:#f103ff;stroke-width:0.10000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          id="path815-09-1-3-5-8-6"
          sodipodi:sides="6"
          sodipodi:cx="100.35208"
@@ -339,7 +341,7 @@
       <path
          transform="rotate(-30,70.136507,374.84517)"
          sodipodi:type="star"
-         style="fill:none;stroke:#4942bd;stroke-width:0.10000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         style="fill:none;stroke:#f103ff;stroke-width:0.10000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          id="path815-09-1-3-5-1-4"
          sodipodi:sides="6"
          sodipodi:cx="117.47259"
@@ -356,7 +358,7 @@
       <path
          transform="rotate(-30,70.136507,374.84517)"
          sodipodi:type="star"
-         style="fill:none;stroke:#4942bd;stroke-width:0.10000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         style="fill:none;stroke:#f103ff;stroke-width:0.10000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          id="path815-09-1-3-5-0-6"
          sodipodi:sides="6"
          sodipodi:cx="113.19245"
@@ -373,7 +375,7 @@
       <path
          transform="rotate(-30,70.136507,374.84517)"
          sodipodi:type="star"
-         style="fill:none;stroke:#4942bd;stroke-width:0.10000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         style="fill:none;stroke:#f103ff;stroke-width:0.10000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          id="path815-09-1-3-5-2-3"
          sodipodi:sides="6"
          sodipodi:cx="104.63221"
@@ -390,7 +392,7 @@
       <path
          transform="rotate(-30,70.136507,374.84517)"
          sodipodi:type="star"
-         style="fill:none;stroke:#4942bd;stroke-width:0.10000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         style="fill:none;stroke:#f103ff;stroke-width:0.10000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          id="path815-09-1-3-5-29-7"
          sodipodi:sides="6"
          sodipodi:cx="113.19245"
@@ -407,7 +409,7 @@
       <path
          transform="rotate(-30,70.136507,374.84517)"
          sodipodi:type="star"
-         style="fill:none;stroke:#4942bd;stroke-width:0.10000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         style="fill:none;stroke:#f103ff;stroke-width:0.10000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          id="path815-09-1-3-5-7-9"
          sodipodi:sides="6"
          sodipodi:cx="104.6322"
@@ -423,11 +425,12 @@
          inkscape:transform-center-y="0.47194477" />
     </g>
     <g
-       id="g2948">
+       id="g2948"
+       style="stroke:#f103ff;stroke-opacity:1">
       <path
          transform="rotate(-30,148.85794,336.63135)"
          sodipodi:type="star"
-         style="fill:none;stroke:#42bd47;stroke-width:0.4;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         style="fill:none;stroke:#f103ff;stroke-width:0.4;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          id="path815-09-1-3-5-5-4"
          sodipodi:sides="6"
          sodipodi:cx="108.91233"
@@ -444,7 +447,7 @@
       <path
          transform="rotate(-30,148.85794,336.63135)"
          sodipodi:type="star"
-         style="fill:none;stroke:#42bd47;stroke-width:0.10000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         style="fill:none;stroke:#f103ff;stroke-width:0.10000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          id="path815-09-1-3-5-8-6-9"
          sodipodi:sides="6"
          sodipodi:cx="100.35208"
@@ -461,7 +464,7 @@
       <path
          transform="rotate(-30,148.85794,336.63135)"
          sodipodi:type="star"
-         style="fill:none;stroke:#42bd47;stroke-width:0.10000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         style="fill:none;stroke:#f103ff;stroke-width:0.10000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          id="path815-09-1-3-5-1-4-1"
          sodipodi:sides="6"
          sodipodi:cx="117.47259"
@@ -478,7 +481,7 @@
       <path
          transform="rotate(-30,148.85794,336.63135)"
          sodipodi:type="star"
-         style="fill:none;stroke:#42bd47;stroke-width:0.10000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         style="fill:none;stroke:#f103ff;stroke-width:0.10000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          id="path815-09-1-3-5-0-6-7"
          sodipodi:sides="6"
          sodipodi:cx="113.19245"
@@ -495,7 +498,7 @@
       <path
          transform="rotate(-30,148.85794,336.63135)"
          sodipodi:type="star"
-         style="fill:none;stroke:#42bd47;stroke-width:0.10000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         style="fill:none;stroke:#f103ff;stroke-width:0.10000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          id="path815-09-1-3-5-2-3-0"
          sodipodi:sides="6"
          sodipodi:cx="104.63221"
@@ -512,7 +515,7 @@
       <path
          transform="rotate(-30,148.85794,336.63135)"
          sodipodi:type="star"
-         style="fill:none;stroke:#42bd47;stroke-width:0.10000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         style="fill:none;stroke:#f103ff;stroke-width:0.10000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          id="path815-09-1-3-5-29-7-6"
          sodipodi:sides="6"
          sodipodi:cx="113.19245"
@@ -529,7 +532,7 @@
       <path
          transform="rotate(-30,148.85794,336.63135)"
          sodipodi:type="star"
-         style="fill:none;stroke:#42bd47;stroke-width:0.10000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         style="fill:none;stroke:#f103ff;stroke-width:0.10000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          id="path815-09-1-3-5-7-9-0"
          sodipodi:sides="6"
          sodipodi:cx="104.6322"
@@ -545,11 +548,12 @@
          inkscape:transform-center-y="0.47194477" />
     </g>
     <g
-       id="g2964">
+       id="g2964"
+       style="stroke:#ff1900;stroke-opacity:1">
       <path
          transform="rotate(-30,112.6305,312.09745)"
          sodipodi:type="star"
-         style="fill:none;stroke:#a6bd42;stroke-width:0.4;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         style="fill:none;stroke:#ff1900;stroke-width:0.4;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          id="path815-09-1-3-5-5-4-5"
          sodipodi:sides="6"
          sodipodi:cx="108.91233"
@@ -566,7 +570,7 @@
       <path
          transform="rotate(-30,112.6305,312.09745)"
          sodipodi:type="star"
-         style="fill:none;stroke:#a6bd42;stroke-width:0.10000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         style="fill:none;stroke:#ff1900;stroke-width:0.10000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          id="path815-09-1-3-5-8-6-9-3"
          sodipodi:sides="6"
          sodipodi:cx="100.35208"
@@ -583,7 +587,7 @@
       <path
          transform="rotate(-30,112.6305,312.09745)"
          sodipodi:type="star"
-         style="fill:none;stroke:#a6bd42;stroke-width:0.10000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         style="fill:none;stroke:#ff1900;stroke-width:0.10000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          id="path815-09-1-3-5-1-4-1-9"
          sodipodi:sides="6"
          sodipodi:cx="117.47259"
@@ -600,7 +604,7 @@
       <path
          transform="rotate(-30,112.6305,312.09745)"
          sodipodi:type="star"
-         style="fill:none;stroke:#a6bd42;stroke-width:0.10000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         style="fill:none;stroke:#ff1900;stroke-width:0.10000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          id="path815-09-1-3-5-0-6-7-4"
          sodipodi:sides="6"
          sodipodi:cx="113.19245"
@@ -617,7 +621,7 @@
       <path
          transform="rotate(-30,112.6305,312.09745)"
          sodipodi:type="star"
-         style="fill:none;stroke:#a6bd42;stroke-width:0.10000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         style="fill:none;stroke:#ff1900;stroke-width:0.10000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          id="path815-09-1-3-5-2-3-0-1"
          sodipodi:sides="6"
          sodipodi:cx="104.63221"
@@ -634,7 +638,7 @@
       <path
          transform="rotate(-30,112.6305,312.09745)"
          sodipodi:type="star"
-         style="fill:none;stroke:#a6bd42;stroke-width:0.10000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         style="fill:none;stroke:#ff1900;stroke-width:0.10000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          id="path815-09-1-3-5-29-7-6-5"
          sodipodi:sides="6"
          sodipodi:cx="113.19245"
@@ -651,7 +655,7 @@
       <path
          transform="rotate(-30,112.6305,312.09745)"
          sodipodi:type="star"
-         style="fill:none;stroke:#a6bd42;stroke-width:0.10000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         style="fill:none;stroke:#ff1900;stroke-width:0.10000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          id="path815-09-1-3-5-7-9-0-4"
          sodipodi:sides="6"
          sodipodi:cx="104.6322"
@@ -667,10 +671,11 @@
          inkscape:transform-center-y="0.47194477" />
     </g>
     <g
-       id="g2932">
+       id="g2932"
+       style="stroke:#00f133;stroke-opacity:1">
       <path
          sodipodi:type="star"
-         style="fill:none;stroke:#bd8342;stroke-width:0.4;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         style="fill:none;stroke:#00f133;stroke-width:0.4;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          id="path815-09-1-3-5-5-4-55"
          sodipodi:sides="6"
          sodipodi:cx="108.91233"
@@ -688,7 +693,7 @@
          inkscape:transform-center-x="-0.23597215" />
       <path
          sodipodi:type="star"
-         style="fill:none;stroke:#bd8342;stroke-width:0.10000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         style="fill:none;stroke:#00f133;stroke-width:0.10000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          id="path815-09-1-3-5-8-6-9-4"
          sodipodi:sides="6"
          sodipodi:cx="100.35208"
@@ -706,7 +711,7 @@
          inkscape:transform-center-x="-0.23597215" />
       <path
          sodipodi:type="star"
-         style="fill:none;stroke:#bd8342;stroke-width:0.10000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         style="fill:none;stroke:#00f133;stroke-width:0.10000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          id="path815-09-1-3-5-1-4-1-98"
          sodipodi:sides="6"
          sodipodi:cx="117.47259"
@@ -724,7 +729,7 @@
          inkscape:transform-center-x="-0.23597215" />
       <path
          sodipodi:type="star"
-         style="fill:none;stroke:#bd8342;stroke-width:0.10000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         style="fill:none;stroke:#00f133;stroke-width:0.10000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          id="path815-09-1-3-5-0-6-7-3"
          sodipodi:sides="6"
          sodipodi:cx="113.19245"
@@ -742,7 +747,7 @@
          inkscape:transform-center-x="-0.23597215" />
       <path
          sodipodi:type="star"
-         style="fill:none;stroke:#bd8342;stroke-width:0.10000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         style="fill:none;stroke:#00f133;stroke-width:0.10000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          id="path815-09-1-3-5-2-3-0-8"
          sodipodi:sides="6"
          sodipodi:cx="104.63221"
@@ -760,7 +765,7 @@
          inkscape:transform-center-x="-0.23597215" />
       <path
          sodipodi:type="star"
-         style="fill:none;stroke:#bd8342;stroke-width:0.10000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         style="fill:none;stroke:#00f133;stroke-width:0.10000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          id="path815-09-1-3-5-29-7-6-52"
          sodipodi:sides="6"
          sodipodi:cx="113.19245"
@@ -778,7 +783,7 @@
          inkscape:transform-center-x="-0.23597215" />
       <path
          sodipodi:type="star"
-         style="fill:none;stroke:#bd8342;stroke-width:0.10000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         style="fill:none;stroke:#00f133;stroke-width:0.10000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          id="path815-09-1-3-5-7-9-0-2"
          sodipodi:sides="6"
          sodipodi:cx="104.6322"
@@ -796,11 +801,12 @@
          inkscape:transform-center-x="-0.23597215" />
     </g>
     <g
-       id="g2907">
+       id="g2907"
+       style="stroke:#ff1900;stroke-opacity:1">
       <path
          transform="rotate(-30,106.36396,399.37908)"
          sodipodi:type="star"
-         style="fill:none;stroke:#bd4642;stroke-width:0.4;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         style="fill:none;stroke:#ff1900;stroke-width:0.4;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          id="path815-09-1-3-5-5-4-7"
          sodipodi:sides="6"
          sodipodi:cx="108.91233"
@@ -817,7 +823,7 @@
       <path
          transform="rotate(-30,106.36396,399.37908)"
          sodipodi:type="star"
-         style="fill:none;stroke:#bd4642;stroke-width:0.10000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         style="fill:none;stroke:#ff1900;stroke-width:0.10000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          id="path815-09-1-3-5-8-6-9-0"
          sodipodi:sides="6"
          sodipodi:cx="100.35208"
@@ -834,7 +840,7 @@
       <path
          transform="rotate(-30,106.36396,399.37908)"
          sodipodi:type="star"
-         style="fill:none;stroke:#bd4642;stroke-width:0.10000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         style="fill:none;stroke:#ff1900;stroke-width:0.10000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          id="path815-09-1-3-5-1-4-1-3"
          sodipodi:sides="6"
          sodipodi:cx="117.47259"
@@ -851,7 +857,7 @@
       <path
          transform="rotate(-30,106.36396,399.37908)"
          sodipodi:type="star"
-         style="fill:none;stroke:#bd4642;stroke-width:0.10000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         style="fill:none;stroke:#ff1900;stroke-width:0.10000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          id="path815-09-1-3-5-0-6-7-46"
          sodipodi:sides="6"
          sodipodi:cx="113.19245"
@@ -868,7 +874,7 @@
       <path
          transform="rotate(-30,106.36396,399.37908)"
          sodipodi:type="star"
-         style="fill:none;stroke:#bd4642;stroke-width:0.10000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         style="fill:none;stroke:#ff1900;stroke-width:0.10000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          id="path815-09-1-3-5-2-3-0-3"
          sodipodi:sides="6"
          sodipodi:cx="104.63221"
@@ -885,7 +891,7 @@
       <path
          transform="rotate(-30,106.36396,399.37908)"
          sodipodi:type="star"
-         style="fill:none;stroke:#bd4642;stroke-width:0.10000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         style="fill:none;stroke:#ff1900;stroke-width:0.10000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          id="path815-09-1-3-5-29-7-6-6"
          sodipodi:sides="6"
          sodipodi:cx="113.19245"
@@ -902,7 +908,7 @@
       <path
          transform="rotate(-30,106.36396,399.37908)"
          sodipodi:type="star"
-         style="fill:none;stroke:#bd4642;stroke-width:0.10000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         style="fill:none;stroke:#ff1900;stroke-width:0.10000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          id="path815-09-1-3-5-7-9-0-3"
          sodipodi:sides="6"
          sodipodi:cx="104.6322"
@@ -918,11 +924,12 @@
          inkscape:transform-center-y="0.47194477" />
     </g>
     <g
-       id="g2980">
+       id="g2980"
+       style="stroke:#00f133;stroke-opacity:1">
       <path
          transform="rotate(-30,73.269793,331.20436)"
          sodipodi:type="star"
-         style="fill:none;stroke:#bd42a7;stroke-width:0.4;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         style="fill:none;stroke:#00f133;stroke-width:0.4;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          id="path815-09-1-3-5-5-4-4"
          sodipodi:sides="6"
          sodipodi:cx="108.91233"
@@ -939,7 +946,7 @@
       <path
          transform="rotate(-30,73.269793,331.20436)"
          sodipodi:type="star"
-         style="fill:none;stroke:#bd42a7;stroke-width:0.10000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         style="fill:none;stroke:#00f133;stroke-width:0.10000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          id="path815-09-1-3-5-8-6-9-43"
          sodipodi:sides="6"
          sodipodi:cx="100.35208"
@@ -956,7 +963,7 @@
       <path
          transform="rotate(-30,73.269793,331.20436)"
          sodipodi:type="star"
-         style="fill:none;stroke:#bd42a7;stroke-width:0.10000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         style="fill:none;stroke:#00f133;stroke-width:0.10000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          id="path815-09-1-3-5-1-4-1-97"
          sodipodi:sides="6"
          sodipodi:cx="117.47259"
@@ -973,7 +980,7 @@
       <path
          transform="rotate(-30,73.269793,331.20436)"
          sodipodi:type="star"
-         style="fill:none;stroke:#bd42a7;stroke-width:0.10000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         style="fill:none;stroke:#00f133;stroke-width:0.10000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          id="path815-09-1-3-5-0-6-7-2"
          sodipodi:sides="6"
          sodipodi:cx="113.19245"
@@ -990,7 +997,7 @@
       <path
          transform="rotate(-30,73.269793,331.20436)"
          sodipodi:type="star"
-         style="fill:none;stroke:#bd42a7;stroke-width:0.10000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         style="fill:none;stroke:#00f133;stroke-width:0.10000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          id="path815-09-1-3-5-2-3-0-5"
          sodipodi:sides="6"
          sodipodi:cx="104.63221"
@@ -1007,7 +1014,7 @@
       <path
          transform="rotate(-30,73.269793,331.20436)"
          sodipodi:type="star"
-         style="fill:none;stroke:#bd42a7;stroke-width:0.10000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         style="fill:none;stroke:#00f133;stroke-width:0.10000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          id="path815-09-1-3-5-29-7-6-8"
          sodipodi:sides="6"
          sodipodi:cx="113.19245"
@@ -1024,7 +1031,7 @@
       <path
          transform="rotate(-30,73.269793,331.20436)"
          sodipodi:type="star"
-         style="fill:none;stroke:#bd42a7;stroke-width:0.10000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         style="fill:none;stroke:#00f133;stroke-width:0.10000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          id="path815-09-1-3-5-7-9-0-9"
          sodipodi:sides="6"
          sodipodi:cx="104.6322"
@@ -1086,13 +1093,13 @@
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.06973171px;line-height:1.25;font-family:'Samyak Malayalam';-inkscape-font-specification:'Samyak Malayalam';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-       x="48.318451"
-       y="238.7021"
+       x="48.184814"
+       y="238.83574"
        id="text3000-9-1"><tspan
          sodipodi:role="line"
          id="tspan2998-1-9"
-         x="48.318451"
-         y="238.7021"
+         x="48.184814"
+         y="238.83574"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:FreeMono;-inkscape-font-specification:FreeMono;fill:#00cd06;fill-opacity:1;stroke:none;stroke-width:0.26458332;stroke-opacity:1">0</tspan></text>
     <text
        xml:space="preserve"
@@ -1108,35 +1115,35 @@
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.06973171px;line-height:1.25;font-family:'Samyak Malayalam';-inkscape-font-specification:'Samyak Malayalam';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-       x="48.452084"
-       y="264.49359"
+       x="48.518902"
+       y="264.76086"
        id="text3000-9-9"><tspan
          sodipodi:role="line"
          id="tspan2998-1-88"
-         x="48.452084"
-         y="264.49359"
+         x="48.518902"
+         y="264.76086"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:FreeMono;-inkscape-font-specification:FreeMono;fill:#00cd06;fill-opacity:1;stroke:none;stroke-width:0.26458332;stroke-opacity:1">0</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.06973171px;line-height:1.25;font-family:'Samyak Malayalam';-inkscape-font-specification:'Samyak Malayalam';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-       x="48.852989"
-       y="273.44714"
+       x="48.652534"
+       y="273.51395"
        id="text3000-9-03"><tspan
          sodipodi:role="line"
          id="tspan2998-1-7"
-         x="48.852989"
-         y="273.44714"
+         x="48.652534"
+         y="273.51395"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:FreeMono;-inkscape-font-specification:FreeMono;fill:#00cd06;fill-opacity:1;stroke:none;stroke-width:0.26458332;stroke-opacity:1">0</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.06973171px;line-height:1.25;font-family:'Samyak Malayalam';-inkscape-font-specification:'Samyak Malayalam';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
        x="48.786171"
-       y="282.5343"
+       y="282.26703"
        id="text3000-9-06"><tspan
          sodipodi:role="line"
          id="tspan2998-1-92"
          x="48.786171"
-         y="282.5343"
+         y="282.26703"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:FreeMono;-inkscape-font-specification:FreeMono;fill:#00cd06;fill-opacity:1;stroke:none;stroke-width:0.26458332;stroke-opacity:1">0</tspan></text>
     <text
        xml:space="preserve"
@@ -1152,13 +1159,13 @@
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.06973171px;line-height:1.25;font-family:'Samyak Malayalam';-inkscape-font-specification:'Samyak Malayalam';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-       x="40.712505"
-       y="243.39313"
+       x="40.645687"
+       y="243.45995"
        id="text3000-9-17-7"><tspan
          sodipodi:role="line"
          id="tspan2998-1-79-6"
-         x="40.712505"
-         y="243.39313"
+         x="40.645687"
+         y="243.45995"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:FreeMono;-inkscape-font-specification:FreeMono;fill:#00cd06;fill-opacity:1;stroke:none;stroke-width:0.26458332;stroke-opacity:1">-1</tspan></text>
     <text
        xml:space="preserve"
@@ -1196,12 +1203,12 @@
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.06973171px;line-height:1.25;font-family:'Samyak Malayalam';-inkscape-font-specification:'Samyak Malayalam';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-       x="40.378418"
+       x="40.578869"
        y="277.73727"
        id="text3000-9-17-4"><tspan
          sodipodi:role="line"
          id="tspan2998-1-79-56"
-         x="40.378418"
+         x="40.578869"
          y="277.73727"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:FreeMono;-inkscape-font-specification:FreeMono;fill:#00cd06;fill-opacity:1;stroke:none;stroke-width:0.26458332;stroke-opacity:1">-1</tspan></text>
     <g
@@ -1366,13 +1373,13 @@
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.06973171px;line-height:1.25;font-family:'Samyak Malayalam';-inkscape-font-specification:'Samyak Malayalam';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-       x="40.545292"
-       y="286.61057"
+       x="40.278023"
+       y="286.34329"
        id="text3000-9-17-5"><tspan
          sodipodi:role="line"
          id="tspan2998-1-79-68"
-         x="40.545292"
-         y="286.61057"
+         x="40.278023"
+         y="286.34329"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:FreeMono;-inkscape-font-specification:FreeMono;fill:#00cd06;fill-opacity:1;stroke:none;stroke-width:0.26458332;stroke-opacity:1">-1</tspan></text>
     <text
        xml:space="preserve"
@@ -1443,13 +1450,13 @@
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.06973171px;line-height:1.25;font-family:'Samyak Malayalam';-inkscape-font-specification:'Samyak Malayalam';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-       x="33.15974"
-       y="281.9006"
+       x="33.092922"
+       y="282.10104"
        id="text3000-9-17-48-2"><tspan
          sodipodi:role="line"
          id="tspan2998-1-79-83-1"
-         x="33.15974"
-         y="281.9006"
+         x="33.092922"
+         y="282.10104"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:FreeMono;-inkscape-font-specification:FreeMono;fill:#00cd06;fill-opacity:1;stroke:none;stroke-width:0.26458332;stroke-opacity:1">-2</tspan></text>
     <text
        xml:space="preserve"
@@ -1476,35 +1483,35 @@
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.06973171px;line-height:1.25;font-family:'Samyak Malayalam';-inkscape-font-specification:'Samyak Malayalam';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-       x="25.660173"
-       y="252.13239"
+       x="25.526539"
+       y="252.06557"
        id="text3000-9-17-48-34-9"><tspan
          sodipodi:role="line"
          id="tspan2998-1-79-83-9-5"
-         x="25.660173"
-         y="252.13239"
+         x="25.526539"
+         y="252.06557"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:FreeMono;-inkscape-font-specification:FreeMono;fill:#00cd06;fill-opacity:1;stroke:none;stroke-width:0.26458332;stroke-opacity:1">-3</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.06973171px;line-height:1.25;font-family:'Samyak Malayalam';-inkscape-font-specification:'Samyak Malayalam';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-       x="25.860626"
+       x="25.660173"
        y="260.75183"
        id="text3000-9-17-48-34-7"><tspan
          sodipodi:role="line"
          id="tspan2998-1-79-83-9-4"
-         x="25.860626"
+         x="25.660173"
          y="260.75183"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:FreeMono;-inkscape-font-specification:FreeMono;fill:#00cd06;fill-opacity:1;stroke:none;stroke-width:0.26458332;stroke-opacity:1">-3</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.06973171px;line-height:1.25;font-family:'Samyak Malayalam';-inkscape-font-specification:'Samyak Malayalam';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-       x="25.860626"
-       y="269.30447"
+       x="25.927444"
+       y="269.23767"
        id="text3000-9-17-48-34-1"><tspan
          sodipodi:role="line"
          id="tspan2998-1-79-83-9-2"
-         x="25.860626"
-         y="269.30447"
+         x="25.927444"
+         y="269.23767"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:FreeMono;-inkscape-font-specification:FreeMono;fill:#00cd06;fill-opacity:1;stroke:none;stroke-width:0.26458332;stroke-opacity:1">-3</tspan></text>
     <text
        xml:space="preserve"
@@ -1531,12 +1538,12 @@
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.06973171px;line-height:1.25;font-family:'Samyak Malayalam';-inkscape-font-specification:'Samyak Malayalam';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-       x="55.412327"
+       x="55.345509"
        y="226.08742"
        id="text3000-9-17-43"><tspan
          sodipodi:role="line"
          id="tspan2998-1-79-561"
-         x="55.412327"
+         x="55.345509"
          y="226.08742"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:FreeMono;-inkscape-font-specification:FreeMono;fill:#00cd06;fill-opacity:1;stroke:none;stroke-width:0.26458332;stroke-opacity:1">+1</tspan></text>
     <text
@@ -1586,13 +1593,13 @@
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.06973171px;line-height:1.25;font-family:'Samyak Malayalam';-inkscape-font-specification:'Samyak Malayalam';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-       x="55.437977"
-       y="269.19156"
+       x="55.237526"
+       y="269.05792"
        id="text3000-9-17-43-8"><tspan
          sodipodi:role="line"
          id="tspan2998-1-79-561-10"
-         x="55.437977"
-         y="269.19156"
+         x="55.237526"
+         y="269.05792"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:FreeMono;-inkscape-font-specification:FreeMono;fill:#00cd06;fill-opacity:1;stroke:none;stroke-width:0.26458332;stroke-opacity:1">+1</tspan></text>
     <text
        xml:space="preserve"
@@ -1609,12 +1616,12 @@
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.06973171px;line-height:1.25;font-family:'Samyak Malayalam';-inkscape-font-specification:'Samyak Malayalam';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
        x="62.797054"
-       y="230.46046"
+       y="230.72774"
        id="text3000-9-17-43-0"><tspan
          sodipodi:role="line"
          id="tspan2998-1-79-561-2"
          x="62.797054"
-         y="230.46046"
+         y="230.72774"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:FreeMono;-inkscape-font-specification:FreeMono;fill:#00cd06;fill-opacity:1;stroke:none;stroke-width:0.26458332;stroke-opacity:1">+2</tspan></text>
     <text
        xml:space="preserve"
@@ -1663,13 +1670,13 @@
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.06973171px;line-height:1.25;font-family:'Samyak Malayalam';-inkscape-font-specification:'Samyak Malayalam';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-       x="62.850006"
-       y="273.39764"
+       x="62.783188"
+       y="273.53128"
        id="text3000-9-17-43-0-6"><tspan
          sodipodi:role="line"
          id="tspan2998-1-79-561-2-8"
-         x="62.850006"
-         y="273.39764"
+         x="62.783188"
+         y="273.53128"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:FreeMono;-inkscape-font-specification:FreeMono;fill:#00cd06;fill-opacity:1;stroke:none;stroke-width:0.26458332;stroke-opacity:1">+2</tspan></text>
     <text
        xml:space="preserve"
@@ -1718,12 +1725,12 @@
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.06973171px;line-height:1.25;font-family:'Samyak Malayalam';-inkscape-font-specification:'Samyak Malayalam';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-       x="70.633102"
+       x="70.499466"
        y="269.08325"
        id="text3000-9-17-43-0-92-8"><tspan
          sodipodi:role="line"
          id="tspan2998-1-79-561-2-44-96"
-         x="70.633102"
+         x="70.499466"
          y="269.08325"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:FreeMono;-inkscape-font-specification:FreeMono;fill:#00cd06;fill-opacity:1;stroke:none;stroke-width:0.26458332;stroke-opacity:1">+3</tspan></text>
     <text
@@ -1773,24 +1780,24 @@
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.06973171px;line-height:1.25;font-family:'Samyak Malayalam';-inkscape-font-specification:'Samyak Malayalam';letter-spacing:0px;word-spacing:0px;fill:#1500e9;fill-opacity:1;stroke:none;stroke-width:0.26458332;stroke-opacity:1"
-       x="59.220917"
-       y="269.05099"
+       x="59.421368"
+       y="268.98419"
        id="text3000-0-6-3"><tspan
          sodipodi:role="line"
          id="tspan2998-7-6-9"
-         x="59.220917"
-         y="269.05099"
+         x="59.421368"
+         y="268.98419"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:FreeMono;-inkscape-font-specification:FreeMono;fill:#1500e9;fill-opacity:1;stroke:none;stroke-width:0.26458332;stroke-opacity:1">+1</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.06973171px;line-height:1.25;font-family:'Samyak Malayalam';-inkscape-font-specification:'Samyak Malayalam';letter-spacing:0px;word-spacing:0px;fill:#1500e9;fill-opacity:1;stroke:none;stroke-width:0.26458332;stroke-opacity:1"
-       x="66.900169"
-       y="273.44473"
+       x="66.766533"
+       y="273.37793"
        id="text3000-0-6-9"><tspan
          sodipodi:role="line"
          id="tspan2998-7-6-5"
-         x="66.900169"
-         y="273.44473"
+         x="66.766533"
+         y="273.37793"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:FreeMono;-inkscape-font-specification:FreeMono;fill:#1500e9;fill-opacity:1;stroke:none;stroke-width:0.26458332;stroke-opacity:1">+1</tspan></text>
     <text
        xml:space="preserve"
@@ -1828,13 +1835,13 @@
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.06973171px;line-height:1.25;font-family:'Samyak Malayalam';-inkscape-font-specification:'Samyak Malayalam';letter-spacing:0px;word-spacing:0px;fill:#1500e9;fill-opacity:1;stroke:none;stroke-width:0.26458332;stroke-opacity:1"
-       x="30.021723"
-       y="252.07938"
+       x="29.687635"
+       y="251.74529"
        id="text3000-0-6-4"><tspan
          sodipodi:role="line"
          id="tspan2998-7-6-58"
-         x="30.021723"
-         y="252.07938"
+         x="29.687635"
+         y="251.74529"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:FreeMono;-inkscape-font-specification:FreeMono;fill:#1500e9;fill-opacity:1;stroke:none;stroke-width:0.26458332;stroke-opacity:1">+1</tspan></text>
     <text
        xml:space="preserve"
@@ -1894,35 +1901,35 @@
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.06973171px;line-height:1.25;font-family:'Samyak Malayalam';-inkscape-font-specification:'Samyak Malayalam';letter-spacing:0px;word-spacing:0px;fill:#1500e9;fill-opacity:1;stroke:none;stroke-width:0.26458332;stroke-opacity:1"
-       x="75.646759"
-       y="268.83673"
+       x="75.914032"
+       y="269.17081"
        id="text3000-0-6-5-0"><tspan
          sodipodi:role="line"
          id="tspan2998-7-6-7-33"
-         x="75.646759"
-         y="268.83673"
+         x="75.914032"
+         y="269.17081"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:FreeMono;-inkscape-font-specification:FreeMono;fill:#1500e9;fill-opacity:1;stroke:none;stroke-width:0.26458332;stroke-opacity:1">0</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.06973171px;line-height:1.25;font-family:'Samyak Malayalam';-inkscape-font-specification:'Samyak Malayalam';letter-spacing:0px;word-spacing:0px;fill:#1500e9;fill-opacity:1;stroke:none;stroke-width:0.26458332;stroke-opacity:1"
-       x="22.337723"
-       y="256.55615"
+       x="22.003635"
+       y="256.22208"
        id="text3000-0-6-4-6"><tspan
          sodipodi:role="line"
          id="tspan2998-7-6-58-1"
-         x="22.337723"
-         y="256.55615"
+         x="22.003635"
+         y="256.22208"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:FreeMono;-inkscape-font-specification:FreeMono;fill:#1500e9;fill-opacity:1;stroke:none;stroke-width:0.26458332;stroke-opacity:1">+2</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.06973171px;line-height:1.25;font-family:'Samyak Malayalam';-inkscape-font-specification:'Samyak Malayalam';letter-spacing:0px;word-spacing:0px;fill:#1500e9;fill-opacity:1;stroke:none;stroke-width:0.26458332;stroke-opacity:1"
-       x="29.500996"
-       y="260.64124"
+       x="29.367361"
+       y="260.70804"
        id="text3000-0-6-4-6-8"><tspan
          sodipodi:role="line"
          id="tspan2998-7-6-58-1-7"
-         x="29.500996"
-         y="260.64124"
+         x="29.367361"
+         y="260.70804"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:FreeMono;-inkscape-font-specification:FreeMono;fill:#1500e9;fill-opacity:1;stroke:none;stroke-width:0.26458332;stroke-opacity:1">+2</tspan></text>
     <text
        xml:space="preserve"
@@ -1949,13 +1956,13 @@
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.06973171px;line-height:1.25;font-family:'Samyak Malayalam';-inkscape-font-specification:'Samyak Malayalam';letter-spacing:0px;word-spacing:0px;fill:#1500e9;fill-opacity:1;stroke:none;stroke-width:0.26458332;stroke-opacity:1"
-       x="51.951637"
-       y="273.13608"
+       x="51.884819"
+       y="273.40335"
        id="text3000-0-6-4-6-03"><tspan
          sodipodi:role="line"
          id="tspan2998-7-6-58-1-0"
-         x="51.951637"
-         y="273.13608"
+         x="51.884819"
+         y="273.40335"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:FreeMono;-inkscape-font-specification:FreeMono;fill:#1500e9;fill-opacity:1;stroke:none;stroke-width:0.26458332;stroke-opacity:1">+2</tspan></text>
     <text
        xml:space="preserve"
@@ -1982,24 +1989,24 @@
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.06973171px;line-height:1.25;font-family:'Samyak Malayalam';-inkscape-font-specification:'Samyak Malayalam';letter-spacing:0px;word-spacing:0px;fill:#1500e9;fill-opacity:1;stroke:none;stroke-width:0.26458332;stroke-opacity:1"
-       x="21.950632"
+       x="22.01745"
        y="264.91751"
        id="text3000-0-6-4-6-9"><tspan
          sodipodi:role="line"
          id="tspan2998-7-6-58-1-9"
-         x="21.950632"
+         x="22.01745"
          y="264.91751"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:FreeMono;-inkscape-font-specification:FreeMono;fill:#1500e9;fill-opacity:1;stroke:none;stroke-width:0.26458332;stroke-opacity:1">+3</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.06973171px;line-height:1.25;font-family:'Samyak Malayalam';-inkscape-font-specification:'Samyak Malayalam';letter-spacing:0px;word-spacing:0px;fill:#1500e9;fill-opacity:1;stroke:none;stroke-width:0.26458332;stroke-opacity:1"
-       x="29.535582"
-       y="269.37128"
+       x="29.6024"
+       y="269.30447"
        id="text3000-0-6-4-6-9-9"><tspan
          sodipodi:role="line"
          id="tspan2998-7-6-58-1-9-4"
-         x="29.535582"
-         y="269.37128"
+         x="29.6024"
+         y="269.30447"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:FreeMono;-inkscape-font-specification:FreeMono;fill:#1500e9;fill-opacity:1;stroke:none;stroke-width:0.26458332;stroke-opacity:1">+3</tspan></text>
     <text
        xml:space="preserve"
@@ -2015,46 +2022,46 @@
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.06973171px;line-height:1.25;font-family:'Samyak Malayalam';-inkscape-font-specification:'Samyak Malayalam';letter-spacing:0px;word-spacing:0px;fill:#1500e9;fill-opacity:1;stroke:none;stroke-width:0.26458332;stroke-opacity:1"
-       x="44.168591"
-       y="277.93536"
+       x="44.369041"
+       y="277.86856"
        id="text3000-0-6-4-6-9-6"><tspan
          sodipodi:role="line"
          id="tspan2998-7-6-58-1-9-3"
-         x="44.168591"
-         y="277.93536"
+         x="44.369041"
+         y="277.86856"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:FreeMono;-inkscape-font-specification:FreeMono;fill:#1500e9;fill-opacity:1;stroke:none;stroke-width:0.26458332;stroke-opacity:1">+3</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.06973171px;line-height:1.25;font-family:'Samyak Malayalam';-inkscape-font-specification:'Samyak Malayalam';letter-spacing:0px;word-spacing:0px;fill:#1500e9;fill-opacity:1;stroke:none;stroke-width:0.26458332;stroke-opacity:1"
-       x="52.186676"
-       y="282.40067"
+       x="51.852589"
+       y="281.99976"
        id="text3000-0-6-4-6-9-93"><tspan
          sodipodi:role="line"
          id="tspan2998-7-6-58-1-9-34"
-         x="52.186676"
-         y="282.40067"
+         x="51.852589"
+         y="281.99976"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:FreeMono;-inkscape-font-specification:FreeMono;fill:#1500e9;fill-opacity:1;stroke:none;stroke-width:0.26458332;stroke-opacity:1">+3</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.06973171px;line-height:1.25;font-family:'Samyak Malayalam';-inkscape-font-specification:'Samyak Malayalam';letter-spacing:0px;word-spacing:0px;fill:#1500e9;fill-opacity:1;stroke:none;stroke-width:0.26458332;stroke-opacity:1"
-       x="36.991455"
-       y="282.21167"
+       x="36.857819"
+       y="282.01123"
        id="text3000-0-6-4-6-9-61"><tspan
          sodipodi:role="line"
          id="tspan2998-7-6-58-1-9-5"
-         x="36.991455"
-         y="282.21167"
+         x="36.857819"
+         y="282.01123"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:FreeMono;-inkscape-font-specification:FreeMono;fill:#1500e9;fill-opacity:1;stroke:none;stroke-width:0.26458332;stroke-opacity:1">+4</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.06973171px;line-height:1.25;font-family:'Samyak Malayalam';-inkscape-font-specification:'Samyak Malayalam';letter-spacing:0px;word-spacing:0px;fill:#1500e9;fill-opacity:1;stroke:none;stroke-width:0.26458332;stroke-opacity:1"
-       x="44.601727"
-       y="286.41125"
+       x="44.334457"
+       y="286.21082"
        id="text3000-0-6-4-6-9-61-6"><tspan
          sodipodi:role="line"
          id="tspan2998-7-6-58-1-9-5-1"
-         x="44.601727"
-         y="286.41125"
+         x="44.334457"
+         y="286.21082"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:FreeMono;-inkscape-font-specification:FreeMono;fill:#1500e9;fill-opacity:1;stroke:none;stroke-width:0.26458332;stroke-opacity:1">+4</tspan></text>
     <text
        xml:space="preserve"
@@ -2081,13 +2088,13 @@
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.06973171px;line-height:1.25;font-family:'Samyak Malayalam';-inkscape-font-specification:'Samyak Malayalam';letter-spacing:0px;word-spacing:0px;fill:#1500e9;fill-opacity:1;stroke:none;stroke-width:0.26458332;stroke-opacity:1"
-       x="44.693333"
-       y="243.23337"
+       x="44.826969"
+       y="243.50064"
        id="text3000-0-6-4-7-28"><tspan
          sodipodi:role="line"
          id="tspan2998-7-6-58-2-1"
-         x="44.693333"
-         y="243.23337"
+         x="44.826969"
+         y="243.50064"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:FreeMono;-inkscape-font-specification:FreeMono;fill:#1500e9;fill-opacity:1;stroke:none;stroke-width:0.26458332;stroke-opacity:1">-1</tspan></text>
     <text
        xml:space="preserve"
@@ -2268,23 +2275,23 @@
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.06973171px;line-height:1.25;font-family:'Samyak Malayalam';-inkscape-font-specification:'Samyak Malayalam';letter-spacing:0px;word-spacing:0px;fill:#1500e9;fill-opacity:1;stroke:none;stroke-width:0.26458332;stroke-opacity:1"
-       x="66.85334"
-       y="230.67952"
+       x="66.519257"
+       y="230.27861"
        id="text3000-0-6-4-7-5-9-3"><tspan
          sodipodi:role="line"
          id="tspan2998-7-6-58-2-3-80-9"
-         x="66.85334"
-         y="230.67952"
+         x="66.519257"
+         y="230.27861"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:FreeMono;-inkscape-font-specification:FreeMono;fill:#1500e9;fill-opacity:1;stroke:none;stroke-width:0.26458332;stroke-opacity:1">-4</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.06973171px;line-height:1.25;font-family:'Samyak Malayalam';-inkscape-font-specification:'Samyak Malayalam';letter-spacing:0px;word-spacing:0px;fill:#1500e9;fill-opacity:1;stroke:none;stroke-width:0.26458332;stroke-opacity:1"
-       x="59.243019"
+       x="58.97575"
        y="226.06232"
        id="text3000-0-6-4-7-5-9-3-0"><tspan
          sodipodi:role="line"
          id="tspan2998-7-6-58-2-3-80-9-8"
-         x="59.243019"
+         x="58.97575"
          y="226.06232"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:FreeMono;-inkscape-font-specification:FreeMono;fill:#1500e9;fill-opacity:1;stroke:none;stroke-width:0.26458332;stroke-opacity:1">-4</tspan></text>
     <text
@@ -2477,13 +2484,13 @@
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.06973171px;line-height:1.25;font-family:'Samyak Malayalam';-inkscape-font-specification:'Samyak Malayalam';letter-spacing:0px;word-spacing:0px;fill:#ff19ee;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-       x="50.281204"
-       y="276.54376"
+       x="50.013935"
+       y="277.27875"
        id="text3000-7-3-79-94-5"><tspan
          sodipodi:role="line"
          id="tspan2998-76-8-10-99-95"
-         x="50.281204"
-         y="276.54376"
+         x="50.013935"
+         y="277.27875"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:FreeMono;-inkscape-font-specification:FreeMono;fill:#ff19ee;fill-opacity:1;stroke:none;stroke-width:0.26458332;stroke-opacity:1">-2</tspan></text>
     <text
        xml:space="preserve"
@@ -2511,12 +2518,12 @@
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.06973171px;line-height:1.25;font-family:'Samyak Malayalam';-inkscape-font-specification:'Samyak Malayalam';letter-spacing:0px;word-spacing:0px;fill:#ff19ee;fill-opacity:1;stroke:none;stroke-width:0.26458332"
        x="72.464577"
-       y="272.40109"
+       y="272.60153"
        id="text3000-7-3-79-94-7"><tspan
          sodipodi:role="line"
          id="tspan2998-76-8-10-99-27"
          x="72.464577"
-         y="272.40109"
+         y="272.60153"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:FreeMono;-inkscape-font-specification:FreeMono;fill:#ff19ee;fill-opacity:1;stroke:none;stroke-width:0.26458332;stroke-opacity:1">-3</tspan></text>
     <text
        xml:space="preserve"
@@ -2543,24 +2550,24 @@
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.06973171px;line-height:1.25;font-family:'Samyak Malayalam';-inkscape-font-specification:'Samyak Malayalam';letter-spacing:0px;word-spacing:0px;fill:#ff19ee;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-       x="50.315788"
-       y="285.207"
+       x="50.182152"
+       y="285.54108"
        id="text3000-7-3-79-94-7-4"><tspan
          sodipodi:role="line"
          id="tspan2998-76-8-10-99-27-4"
-         x="50.315788"
-         y="285.207"
+         x="50.182152"
+         y="285.54108"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:FreeMono;-inkscape-font-specification:FreeMono;fill:#ff19ee;fill-opacity:1;stroke:none;stroke-width:0.26458332;stroke-opacity:1">-3</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.06973171px;line-height:1.25;font-family:'Samyak Malayalam';-inkscape-font-specification:'Samyak Malayalam';letter-spacing:0px;word-spacing:0px;fill:#ff19ee;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-       x="42.431339"
-       y="289.88422"
+       x="42.564976"
+       y="290.01785"
        id="text3000-7-3-79-94-7-49"><tspan
          sodipodi:role="line"
          id="tspan2998-76-8-10-99-27-9"
-         x="42.431339"
-         y="289.88422"
+         x="42.564976"
+         y="290.01785"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:FreeMono;-inkscape-font-specification:FreeMono;fill:#ff19ee;fill-opacity:1;stroke:none;stroke-width:0.26458332;stroke-opacity:1">-3</tspan></text>
     <text
        xml:space="preserve"
@@ -2687,12 +2694,12 @@
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.06973171px;line-height:1.25;font-family:'Samyak Malayalam';-inkscape-font-specification:'Samyak Malayalam';letter-spacing:0px;word-spacing:0px;fill:#ff19ee;fill-opacity:1;stroke:none;stroke-width:0.26458332"
        x="35.247292"
-       y="251.28679"
+       y="251.42043"
        id="text3000-7-3-79-94-7-38-4-4-3"><tspan
          sodipodi:role="line"
          id="tspan2998-76-8-10-99-27-32-3-1-6"
          x="35.247292"
-         y="251.28679"
+         y="251.42043"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:FreeMono;-inkscape-font-specification:FreeMono;fill:#ff19ee;fill-opacity:1;stroke:none;stroke-width:0.26458332;stroke-opacity:1">+2</tspan></text>
     <text
        xml:space="preserve"
@@ -2719,24 +2726,24 @@
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.06973171px;line-height:1.25;font-family:'Samyak Malayalam';-inkscape-font-specification:'Samyak Malayalam';letter-spacing:0px;word-spacing:0px;fill:#ff19ee;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-       x="57.965202"
-       y="238.45786"
+       x="57.297028"
+       y="238.72513"
        id="text3000-7-3-79-94-7-38-4-4-9"><tspan
          sodipodi:role="line"
          id="tspan2998-76-8-10-99-27-32-3-1-18"
-         x="57.965202"
-         y="238.45786"
+         x="57.297028"
+         y="238.72513"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:FreeMono;-inkscape-font-specification:FreeMono;fill:#ff19ee;fill-opacity:1;stroke:none;stroke-width:0.26458332;stroke-opacity:1">+2</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.06973171px;line-height:1.25;font-family:'Samyak Malayalam';-inkscape-font-specification:'Samyak Malayalam';letter-spacing:0px;word-spacing:0px;fill:#ff19ee;fill-opacity:1;stroke:none;stroke-width:0.26458332"
        x="64.780571"
-       y="234.38199"
+       y="234.51562"
        id="text3000-7-3-79-94-7-38-4-4-8"><tspan
          sodipodi:role="line"
          id="tspan2998-76-8-10-99-27-32-3-1-7"
          x="64.780571"
-         y="234.38199"
+         y="234.51562"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:FreeMono;-inkscape-font-specification:FreeMono;fill:#ff19ee;fill-opacity:1;stroke:none;stroke-width:0.26458332;stroke-opacity:1">+2</tspan></text>
     <text
        xml:space="preserve"
