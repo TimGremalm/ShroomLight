@@ -17,7 +17,7 @@
 #include "ota.h"
 #include "settings.h"
 
-static const char *TAG = "Shroom Listener";
+static const char *TAG = "Listener";
 ip_addr_t multiaddr;
 struct netconn *conn;
 uint8_t mac[6];
@@ -90,6 +90,8 @@ void shroomlistenertask(void *pvParameters) {
 		int32_t argY;
 		int32_t argZ;
 		char argURL[100];
+		int argHops;
+		int argWaveGeneration;
 
 		//Parse argments
 		int sepCounter = 0;
@@ -128,7 +130,8 @@ void shroomlistenertask(void *pvParameters) {
 				if (strncmp(argCommand, "SOTA", 4) == 0 ||
 					strncmp(argCommand, "LIGHTMODE", 9) == 0 ||
 					strncmp(argCommand, "TRIGGER", 7) == 0 ||
-					strncmp(argCommand, "SETGRID", 7) == 0) {
+					strncmp(argCommand, "SETGRID", 7) == 0 ||
+					strncmp(argCommand, "SHROOM", 6) == 0) {
 					memset(argMac, 0, sizeof(argMac));
 					memcpy(argMac, argMessage, argLength);
 				}
@@ -145,16 +148,35 @@ void shroomlistenertask(void *pvParameters) {
 					strncmp(argCommand, "SETGRID", 7) == 0) {
 					argX = atoi(argMessage);
 				}
+				if (strncmp(argCommand, "SHROOM", 6) == 0) {
+					argHops = atoi(argMessage);
+				}
 			}
 			if (sepCounter == 4) {
 				if (strncmp(argCommand, "TRIGGER", 7) == 0 ||
 					strncmp(argCommand, "SETGRID", 7) == 0) {
 					argY = atoi(argMessage);
 				}
+				if (strncmp(argCommand, "SHROOM", 6) == 0) {
+					argWaveGeneration = atoi(argMessage);
+				}
 			}
 			if (sepCounter == 5) {
 				if (strncmp(argCommand, "TRIGGER", 7) == 0 ||
 					strncmp(argCommand, "SETGRID", 7) == 0) {
+					argZ = atoi(argMessage);
+				}
+				if (strncmp(argCommand, "SHROOM", 6) == 0) {
+					argX = atoi(argMessage);
+				}
+			}
+			if (sepCounter == 7) {
+				if (strncmp(argCommand, "SHROOM", 6) == 0) {
+					argY = atoi(argMessage);
+				}
+			}
+			if (sepCounter == 6) {
+				if (strncmp(argCommand, "SHROOM", 6) == 0) {
 					argZ = atoi(argMessage);
 				}
 			}
@@ -208,6 +230,13 @@ void shroomlistenertask(void *pvParameters) {
 				} else {
 					ESP_LOGI(TAG, "Specific MAC not me");
 				}
+			}
+		}
+		if (strncmp(argCommand, "SHROOM", 6) == 0) {
+			if (sepCounter != 7) {
+				ESP_LOGE(TAG, "SETGRID takes 6 arguments, got %d", sepCounter-1);
+			} else {
+				ESP_LOGI(TAG, "Wave orig %s, %d hops, wave generation %d, %d %d %d", argMac, argHops, argWaveGeneration, argX, argY, argZ);
 			}
 		}
 		if (strncmp(argCommand, "SETGRID", 7) == 0) {

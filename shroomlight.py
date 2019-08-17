@@ -159,7 +159,7 @@ def commandUsage():
 	print("l MAC Mode         - Set light mode")
 	print("t MAC              - Trigger shroom")
 	print("x MAC X Y Z        - Set shroom grid address")
-	print("q MAC hops wavegen - Set shroom grid address")
+	print("w MAC hops wavegen - Set shroom grid address")
 
 def parseArgs():
 	try:
@@ -258,7 +258,7 @@ if __name__ == '__main__':
 			z = int(args[4])
 			print('Set shroom %s grid to %d %d %d' % (res[0], x, y, z))
 			shroomcommander.setgridaddress(res[0], x, y, z)
-		elif s.startswith('q') and len(args) == 4:
+		elif s.startswith('w') and len(args) == 4:
 			res = shroomcommander.findMac(args[1])
 			if len(res) == 0:
 				print('No MAC address found by %s' % args[1])
