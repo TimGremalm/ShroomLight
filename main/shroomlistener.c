@@ -16,6 +16,7 @@
 #include "version.h"
 #include "ota.h"
 #include "settings.h"
+#include "light.h"
 
 static const char *TAG = "Listener";
 ip_addr_t multiaddr;
@@ -216,6 +217,13 @@ void shroomlistenertask(void *pvParameters) {
 			} else {
 				if (strncmp(argMac, macstring, 12) == 0) {
 					ESP_LOGI(TAG, "Light Mode for: %s Mode: %d", argMac, argLightMode);
+					setShroomLightState(0, argLightMode);
+					setShroomLightState(1, argLightMode);
+					setShroomLightState(2, argLightMode);
+					setShroomLightState(3, argLightMode);
+					setShroomLightState(4, argLightMode);
+					setShroomLightState(5, argLightMode);
+					setShroomLightState(6, argLightMode);
 				} else {
 					ESP_LOGI(TAG, "Specific MAC not me");
 				}
