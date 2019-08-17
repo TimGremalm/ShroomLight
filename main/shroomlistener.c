@@ -15,6 +15,7 @@
 
 #include "version.h"
 #include "ota.h"
+#include "settings.h"
 
 static const char *TAG = "Shroom Listener";
 ip_addr_t multiaddr;
@@ -65,6 +66,8 @@ void shroomlistenertask(void *pvParameters) {
 		ESP_LOGE(TAG, "Join Multicast Group. err=%d", err);
 		return;
 	}
+
+	LoadSettings();
 
 	shroom_send_info();
 	ESP_LOGI(TAG, "Listening for connections");
@@ -213,6 +216,10 @@ void shroomlistenertask(void *pvParameters) {
 			} else {
 				if (strncmp(argMac, macstring, 12) == 0) {
 					ESP_LOGI(TAG, "Set grid on %s to X: %d Y: %d Z: %d", argMac, argX, argY, argZ);
+					settings.gridX = (uint8_t)argX;
+					settings.gridY = (uint8_t)argY;
+					settings.gridZ = (uint8_t)argZ;
+					SaveSettings();
 				} else {
 					ESP_LOGI(TAG, "Specific MAC not me");
 				}
@@ -225,7 +232,7 @@ void shroomlistenertask(void *pvParameters) {
 void shroom_send_info() {
 	char sbuf[100] = {0};
 	//Report MAC address, version and physical grid address
-	sprintf(sbuf, "Shroom %02x%02x%02x%02x%02x%02x Version %d Grid %d %d %d", mac[0], mac[1], mac[2], mac[3], mac[4], mac[5], version, 0, 0, 0);
+	sprintf(sbuf, "Shroom %02x%02x%02x%02x%02x%02x Version %d Grid %d %d %d", mac[0], mac[1], mac[2], mac[3], mac[4], mac[5], version, settings.gridX, settings.gridY, settings.gridZ);
 	shroom_send(sbuf);
 }
 
