@@ -60,3 +60,6 @@ build
 sdkconfig
 sdkconfig.old
 
+# Version number
+main/version.h
+
