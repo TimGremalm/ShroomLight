@@ -105,6 +105,10 @@ class ShroomLights:
 		out = 'SETGRID %s %d %d %d' % (mac, x, y, z)
 		self.sock.sendto(out.encode(), self.sending_multicast_group)
 
+	def shroomwave(self, mac, hops, wavegeneration, x, y, z):
+		out = 'SHROOM %s %d %d %d %d %d' % (mac, hops, wavegeneration, x, y, z)
+		self.sock.sendto(out.encode(), self.sending_multicast_group)
+
 	def otaspecific(self, mac):
 		out = 'SOTA %s %s' % (mac, self.getHttpBuild())
 		self.sock.sendto(out.encode(), self.sending_multicast_group)
@@ -146,15 +150,16 @@ def usage():
 	print ("--help : shows this help")
 
 def commandUsage():
-	print("q           - Exit this command")
-	print("i           - Report MAC, version and physical grid address")
-	print("r           - Restart shrooms")
-	print("o           - Do a OTA (Over the air upgrade)")
-	print("c           - Do a OTA for detected units one at a time")
-	print("s MAC       - Do a OTA on a specific ShroomLight")
-	print("l MAC Mode  - Set light mode")
-	print("t MAC       - Trigger shroom")
-	print("x MAC X Y Z - Set shroom grid address")
+	print("q                  - Exit this command")
+	print("i                  - Report MAC, version and physical grid address")
+	print("r                  - Restart shrooms")
+	print("o                  - Do a OTA (Over the air upgrade)")
+	print("c                  - Do a OTA for detected units one at a time")
+	print("s MAC              - Do a OTA on a specific ShroomLight")
+	print("l MAC Mode         - Set light mode")
+	print("t MAC              - Trigger shroom")
+	print("x MAC X Y Z        - Set shroom grid address")
+	print("q MAC hops wavegen - Set shroom grid address")
 
 def parseArgs():
 	try:
@@ -253,6 +258,21 @@ if __name__ == '__main__':
 			z = int(args[4])
 			print('Set shroom %s grid to %d %d %d' % (res[0], x, y, z))
 			shroomcommander.setgridaddress(res[0], x, y, z)
+		elif s.startswith('q') and len(args) == 4:
+			res = shroomcommander.findMac(args[1])
+			if len(res) == 0:
+				print('No MAC address found by %s' % args[1])
+				continue
+			if len(res) > 1:
+				print('%s matced too many MAC addresses %s' % (args[1], res))
+				continue
+			hops = int(args[2])
+			wavegeneration = int(args[3])
+			x = shroomcommander.shrooms[res[0]].gridx
+			y = shroomcommander.shrooms[res[0]].gridy
+			z = shroomcommander.shrooms[res[0]].gridz
+			print('Shroom Wave %s Hops %d Wavegeneration %d %d %d %d' % (res[0], hops, wavegeneration, x, y, z))
+			shroomcommander.shroomwave(res[0], hops, wavegeneration, x, y, z)
 		elif s == 'q':
 			print('Exit')
 			shroomcommander.stop()
