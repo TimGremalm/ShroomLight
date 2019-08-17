@@ -7,3 +7,10 @@ PROJECT_NAME := shroomlight
 
 include $(IDF_PATH)/make/project.mk
 
+incrementversion:
+	@echo Increment version
+	$$(./incrementversion.sh)
+
+# Hook on an early target and increment version
+check_python_dependencies: incrementversion
+
