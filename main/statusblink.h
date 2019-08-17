@@ -1,3 +1,6 @@
+#ifndef STATUSBLINK_H
+#define STATUSBLINK_H
+
 #define BLINK_GPIO 16
 
 enum BLINKSTATE {
@@ -13,4 +16,6 @@ typedef struct {
 
 void statusblinktask(void *pvParameters);
 void setblinkstate(enum BLINKSTATE state);
+
+#endif /* STATUSBLINK_H */
 
