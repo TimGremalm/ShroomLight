@@ -4,9 +4,9 @@
 #include <stdint.h>
 
 typedef struct {
-	uint8_t gridX;
-	uint8_t gridY;
-	uint8_t gridZ;
+	int32_t gridX;
+	int32_t gridY;
+	int32_t gridZ;
 } settings_t;
 
 settings_t settings;

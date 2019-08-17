@@ -86,9 +86,9 @@ void shroomlistenertask(void *pvParameters) {
 		char argCommand[50];
 		char argMac[13];
 		int argLightMode;
-		int argX;
-		int argY;
-		int argZ;
+		int32_t argX;
+		int32_t argY;
+		int32_t argZ;
 		char argURL[100];
 
 		//Parse argments
@@ -216,9 +216,9 @@ void shroomlistenertask(void *pvParameters) {
 			} else {
 				if (strncmp(argMac, macstring, 12) == 0) {
 					ESP_LOGI(TAG, "Set grid on %s to X: %d Y: %d Z: %d", argMac, argX, argY, argZ);
-					settings.gridX = (uint8_t)argX;
-					settings.gridY = (uint8_t)argY;
-					settings.gridZ = (uint8_t)argZ;
+					settings.gridX = argX;
+					settings.gridY = argY;
+					settings.gridZ = argZ;
 					SaveSettings();
 				} else {
 					ESP_LOGI(TAG, "Specific MAC not me");

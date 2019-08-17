@@ -27,8 +27,8 @@ void LoadSettings() {
 	if (err != ESP_OK) {
 		ESP_LOGE(TAG, "Error %s opening NVS handle", esp_err_to_name(err));
 	} else {
-		uint8_t temp = 0;
-		err = nvs_get_u8(load_handle, "gridx", &temp);
+		int32_t temp = 0;
+		err = nvs_get_i32(load_handle, "gridx", &temp);
 		switch (err) {
 			case ESP_OK:
 				settings.gridX = temp;
@@ -39,7 +39,7 @@ void LoadSettings() {
 			default:
 				ESP_LOGE(TAG, "Error %s reading gridX", esp_err_to_name(err));
 		}
-		err = nvs_get_u8(load_handle, "gridy", &temp);
+		err = nvs_get_i32(load_handle, "gridy", &temp);
 		switch (err) {
 			case ESP_OK:
 				settings.gridY = temp;
@@ -50,7 +50,7 @@ void LoadSettings() {
 			default:
 				ESP_LOGE(TAG, "Error %s reading gridY", esp_err_to_name(err));
 		}
-		err = nvs_get_u8(load_handle, "gridz", &temp);
+		err = nvs_get_i32(load_handle, "gridz", &temp);
 		switch (err) {
 			case ESP_OK:
 				settings.gridZ = temp;
@@ -82,19 +82,19 @@ void SaveSettings() {
 	if (err != ESP_OK) {
 		ESP_LOGE(TAG, "Error %s opening NVS handle", esp_err_to_name(err));
 	} else {
-		uint8_t temp = 0;
+		int32_t temp = 0;
 		temp = settings.gridX;
-		err = nvs_set_u8(save_handle, "gridx", temp);
+		err = nvs_set_i32(save_handle, "gridx", temp);
 		if (err != ESP_OK) {
 			ESP_LOGE(TAG, "Error %s saving gridX", esp_err_to_name(err));
 		}
 		temp = settings.gridY;
-		err = nvs_set_u8(save_handle, "gridy", temp);
+		err = nvs_set_i32(save_handle, "gridy", temp);
 		if (err != ESP_OK) {
 			ESP_LOGE(TAG, "Error %s saving gridY", esp_err_to_name(err));
 		}
 		temp = settings.gridZ;
-		err = nvs_set_u8(save_handle, "gridz", temp);
+		err = nvs_set_i32(save_handle, "gridz", temp);
 		if (err != ESP_OK) {
 			ESP_LOGE(TAG, "Error %s saving gridZ", esp_err_to_name(err));
 		}
