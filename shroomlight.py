@@ -159,7 +159,7 @@ def commandUsage():
 	print("l MAC Mode         - Set light mode")
 	print("t MAC              - Trigger shroom")
 	print("x MAC X Y Z        - Set shroom grid address")
-	print("w MAC hops wavegen - Set shroom grid address")
+	print("w MAC hops wavegen - Send light wave")
 
 def parseArgs():
 	try:

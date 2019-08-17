@@ -37,6 +37,27 @@ int indexOf(char * str, char toFind) {
 	return -1;
 }
 
+#define MIN(X, Y) (((X) < (Y)) ? (X) : (Y))
+#define max(a,b) \
+	({ __typeof__ (a) _a = (a); \
+	__typeof__ (b) _b = (b); \
+	_a > _b ? _a : _b; })
+
+
+int closestDistanceToShroomWaves(int x, int y, int z) {
+	int deltax = settings.gridX - x;
+	deltax = abs(deltax);
+	int deltay = settings.gridY - y;
+	deltay = abs(deltay);
+	int deltaz = settings.gridZ - z;
+	deltaz = abs(deltaz);
+	
+	int smallestDistance = max(deltax, deltay);
+	smallestDistance = max(smallestDistance, deltaz);
+	ESP_LOGI(TAG, "Smallest %d", smallestDistance);
+	return smallestDistance;
+}
+
 void shroomlistenertask(void *pvParameters) {
 	shroomlistener_config_t listener_config = *(shroomlistener_config_t *) pvParameters;
 
@@ -45,6 +66,7 @@ void shroomlistenertask(void *pvParameters) {
 	err_t err;
 	esp_read_mac(mac, ESP_MAC_WIFI_STA);
 	sprintf(macstring, "%02x%02x%02x%02x%02x%02x", mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
+	ESP_LOGI(TAG, "Mac: %s", macstring);
 
 	/* Create a new connection handle */
 	conn = netconn_new(NETCONN_UDP);
@@ -245,6 +267,7 @@ void shroomlistenertask(void *pvParameters) {
 				ESP_LOGE(TAG, "SETGRID takes 6 arguments, got %d", sepCounter-1);
 			} else {
 				ESP_LOGI(TAG, "Wave orig %s, %d hops, wave generation %d, %d %d %d", argMac, argHops, argWaveGeneration, argX, argY, argZ);
+				int smallest = closestDistanceToShroomWaves(argX, argY, argZ);
 			}
 		}
 		if (strncmp(argCommand, "SETGRID", 7) == 0) {

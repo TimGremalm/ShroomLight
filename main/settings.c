@@ -21,7 +21,6 @@ void LoadSettings() {
 	}
 	ESP_ERROR_CHECK(err);
 
-	printf("Opening Non-Volatile Storage (NVS) handle...\n");
 	nvs_handle load_handle;
 	err = nvs_open("storage", NVS_READWRITE, &load_handle);
 	if (err != ESP_OK) {
@@ -76,7 +75,6 @@ void SaveSettings() {
 	}
 	ESP_ERROR_CHECK(err);
 
-	printf("Opening Non-Volatile Storage (NVS) handle...\n");
 	nvs_handle save_handle;
 	err = nvs_open("storage", NVS_READWRITE, &save_handle);
 	if (err != ESP_OK) {
