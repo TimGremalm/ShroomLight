@@ -4,8 +4,11 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include <driver/gpio.h>
+#include <stdint.h>
+#include <string.h>
 
 #include "apa106.h"
+#include "shroomlistener.h"
 
 #define APA106_PIN		19
 #define LED_NUM			7
@@ -16,6 +19,54 @@ uint8_t color[7] = {0};
 int breathecycle[7];
 int wavecycle[7];
 
+trigger_t triggers[7];
+
+void sendTrigger(int shroomnr, char macorigin[12], int hops, int wavegen, int x, int y, int z ) {
+	ESP_LOGI(TAG, "Send Trigger to %d", shroomnr);
+	triggers[shroomnr].arrived = xTaskGetTickCount();
+	triggers[shroomnr].shroomnr = shroomnr;
+	memcpy(triggers[shroomnr].macorigin, macorigin, 12);
+	triggers[shroomnr].hops = hops;
+	triggers[shroomnr].x = x;
+	triggers[shroomnr].y = y;
+	triggers[shroomnr].z = z;
+	//Any triggers from before, if there is; upgrade wave generation
+	if (triggers[shroomnr].macorigin[0] != 0 &&
+			strncmp(triggers[shroomnr].macorigin, macorigin, 12) != 0) {
+		triggers[shroomnr].wavegen += 1;
+	} else {
+		triggers[shroomnr].wavegen = wavegen;
+	}
+}
+
+void checkTriggers() {
+	int delta;
+	for (int i = 0; i < 7; i++) {
+		if (triggers[i].macorigin[0] != 0) {
+			delta = xTaskGetTickCount() - triggers[i].arrived;
+			delta = delta * portTICK_PERIOD_MS;
+			//Throw away if too many hops
+			if (triggers[i].hops > 30) {
+				memset(triggers[i].macorigin, 0, 12);
+			}
+			//After 500ms, trigger the shroom, send message
+			if (delta > 1000) {
+				if (triggers[i].wavegen == 1) {
+					setShroomLightState(i, LIGHTSTATE_WaveLight);
+				} else if (triggers[i].wavegen == 2) {
+					setShroomLightState(i, LIGHTSTATE_WaveMedium);
+				} else if (triggers[i].wavegen > 2) {
+					setShroomLightState(i, LIGHTSTATE_WaveHard);
+				}
+				//Send shroom message, echo it forward from a new address
+				sendShroomWave(i, triggers[i].macorigin, triggers[i].hops + 1, triggers[i].wavegen);
+				//Remove trigger
+				memset(triggers[i].macorigin, 0, 12);
+			}
+		}
+	}
+}
+
 void lighttask(void *pvParameters) {
 	ESP_LOGI(TAG, "Light init");
 	gpio_reset_pin(APA106_PIN);
@@ -24,13 +75,13 @@ void lighttask(void *pvParameters) {
 	apa106_init(APA106_PIN);
 	rgbVal *pixels;
 	pixels = malloc(sizeof(rgbVal) * LED_NUM);
-	state[0] = LIGHTSTATE_Off;
-	state[1] = LIGHTSTATE_WaveLight;
-	state[2] = LIGHTSTATE_Off;
-	state[3] = LIGHTSTATE_Off;
-	state[4] = LIGHTSTATE_Off;
-	state[5] = LIGHTSTATE_Off;
-	state[6] = LIGHTSTATE_Off;
+	state[0] = LIGHTSTATE_Idle;
+	state[1] = LIGHTSTATE_Idle;
+	state[2] = LIGHTSTATE_Idle;
+	state[3] = LIGHTSTATE_Idle;
+	state[4] = LIGHTSTATE_Idle;
+	state[5] = LIGHTSTATE_Idle;
+	state[6] = LIGHTSTATE_Idle;
 
 	const int breathetime = 170;
 	const int wavelighttime = 120;
@@ -44,6 +95,7 @@ void lighttask(void *pvParameters) {
 	}
 	hsvVal hsv;
 	while(1) {
+		checkTriggers();
 		//Go through each of the 7 shrooms
 		for( int shroomid = 0; shroomid < 7; shroomid++) {
 			switch(state[shroomid]) {

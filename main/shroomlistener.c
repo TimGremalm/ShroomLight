@@ -23,6 +23,40 @@ ip_addr_t multiaddr;
 struct netconn *conn;
 uint8_t mac[6];
 char macstring[12];
+int shroomsx[7];
+int shroomsy[7];
+int shroomsz[7];
+
+void calculateShroomCoordinates() {
+	//Calculate adresses
+	shroomsx[0] = settings.gridX;
+	shroomsy[0] = settings.gridY;
+	shroomsz[0] = settings.gridZ;
+
+	shroomsx[1] = settings.gridX+0;
+	shroomsy[1] = settings.gridY+1;
+	shroomsz[1] = settings.gridZ-1;
+
+	shroomsx[2] = settings.gridX+1;
+	shroomsy[2] = settings.gridY+0;
+	shroomsz[2] = settings.gridZ-1;
+
+	shroomsx[3] = settings.gridX+1;
+	shroomsy[3] = settings.gridY-1;
+	shroomsz[3] = settings.gridZ+0;
+
+	shroomsx[4] = settings.gridX+0;
+	shroomsy[4] = settings.gridY-1;
+	shroomsz[4] = settings.gridZ+1;
+
+	shroomsx[5] = settings.gridX-1;
+	shroomsy[5] = settings.gridY+0;
+	shroomsz[5] = settings.gridZ+1;
+
+	shroomsx[6] = settings.gridX-1;
+	shroomsy[6] = settings.gridY+1;
+	shroomsz[6] = settings.gridZ+0;
+}
 
 int indexOf(char * str, char toFind) {
 	int i = 0;
@@ -91,6 +125,7 @@ void shroomlistenertask(void *pvParameters) {
 	}
 
 	LoadSettings();
+	calculateShroomCoordinates();
 
 	shroom_send_info();
 	ESP_LOGI(TAG, "Listening for connections");
@@ -267,7 +302,14 @@ void shroomlistenertask(void *pvParameters) {
 				ESP_LOGE(TAG, "SETGRID takes 6 arguments, got %d", sepCounter-1);
 			} else {
 				ESP_LOGI(TAG, "Wave orig %s, %d hops, wave generation %d, %d %d %d", argMac, argHops, argWaveGeneration, argX, argY, argZ);
-				int smallest = closestDistanceToShroomWaves(argX, argY, argZ);
+				int smallest;
+				for (int i = 0; i < 7; i++) {
+					smallest = closestDistanceToShroomWaves(shroomsx[i], shroomsy[i], shroomsz[i]);
+					//This shroom is a neighbor, trigger
+					if (smallest == 1) {
+						sendTrigger(i, argMac, argHops, argWaveGeneration, argX, argY, argZ);
+					}
+				}
 			}
 		}
 		if (strncmp(argCommand, "SETGRID", 7) == 0) {
@@ -280,6 +322,7 @@ void shroomlistenertask(void *pvParameters) {
 					settings.gridY = argY;
 					settings.gridZ = argZ;
 					SaveSettings();
+					calculateShroomCoordinates();
 				} else {
 					ESP_LOGI(TAG, "Specific MAC not me");
 				}
@@ -287,6 +330,12 @@ void shroomlistenertask(void *pvParameters) {
 		}
 		netbuf_delete(buf);
 	}
+}
+
+void sendShroomWave(int shroomnr, char macorigin[12], int hops, int wavegen) {
+	char sbuf[100] = {0};
+	sprintf(sbuf, "SHROOM %s %d %d %d %d %d", macorigin, hops, wavegen, shroomsx[shroomnr], shroomsy[shroomnr], shroomsz[shroomnr]);
+	shroom_send(sbuf);
 }
 
 void shroom_send_info() {
