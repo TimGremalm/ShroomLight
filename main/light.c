@@ -9,6 +9,7 @@
 
 #include "apa106.h"
 #include "shroomlistener.h"
+#include "coordinates.h"
 
 #define APA106_PIN		19
 #define LED_NUM			7
@@ -42,10 +43,10 @@ uint32_t isUniueHandeledBefore(int shroomnr, uint32_t uniqueorigin) {
 }
 
 void sendTrigger(int shroomnr, char macorigin[12], int hops, int wavegen, int x, int y, int z, uint32_t uniqueorigin) {
-	ESP_LOGI(TAG, "Send Trigger to %d", shroomnr);
+	//ESP_LOGI(TAG, "Send Trigger to %d", shroomnr);
 	//If the same wave returns, ignore it
 	if (isUniueHandeledBefore(shroomnr, uniqueorigin) != 0) {
-		ESP_LOGI(TAG, "Wave %d handeled before, ignore", uniqueorigin);
+		//ESP_LOGI(TAG, "Wave %d handeled before, ignore", uniqueorigin);
 		return;
 	}
 	triggers[shroomnr].arrived = xTaskGetTickCount();
@@ -88,6 +89,15 @@ void checkTriggers() {
 				}
 				//Send shroom message, echo it forward from a new address
 				sendShroomWave(i, triggers[i].macorigin, triggers[i].hops + 1, triggers[i].wavegen, triggers[i].uniqueorigin);
+				//Send trigger to own shrooms on unit, because unit won't catch own multicast send
+				for (int j = 0; j < 7; j++) {
+					int smallest;
+					smallest = closestDistanceToShroomWaves(i, shroomsx[j], shroomsy[j], shroomsz[j]);
+					//This shroom is a neighbor, trigger
+					if (smallest == 1) {
+						sendTrigger(j, triggers[i].macorigin, triggers[i].hops + 1, triggers[i].wavegen, shroomsx[j], shroomsy[j], shroomsz[j], triggers[i].uniqueorigin);
+					}
+				}
 				//Remove trigger
 				memset(triggers[i].macorigin, 0, 12);
 			}
