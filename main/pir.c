@@ -6,6 +6,7 @@
 #include <driver/gpio.h>
 
 #include "statusblink.h"
+#include "light.h"
 
 #define PIR_PIN			27
 
@@ -24,6 +25,7 @@ void pirtask(void *pvParameters) {
 			if (pirState == 1) {
 				ESP_LOGI(TAG, "Pir Sens On");
 				setblinkstate(BLINKSTATE_Detect);
+				sendPirTrigger();
 			} else {
 				ESP_LOGI(TAG, "Pir Sens Off");
 				setblinkstate(BLINKSTATE_Idle);

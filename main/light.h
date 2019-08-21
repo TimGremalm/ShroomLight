@@ -26,6 +26,7 @@ typedef struct {
 	uint32_t uniqueorigin;
 } trigger_t;
 
+void sendPirTrigger();
 void sendTrigger(int shroomnr, char macorigin[12], int hops, int wavegen, int x, int y, int z, uint32_t uniqueorigin);
 void setShroomLightState(int shroomid, enum LIGHTSTATE newstate);
 

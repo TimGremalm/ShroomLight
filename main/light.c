@@ -20,6 +20,8 @@ uint8_t color[7] = {0};
 int breathecycle[7];
 int wavecycle[7];
 uint32_t previoustriggeruniqs[7][10];
+uint8_t mac[6];
+char macstring[12];
 
 trigger_t triggers[7];
 
@@ -40,6 +42,10 @@ uint32_t isUniueHandeledBefore(int shroomnr, uint32_t uniqueorigin) {
 	}
 	//Unique is not found, return zero
 	return 0;
+}
+
+void sendPirTrigger() {
+	sendTrigger(0, macstring, 0, 1, shroomsx[0], shroomsy[0], shroomsz[0], xTaskGetTickCount());
 }
 
 void sendTrigger(int shroomnr, char macorigin[12], int hops, int wavegen, int x, int y, int z, uint32_t uniqueorigin) {
@@ -120,6 +126,9 @@ void lighttask(void *pvParameters) {
 	state[4] = LIGHTSTATE_Idle;
 	state[5] = LIGHTSTATE_Idle;
 	state[6] = LIGHTSTATE_Idle;
+
+	esp_read_mac(mac, ESP_MAC_WIFI_STA);
+	sprintf(macstring, "%02x%02x%02x%02x%02x%02x", mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
 
 	const int breathetime = 170;
 	const int wavelighttime = 120;
