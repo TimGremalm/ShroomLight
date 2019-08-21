@@ -17,7 +17,7 @@ enum LIGHTSTATE {
 typedef struct {
 	uint32_t arrived;
 	int shroomnr;
-	char macorigin[12];
+	char macorigin[13];
 	int hops;
 	int wavegen;
 	int x;

@@ -79,17 +79,17 @@ int indexOf(char * str, char toFind) {
 	_a > _b ? _a : _b; })
 
 
-int closestDistanceToShroomWaves(int x, int y, int z) {
-	int deltax = settings.gridX - x;
+int closestDistanceToShroomWaves(int shroomnr, int x, int y, int z) {
+	int deltax = shroomsx[shroomnr] - x;
 	deltax = abs(deltax);
-	int deltay = settings.gridY - y;
+	int deltay = shroomsy[shroomnr] - y;
 	deltay = abs(deltay);
-	int deltaz = settings.gridZ - z;
+	int deltaz = shroomsz[shroomnr] - z;
 	deltaz = abs(deltaz);
 	
 	int smallestDistance = max(deltax, deltay);
 	smallestDistance = max(smallestDistance, deltaz);
-	ESP_LOGI(TAG, "Smallest %d", smallestDistance);
+	//ESP_LOGI(TAG, "Smallest %d", smallestDistance);
 	return smallestDistance;
 }
 
@@ -313,7 +313,7 @@ void shroomlistenertask(void *pvParameters) {
 				ESP_LOGI(TAG, "Wave orig %s, %d hops, wave generation %d, %d %d %d %d", argMac, argHops, argWaveGeneration, argX, argY, argZ, argUnique);
 				int smallest;
 				for (int i = 0; i < 7; i++) {
-					smallest = closestDistanceToShroomWaves(shroomsx[i], shroomsy[i], shroomsz[i]);
+					smallest = closestDistanceToShroomWaves(i, argX, argY, argZ);
 					//This shroom is a neighbor, trigger
 					if (smallest == 1) {
 						sendTrigger(i, argMac, argHops, argWaveGeneration, argX, argY, argZ, argUnique);

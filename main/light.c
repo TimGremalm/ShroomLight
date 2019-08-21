@@ -50,6 +50,7 @@ void sendTrigger(int shroomnr, char macorigin[12], int hops, int wavegen, int x,
 	}
 	triggers[shroomnr].arrived = xTaskGetTickCount();
 	triggers[shroomnr].shroomnr = shroomnr;
+	memset(triggers[shroomnr].macorigin, 0, sizeof(triggers[shroomnr].macorigin));
 	memcpy(triggers[shroomnr].macorigin, macorigin, 12);
 	triggers[shroomnr].hops = hops;
 	triggers[shroomnr].x = x;
@@ -77,7 +78,7 @@ void checkTriggers() {
 				memset(triggers[i].macorigin, 0, 12);
 			}
 			//After some delay, trigger the shroom, send message
-			if (delta > 3000) {
+			if (delta > 1500) {
 				if (triggers[i].wavegen == 0 || triggers[i].wavegen == 1) {
 					setShroomLightState(i, LIGHTSTATE_WaveLight);
 				} else if (triggers[i].wavegen == 2) {
