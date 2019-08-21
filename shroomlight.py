@@ -105,8 +105,8 @@ class ShroomLights:
 		out = 'SETGRID %s %d %d %d' % (mac, x, y, z)
 		self.sock.sendto(out.encode(), self.sending_multicast_group)
 
-	def shroomwave(self, mac, hops, wavegeneration, x, y, z):
-		out = 'SHROOM %s %d %d %d %d %d' % (mac, hops, wavegeneration, x, y, z)
+	def shroomwave(self, mac, hops, wavegeneration, x, y, z, uniqueu):
+		out = 'SHROOM %s %d %d %d %d %d %d' % (mac, hops, wavegeneration, x, y, z, uniqueu)
 		self.sock.sendto(out.encode(), self.sending_multicast_group)
 
 	def otaspecific(self, mac):
@@ -200,7 +200,7 @@ if __name__ == '__main__':
 				previousversion = shroomcommander.shrooms[mac].version
 				start = time.time()
 				delta = 0
-				timeout = 30
+				timeout = 60
 				while previousversion == shroomcommander.shrooms[mac].version and delta < timeout:
 					delta = time.time() - start
 					#Sleep until unit is updated
@@ -271,8 +271,9 @@ if __name__ == '__main__':
 			x = shroomcommander.shrooms[res[0]].gridx
 			y = shroomcommander.shrooms[res[0]].gridy
 			z = shroomcommander.shrooms[res[0]].gridz
-			print('Shroom Wave %s Hops %d Wavegeneration %d %d %d %d' % (res[0], hops, wavegeneration, x, y, z))
-			shroomcommander.shroomwave(res[0], hops, wavegeneration, x, y, z)
+			uniq = int(time.time())
+			print('Shroom Wave %s Hops %d Wavegeneration %d %d %d %d %d' % (res[0], hops, wavegeneration, x, y, z, uniq))
+			shroomcommander.shroomwave(res[0], hops, wavegeneration, x, y, z, uniq)
 		elif s == 'q':
 			print('Exit')
 			shroomcommander.stop()

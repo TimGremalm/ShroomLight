@@ -12,6 +12,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <stdint.h>
 
 #include "version.h"
 #include "ota.h"
@@ -71,7 +72,7 @@ int indexOf(char * str, char toFind) {
 	return -1;
 }
 
-#define MIN(X, Y) (((X) < (Y)) ? (X) : (Y))
+#define min(x, y) (((x) < (y)) ? (x) : (y))
 #define max(a,b) \
 	({ __typeof__ (a) _a = (a); \
 	__typeof__ (b) _b = (b); \
@@ -150,6 +151,7 @@ void shroomlistenertask(void *pvParameters) {
 		char argURL[100];
 		int argHops;
 		int argWaveGeneration;
+		uint32_t argUnique;
 
 		//Parse argments
 		int sepCounter = 0;
@@ -169,6 +171,7 @@ void shroomlistenertask(void *pvParameters) {
 				//More arguments to be excpected
 				argStart = sepStart + 1;
 				argLength = sepNext;
+				//sepStart += sepNext + 1;
 				sepStart += sepNext + 1;
 			}
 			memset(argMessage, 0, sizeof(argMessage));
@@ -228,14 +231,20 @@ void shroomlistenertask(void *pvParameters) {
 					argX = atoi(argMessage);
 				}
 			}
-			if (sepCounter == 7) {
+			if (sepCounter == 6) {
 				if (strncmp(argCommand, "SHROOM", 6) == 0) {
 					argY = atoi(argMessage);
 				}
 			}
-			if (sepCounter == 6) {
+			if (sepCounter == 7) {
 				if (strncmp(argCommand, "SHROOM", 6) == 0) {
 					argZ = atoi(argMessage);
+				}
+			}
+			if (sepCounter == 8) {
+				if (strncmp(argCommand, "SHROOM", 6) == 0) {
+					argUnique = atoi(argMessage);
+					//ESP_LOGI(TAG, "comman uniq %s parsed %d", argMessage, argUnique);
 				}
 			}
 		}
@@ -298,16 +307,16 @@ void shroomlistenertask(void *pvParameters) {
 			}
 		}
 		if (strncmp(argCommand, "SHROOM", 6) == 0) {
-			if (sepCounter != 7) {
-				ESP_LOGE(TAG, "SETGRID takes 6 arguments, got %d", sepCounter-1);
+			if (sepCounter != 8) {
+				ESP_LOGE(TAG, "SETGRID takes 7 arguments, got %d", sepCounter-1);
 			} else {
-				ESP_LOGI(TAG, "Wave orig %s, %d hops, wave generation %d, %d %d %d", argMac, argHops, argWaveGeneration, argX, argY, argZ);
+				ESP_LOGI(TAG, "Wave orig %s, %d hops, wave generation %d, %d %d %d %d", argMac, argHops, argWaveGeneration, argX, argY, argZ, argUnique);
 				int smallest;
 				for (int i = 0; i < 7; i++) {
 					smallest = closestDistanceToShroomWaves(shroomsx[i], shroomsy[i], shroomsz[i]);
 					//This shroom is a neighbor, trigger
 					if (smallest == 1) {
-						sendTrigger(i, argMac, argHops, argWaveGeneration, argX, argY, argZ);
+						sendTrigger(i, argMac, argHops, argWaveGeneration, argX, argY, argZ, argUnique);
 					}
 				}
 			}
@@ -332,9 +341,9 @@ void shroomlistenertask(void *pvParameters) {
 	}
 }
 
-void sendShroomWave(int shroomnr, char macorigin[12], int hops, int wavegen) {
+void sendShroomWave(int shroomnr, char macorigin[12], int hops, int wavegen, uint32_t uniqueorigin) {
 	char sbuf[100] = {0};
-	sprintf(sbuf, "SHROOM %s %d %d %d %d %d", macorigin, hops, wavegen, shroomsx[shroomnr], shroomsy[shroomnr], shroomsz[shroomnr]);
+	sprintf(sbuf, "SHROOM %s %d %d %d %d %d %d", macorigin, hops, wavegen, shroomsx[shroomnr], shroomsy[shroomnr], shroomsz[shroomnr], uniqueorigin);
 	shroom_send(sbuf);
 }
 

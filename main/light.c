@@ -18,11 +18,36 @@ enum LIGHTSTATE state[7];
 uint8_t color[7] = {0};
 int breathecycle[7];
 int wavecycle[7];
+uint32_t previoustriggeruniqs[7][10];
 
 trigger_t triggers[7];
 
-void sendTrigger(int shroomnr, char macorigin[12], int hops, int wavegen, int x, int y, int z ) {
+void addTriggerToPreviousUnique(int shroomnr, uint32_t uniqueorigin) {
+	//Shigt array over to leave room for 1 new
+	for (int i=8; i>0; i--) {
+		previoustriggeruniqs[shroomnr][i+1] = previoustriggeruniqs[shroomnr][i];
+	}
+	previoustriggeruniqs[shroomnr][0] = uniqueorigin;
+}
+
+uint32_t isUniueHandeledBefore(int shroomnr, uint32_t uniqueorigin) {
+	for (int i=0; i<7; i++) {
+		if (previoustriggeruniqs[shroomnr][i] == uniqueorigin) {
+			//It's been handled before
+			return previoustriggeruniqs[shroomnr][i];
+		}
+	}
+	//Unique is not found, return zero
+	return 0;
+}
+
+void sendTrigger(int shroomnr, char macorigin[12], int hops, int wavegen, int x, int y, int z, uint32_t uniqueorigin) {
 	ESP_LOGI(TAG, "Send Trigger to %d", shroomnr);
+	//If the same wave returns, ignore it
+	if (isUniueHandeledBefore(shroomnr, uniqueorigin) != 0) {
+		ESP_LOGI(TAG, "Wave %d handeled before, ignore", uniqueorigin);
+		return;
+	}
 	triggers[shroomnr].arrived = xTaskGetTickCount();
 	triggers[shroomnr].shroomnr = shroomnr;
 	memcpy(triggers[shroomnr].macorigin, macorigin, 12);
@@ -30,13 +55,15 @@ void sendTrigger(int shroomnr, char macorigin[12], int hops, int wavegen, int x,
 	triggers[shroomnr].x = x;
 	triggers[shroomnr].y = y;
 	triggers[shroomnr].z = z;
-	//Any triggers from before, if there is; upgrade wave generation
+	triggers[shroomnr].uniqueorigin = uniqueorigin;
+	//If already waiting for a trigger, or is in a trigger, escalate the wavegen
 	if (triggers[shroomnr].macorigin[0] != 0 &&
 			strncmp(triggers[shroomnr].macorigin, macorigin, 12) != 0) {
 		triggers[shroomnr].wavegen += 1;
 	} else {
 		triggers[shroomnr].wavegen = wavegen;
 	}
+	addTriggerToPreviousUnique(shroomnr, uniqueorigin);
 }
 
 void checkTriggers() {
@@ -49,9 +76,9 @@ void checkTriggers() {
 			if (triggers[i].hops > 30) {
 				memset(triggers[i].macorigin, 0, 12);
 			}
-			//After 500ms, trigger the shroom, send message
-			if (delta > 1000) {
-				if (triggers[i].wavegen == 1) {
+			//After some delay, trigger the shroom, send message
+			if (delta > 3000) {
+				if (triggers[i].wavegen == 0 || triggers[i].wavegen == 1) {
 					setShroomLightState(i, LIGHTSTATE_WaveLight);
 				} else if (triggers[i].wavegen == 2) {
 					setShroomLightState(i, LIGHTSTATE_WaveMedium);
@@ -59,7 +86,7 @@ void checkTriggers() {
 					setShroomLightState(i, LIGHTSTATE_WaveHard);
 				}
 				//Send shroom message, echo it forward from a new address
-				sendShroomWave(i, triggers[i].macorigin, triggers[i].hops + 1, triggers[i].wavegen);
+				sendShroomWave(i, triggers[i].macorigin, triggers[i].hops + 1, triggers[i].wavegen, triggers[i].uniqueorigin);
 				//Remove trigger
 				memset(triggers[i].macorigin, 0, 12);
 			}
@@ -127,6 +154,7 @@ void lighttask(void *pvParameters) {
 						breathecycle[shroomid] += 3;
 					} else if (breathecycle[shroomid] > breathetime*2 && breathecycle[shroomid] < (breathetime*2 + 50)) {
 						//Extra pause after breath
+						//Make pause random ???
 						breathecycle[shroomid] += 3;
 						volume[shroomid] = 0;
 					} else {

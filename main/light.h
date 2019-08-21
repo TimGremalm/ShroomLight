@@ -23,9 +23,10 @@ typedef struct {
 	int x;
 	int y;
 	int z;
+	uint32_t uniqueorigin;
 } trigger_t;
 
-void sendTrigger(int shroomnr, char macorigin[12], int hops, int wavegen, int x, int y, int z );
+void sendTrigger(int shroomnr, char macorigin[12], int hops, int wavegen, int x, int y, int z, uint32_t uniqueorigin);
 void setShroomLightState(int shroomid, enum LIGHTSTATE newstate);
 
 #endif /* LIGHT_H */
