@@ -146,20 +146,120 @@ class ShroomLights:
 				out.append(key)
 		return out
 
+	def commandUsage(self):
+		sOut = ""
+		sOut += "q                  - Exit this command\n"
+		sOut += "i                  - Report MAC, version and physical grid address\n"
+		sOut += "r                  - Restart shrooms\n"
+		sOut += "o                  - Do a OTA (Over the air upgrade)\n"
+		sOut += "c                  - Do a OTA for detected units one at a time\n"
+		sOut += "s MAC              - Do a OTA on a specific ShroomLight\n"
+		sOut += "l MAC Mode         - Set light mode\n"
+		sOut += "t MAC              - Trigger shroom\n"
+		sOut += "x MAC X Y Z        - Set shroom grid address\n"
+		sOut += "w MAC hops wavegen - Send light wave\n"
+		return sOut
+
+	def parseInput(self, s):
+		args = s.split()
+		sOut = ""
+		if s == 'h':
+			sOut = self.commandUsage()
+		if s == 'r':
+			self.restart()
+		elif s == 'i':
+			self.information()
+		elif s == 'o':
+			self.ota()
+		elif s == 'c':
+			for mac in self.shrooms.keys():
+				self.otaspecific(mac)
+				previousversion = self.shrooms[mac].version
+				start = time.time()
+				delta = 0
+				timeout = 60
+				while previousversion == self.shrooms[mac].version and delta < timeout:
+					delta = time.time() - start
+					#Sleep until unit is updated
+					sOut += "Wait for OTA of %s %0.2f\n" % (mac, delta)
+					time.sleep(10.5)
+				if delta > timeout:
+					sOut += "OTA timeout\n"
+			sOut += "OTA done\n"
+		elif s.startswith('s') and len(args) == 2:
+			#sOut += 'Specific OTA |%s|' % args[1]
+			res = self.findMac(args[1])
+			if len(res) == 0:
+				sOut += 'No MAC address found by %s\n' % args[1]
+				return sOut
+			if len(res) > 1:
+				sOut += '%s matced too many MAC addresses %s\n' % (args[1], res)
+				return sOut
+			sOut += 'Specific OTA %s\n' % res[0]
+			self.otaspecific(res[0])
+		elif s.startswith('l') and len(args) == 3:
+			res = self.findMac(args[1])
+			if len(res) == 0:
+				sOut += 'No MAC address found by %s\n' % args[1]
+				return sOut
+			if len(res) > 1:
+				sOut += '%s matced too many MAC addresses %s\n' % (args[1], res)
+				return sOut
+			mode = int(args[2])
+			sOut += 'Light Mode MAC %s to %d\n' % (res[0], mode)
+			self.lightmode(res[0], int(args[2]))
+		elif s.startswith('t') and len(args) == 2:
+			res = self.findMac(args[1])
+			if len(res) == 0:
+				sOut += 'No MAC address found by %s\n' % args[1]
+				return sOut
+			if len(res) > 1:
+				sOut += '%s matced too many MAC addresses %s\n' % (args[1], res)
+				return sOut
+			x = self.shrooms[res[0]].gridx
+			y = self.shrooms[res[0]].gridy
+			z = self.shrooms[res[0]].gridz
+			sOut += 'Trigger shroom %s %d %d %d\n' % (res[0], x, y, z)
+			self.triggershroom(res[0])
+		elif s.startswith('x') and len(args) == 5:
+			res = self.findMac(args[1])
+			if len(res) == 0:
+				sOut += 'No MAC address found by %s\n' % args[1]
+				return sOut
+			if len(res) > 1:
+				sOut += '%s matced too many MAC addresses %s\n' % (args[1], res)
+				return sOut
+			x = int(args[2])
+			y = int(args[3])
+			z = int(args[4])
+			sOut += 'Set shroom %s grid to %d %d %d\n' % (res[0], x, y, z)
+			self.setgridaddress(res[0], x, y, z)
+		elif s.startswith('w') and len(args) == 4:
+			res = self.findMac(args[1])
+			if len(res) == 0:
+				sOut += 'No MAC address found by %s\n' % args[1]
+				return sOut
+			if len(res) > 1:
+				sOut += '%s matced too many MAC addresses %s\n' % (args[1], res)
+				return sOut
+			hops = int(args[2])
+			wavegeneration = int(args[3])
+			x = self.shrooms[res[0]].gridx
+			y = self.shrooms[res[0]].gridy
+			z = self.shrooms[res[0]].gridz
+			uniq = int(time.time())
+			sOut += 'Shroom Wave %s Hops %d Wavegeneration %d %d %d %d %d\n' % (res[0], hops, wavegeneration, x, y, z, uniq)
+			self.shroomwave(res[0], hops, wavegeneration, x, y, z, uniq)
+		elif s == 'q':
+			sOut += 'Exit\n'
+			self.stop()
+		else:
+			sOut += 'Not a valid command. Type h for help.\n'
+		return sOut
+
+
 def usage():
 	print ("--help : shows this help")
-
-def commandUsage():
-	print("q                  - Exit this command")
-	print("i                  - Report MAC, version and physical grid address")
-	print("r                  - Restart shrooms")
-	print("o                  - Do a OTA (Over the air upgrade)")
-	print("c                  - Do a OTA for detected units one at a time")
-	print("s MAC              - Do a OTA on a specific ShroomLight")
-	print("l MAC Mode         - Set light mode")
-	print("t MAC              - Trigger shroom")
-	print("x MAC X Y Z        - Set shroom grid address")
-	print("w MAC hops wavegen - Send light wave")
 
 def parseArgs():
 	try:
@@ -185,98 +285,5 @@ if __name__ == '__main__':
 	shroomcommander.information()
 	while shroomcommander.keepListening:
 		s = input("Shroom command: ")
-		args = s.split()
-		if s == 'h':
-			commandUsage()
-		if s == 'r':
-			shroomcommander.restart()
-		elif s == 'i':
-			shroomcommander.information()
-		elif s == 'o':
-			shroomcommander.ota()
-		elif s == 'c':
-			for mac in shroomcommander.shrooms.keys():
-				shroomcommander.otaspecific(mac)
-				previousversion = shroomcommander.shrooms[mac].version
-				start = time.time()
-				delta = 0
-				timeout = 60
-				while previousversion == shroomcommander.shrooms[mac].version and delta < timeout:
-					delta = time.time() - start
-					#Sleep until unit is updated
-					print("Wait for OTA of %s %0.2f" % (mac, delta))
-					time.sleep(10.5)
-				if delta > timeout:
-					print("OTA timeout")
-			print("OTA done")
-
-		elif s.startswith('s') and len(args) == 2:
-			#print('Specific OTA |%s|' % args[1])
-			res = shroomcommander.findMac(args[1])
-			if len(res) == 0:
-				print('No MAC address found by %s' % args[1])
-				continue
-			if len(res) > 1:
-				print('%s matced too many MAC addresses %s' % (args[1], res))
-				continue
-			print('Specific OTA %s' % res[0])
-			shroomcommander.otaspecific(res[0])
-		elif s.startswith('l') and len(args) == 3:
-			res = shroomcommander.findMac(args[1])
-			if len(res) == 0:
-				print('No MAC address found by %s' % args[1])
-				continue
-			if len(res) > 1:
-				print('%s matced too many MAC addresses %s' % (args[1], res))
-				continue
-			mode = int(args[2])
-			print('Light Mode MAC %s to %d' % (res[0], mode))
-			shroomcommander.lightmode(res[0], int(args[2]))
-		elif s.startswith('t') and len(args) == 2:
-			res = shroomcommander.findMac(args[1])
-			if len(res) == 0:
-				print('No MAC address found by %s' % args[1])
-				continue
-			if len(res) > 1:
-				print('%s matced too many MAC addresses %s' % (args[1], res))
-				continue
-			x = shroomcommander.shrooms[res[0]].gridx
-			y = shroomcommander.shrooms[res[0]].gridy
-			z = shroomcommander.shrooms[res[0]].gridz
-			print('Trigger shroom %s %d %d %d' % (res[0], x, y, z))
-			shroomcommander.triggershroom(res[0])
-		elif s.startswith('x') and len(args) == 5:
-			res = shroomcommander.findMac(args[1])
-			if len(res) == 0:
-				print('No MAC address found by %s' % args[1])
-				continue
-			if len(res) > 1:
-				print('%s matced too many MAC addresses %s' % (args[1], res))
-				continue
-			x = int(args[2])
-			y = int(args[3])
-			z = int(args[4])
-			print('Set shroom %s grid to %d %d %d' % (res[0], x, y, z))
-			shroomcommander.setgridaddress(res[0], x, y, z)
-		elif s.startswith('w') and len(args) == 4:
-			res = shroomcommander.findMac(args[1])
-			if len(res) == 0:
-				print('No MAC address found by %s' % args[1])
-				continue
-			if len(res) > 1:
-				print('%s matced too many MAC addresses %s' % (args[1], res))
-				continue
-			hops = int(args[2])
-			wavegeneration = int(args[3])
-			x = shroomcommander.shrooms[res[0]].gridx
-			y = shroomcommander.shrooms[res[0]].gridy
-			z = shroomcommander.shrooms[res[0]].gridz
-			uniq = int(time.time())
-			print('Shroom Wave %s Hops %d Wavegeneration %d %d %d %d %d' % (res[0], hops, wavegeneration, x, y, z, uniq))
-			shroomcommander.shroomwave(res[0], hops, wavegeneration, x, y, z, uniq)
-		elif s == 'q':
-			print('Exit')
-			shroomcommander.stop()
-		else:
-			print('Not a valid command. Type h for help.')
+		print(shroomcommander.parseInput(s))
 
