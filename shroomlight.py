@@ -34,6 +34,7 @@ class ShroomLights:
 		self.multicast_group = '239.255.0.1'
 		self.multicastport = 10420
 		self.webserverport = 8000
+		self.websocketport = 9001
 		self.sending_multicast_group = ('239.255.0.1', 10420)
 		self.server_address = ('', self.multicastport)
 		self.keepListening = True
@@ -46,8 +47,9 @@ class ShroomLights:
 		self.shrooms = {}
 
 	def websocketServerThread(self):
-		self.websocketsrv = WebsocketServer(port=9001, host='0.0.0.0')
+		self.websocketsrv = WebsocketServer(port=self.websocketport, host='0.0.0.0')
 		self.websocketsrv.set_fn_message_received(websocketReceive)
+		print("Serve Websocket server on port %d" % self.websocketport)
 		self.websocketsrv.run_forever()
 
 	def stopSignal(self, signum, frame):
@@ -137,6 +139,7 @@ class ShroomLights:
 		server_address = ('', self.webserverport)
 		self.httpd = http.server.HTTPServer(server_address, handler)
 		self.httpd.timeout = 0.5
+		print("Serve HTTP server on port %d" % self.webserverport)
 		self.httpd.serve_forever(poll_interval=0.1)
 
 	def getIP(self):
