@@ -1,0 +1,34 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>Shroom Commander</title>
+		<script type = "text/javascript">
+			function WebSocketTest() {
+				if ("WebSocket" in window) {
+					var ws = new WebSocket("ws://192.168.0.81:9001/");
+
+					ws.onopen = function() {
+						ws.send("Message to send");
+						console.log("Message is sent...");
+					};
+
+					ws.onmessage = function (evt) { 
+						var received_msg = evt.data;
+						console.log("Message is received..." +  received_msg);
+					};
+
+					ws.onclose = function() { 
+						console.log("Connection is closed..."); 
+					};
+				}
+			}
+		</script>
+	</head>
+	<body>
+		<h1>Shroom Commander</h1>
+		<div>
+			<a href = "javascript:WebSocketTest()">Run WebSocket</a>
+		</div>
+	</body>
+</html>
+

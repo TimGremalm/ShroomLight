@@ -12,6 +12,7 @@ import http.server
 from subprocess import check_output
 import re
 import time
+from websocket_server import WebsocketServer #pip3 install git+https://github.com/Pithikos/python-websocket-server
 
 class ShroomLight:
 	def __init__(self, mac, version, gridx, gridy, gridz):
@@ -23,6 +24,9 @@ class ShroomLight:
 
 	def __repr__(self):
 		return 'Shroom %s V%s %d %d %d' % (self.mac, self.version, self.gridx, self.gridy, self.gridz)
+
+def websocketReceive(client, server, message):
+	print("Websocket receieved %s" % message)
 
 class ShroomLights:
 	def __init__(self):
@@ -37,7 +41,14 @@ class ShroomLights:
 		self.t.start()
 		self.httpdTread = threading.Thread(target=self.webserver, args=())
 		self.httpdTread.start()
+		self.wsThread = threading.Thread(target=self.websocketServerThread, args=())
+		self.wsThread.start()
 		self.shrooms = {}
+
+	def websocketServerThread(self):
+		self.websocketsrv = WebsocketServer(port=9001, host='0.0.0.0')
+		self.websocketsrv.set_fn_message_received(websocketReceive)
+		self.websocketsrv.run_forever()
 
 	def stopSignal(self, signum, frame):
 		print("Recives Signal, stop")
@@ -47,6 +58,7 @@ class ShroomLights:
 	def stop(self):
 		self.keepListening = False
 		self.httpd.shutdown()
+		self.websocketsrv.shutdown()
 
 	def multicastlistener(self):
 		self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -85,7 +97,7 @@ class ShroomLights:
 				#Create new
 				self.shrooms[mac] = ShroomLight(mac, version, x, y, z)
 			#print(self.shrooms[mac])
-
+		self.websocketsrv.send_message_to_all(message)
 
 	def information(self):
 		self.sock.sendto(b'information', self.sending_multicast_group)
