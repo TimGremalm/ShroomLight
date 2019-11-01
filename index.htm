@@ -5,7 +5,9 @@
 		<script type = "text/javascript">
 			function WebSocketTest() {
 				if ("WebSocket" in window) {
-					var ws = new WebSocket("ws://192.168.0.81:9001/");
+					var wsaddress = "ws://" + location.hostname + ":9001/"
+					console.log("Connect websocket " + wsaddress);
+					var ws = new WebSocket(wsaddress);
 
 					ws.onopen = function() {
 						ws.send("Message to send");
