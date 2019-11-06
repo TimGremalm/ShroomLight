@@ -25,8 +25,6 @@ class ShroomLight:
 	def __repr__(self):
 		return 'Shroom %s V%s %d %d %d' % (self.mac, self.version, self.gridx, self.gridy, self.gridz)
 
-def websocketReceive(client, server, message):
-	print("Websocket receieved %s" % message)
 
 class ShroomLights:
 	def __init__(self):
@@ -46,9 +44,14 @@ class ShroomLights:
 		self.wsThread.start()
 		self.shrooms = {}
 
+	def websocketReceive(self, client, server, message):
+		# send out incoming message out on the shroom multicast network
+		print("Websocket receieved %s" % message)
+		self.sock.sendto(bytes(message,"ascii"), self.sending_multicast_group)
+
 	def websocketServerThread(self):
 		self.websocketsrv = WebsocketServer(port=self.websocketport, host='0.0.0.0')
-		self.websocketsrv.set_fn_message_received(websocketReceive)
+		self.websocketsrv.set_fn_message_received(self.websocketReceive)
 		print("Serve Websocket server on port %d" % self.websocketport)
 		self.websocketsrv.run_forever()
 
@@ -99,7 +102,10 @@ class ShroomLights:
 				#Create new
 				self.shrooms[mac] = ShroomLight(mac, version, x, y, z)
 			#print(self.shrooms[mac])
-		self.websocketsrv.send_message_to_all(message)
+		try:
+		    self.websocketsrv.send_message_to_all(message)
+		except AttributeError:
+		    pass
 
 	def information(self):
 		self.sock.sendto(b'information', self.sending_multicast_group)
