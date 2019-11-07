@@ -1,3 +1,10 @@
+const LIGHTMODE_IDLE = 0;
+const LIGHTMODE_OFF = 1;
+const LIGHTMODE_SOLID = 2;
+const LIGHTMODE_WAVE_LIGHT = 3;
+const LIGHTMODE_WAVE_MEDIUM = 4;
+const LIGHTMODE_WAVE_HARD = 5;
+
 var shroomws = (function(host) {
 	// Some local variables. I declare them up top so that we can add them to
 	// the returned object later. It's like local variables on a class, except
@@ -29,7 +36,7 @@ var shroomws = (function(host) {
 
 	let hexes = makeHexagonalShape(20);
 	for (hex of hexes) {
-		draw_hex_svg(svgg, hex, shrooms);
+		draw_hex_svg(svgg, hex, shroomws);
 	}
 
 	// Let's connect to the websocket..
@@ -89,9 +96,9 @@ var shroomws = (function(host) {
 					var rgb = hslToRgb(myrng.quick(), 0.3, 0.8);
 					var color = getColorStringFromRGB(rgb);
 					if (i == 0) {
-						draw_hex_svg(svgg, shrooms[mac].shroomhex[i], shrooms, 'Shroom'+mac+'_'+i, 'shroomlight', color, mac, version);
+						draw_hex_svg(svgg, shrooms[mac].shroomhex[i], shroomws, 'Shroom'+mac+'_'+i, 'shroomlight', color, mac, version);
 					} else {
-						draw_hex_svg(svgg, shrooms[mac].shroomhex[i], shrooms, 'Shroom'+mac+'_'+i, 'shroomlight', color);
+						draw_hex_svg(svgg, shrooms[mac].shroomhex[i], shroomws, 'Shroom'+mac+'_'+i, 'shroomlight', color);
 					}
 				}
 			} else {
@@ -243,7 +250,14 @@ function getColorStringFromRGB(rgbarray) {
 	return colorout;
 }
 
-function selectShroom(id, shroomsdict) {
+function setShroomLightMode(mode) {
+	let frameCommand = document.getElementById("shroomcommand");
+	let fmac = frameCommand.querySelector("[id=commandmac]");
+	let mac = fmac.textContent;
+	shroomws.ws.send("LIGHTMODE " + mac + " " + mode);
+}
+
+function selectShroom(id, shroomwsobj) {
 	console.log("selected " + id);
 	if (id.length !== 20) {
 		console.log("A valid SHroom Light ID should be 20 characters long");
@@ -255,19 +269,19 @@ function selectShroom(id, shroomsdict) {
 	let fmac = frameCommand.querySelector("[id=commandmac]");
 	fmac.textContent = mac;
 	let fver = frameCommand.querySelector("[id=commandversion]");
-	fver.textContent = shroomsdict[mac].version;
+	fver.textContent = shroomwsobj.shrooms[mac].version;
 	let fx = frameCommand.querySelector("[id=commandx]");
-	fx.textContent = shroomsdict[mac].x;
+	fx.textContent = shroomwsobj.shrooms[mac].x;
 	let fy = frameCommand.querySelector("[id=commandy]");
-	fy.textContent = shroomsdict[mac].y;
+	fy.textContent = shroomwsobj.shrooms[mac].y;
 	let fz = frameCommand.querySelector("[id=commandz]");
-	fz.textContent = shroomsdict[mac].z;
+	fz.textContent = shroomwsobj.shrooms[mac].z;
 	let fmove = frameCommand.querySelector("[id=moveshroomid]");
 	fmove.checked = false;
 }
 
 // svg is an svg element, hex is an object with q and r keys
-function draw_hex_svg(svg, hex, shroomsdict, gid='', gclass='hexgrid', gbgcolor='#ddd', glabelmac='', glabelversion='') {
+function draw_hex_svg(svg, hex, shroomwsobj, gid='', gclass='hexgrid', gbgcolor='#ddd', glabelmac='', glabelversion='') {
 	cubecoords = axial_to_cube(hex);
 	let xmlns = "http://www.w3.org/2000/svg";
 	xy = pointy_hex_to_pixel(100, hex);
@@ -338,7 +352,7 @@ function draw_hex_svg(svg, hex, shroomsdict, gid='', gclass='hexgrid', gbgcolor=
 	}
 	if (gclass === "shroomlight") {
 		gPos.onclick = function(el) {
-			selectShroom(el.currentTarget.id, shroomsdict);
+			selectShroom(el.currentTarget.id, shroomwsobj);
 		}
 	}
 
@@ -362,5 +376,17 @@ window.onload = function() {
 	const wsaddress = "ws://" + location.hostname + ":9001/"
 
 	window.shroomws = shroomws(wsaddress);
+	let fbtnidle = document.getElementById("btnidle");
+	fbtnidle.addEventListener("click", function(){setShroomLightMode(LIGHTMODE_IDLE)});
+	let fbtnoff = document.getElementById("btnoff");
+	fbtnoff.addEventListener("click", function(){setShroomLightMode(LIGHTMODE_OFF)});
+	let fbtnsolid = document.getElementById("btnsolid");
+	fbtnsolid.addEventListener("click", function(){setShroomLightMode(LIGHTMODE_SOLID)});
+	let fbtnwavelight = document.getElementById("btnwavelight");
+	fbtnwavelight.addEventListener("click", function(){setShroomLightMode(LIGHTMODE_WAVE_LIGHT)});
+	let fbtnwavemedium = document.getElementById("btnwavemedium");
+	fbtnwavemedium.addEventListener("click", function(){setShroomLightMode(LIGHTMODE_WAVE_MEDIUM)});
+	let fbtnwavehard = document.getElementById("btnwavehard");
+	fbtnwavehard.addEventListener("click", function(){setShroomLightMode(LIGHTMODE_WAVE_HARD)});
 };
 
