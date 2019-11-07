@@ -1,12 +1,10 @@
 var shroomws = (function(host) {
-
 	// Some local variables. I declare them up top so that we can add them to
 	// the returned object later. It's like local variables on a class, except
 	// this isn't a class.
 	
 	let shrooms = {};
 	let dom_shrooms = document.getElementById("shrooms");
-
 
 	const LIGHTMODE_IDLE = 0;
 	const LIGHTMODE_OFF = 1;
@@ -15,8 +13,7 @@ var shroomws = (function(host) {
 	const LIGHTMODE_WAVE_MEDIUM = 4;
 	const LIGHTMODE_WAVE_HARD = 5;
 
-
-
+	// Make sure to use SVG name space to let the browser know it isn't HTML any more
 	let xmlns = "http://www.w3.org/2000/svg";
 	let svg = document.createElementNS(xmlns, "svg");
 	svg.setAttributeNS(null, "viewBox", "-600 -600 1200 1200");
@@ -27,24 +24,21 @@ var shroomws = (function(host) {
 	svg.appendChild(svgg);
 	document.body.appendChild(svg);
 
-
 	let hexes = hexRing(1);
 	for (hex of hexes) {
 		draw_hex_svg(svgg, hex);
 	}
-
 
 	hexes = hexRing(2);
 	for (hex of hexes) {
 		draw_hex_svg(svgg, hex);
 	}
 
-
 	// Let's connect to the websocket..
 	console.log("connecting to ws on %s...", host);
 	const ws = new WebSocket(host);
 	ws.onopen = function() {
-		console.log("ws opened");
+		console.log("Websocket opened, query shrooms for information");
 		ws.send("information");
 	};
 
@@ -76,7 +70,7 @@ var shroomws = (function(host) {
 
 			// Add (or update) this device in the shrooms hash table
 			if (undefined === shrooms[mac]) {
-				// this is a new device; let's create a SVG element for it
+				// This is a new device; let's create a SVG element for it
 				shrooms[mac] = {
 					version: version,
 					x: x,
@@ -145,22 +139,13 @@ var shroomws = (function(host) {
 				});
 
 				dom_shrooms.appendChild(el);
-
-
 			}
-
-		}
-
-		else if (data_parts[0] === "SHROOM") {
+		} else if (data_parts[0] === "SHROOM") {
 			// SHROOM <mac-origin> <hops> <wave-generation> <x> <y> <z>
-		}
-
-		else if (data_parts[0] === "information") {
+		} else if (data_parts[0] === "information") {
 			// Not interested in this currently, just
 			// making sure every case is caught.
-		}
-
-		else {
+		} else {
 			console.log("uncaught incoming command: %s", evt.data);
 		}
 	};
@@ -178,13 +163,11 @@ var shroomws = (function(host) {
 	};
 });
 
-
 function pointy_hex_to_pixel(size, hex) {
 	var x = size * (Math.sqrt(3) * hex.q + Math.sqrt(3)/2 * hex.r);
 	var y = size * (3/2 * hex.r);
 	return [x,y];
 }
-
 
 // svg is an svg element, hex is an object with q and r keys
 function draw_hex_svg(svg, hex) {
@@ -209,42 +192,7 @@ function draw_hex_svg(svg, hex) {
 	}
 }
 
-
-function doit() {
-//	let canvas = document.getElementById("cnv");
-//	let ctx = canvas.getContext("2d");
-//	window.c = ctx;
-	
-
-
-
-//	hexes = hexRing(2);
-//	for (hex of hexes) {
-//		xy = pointy_hex_to_pixel(4, hex);
-//		console.log(xy);
-//		ctx.beginPath();
-//		ctx.rect(50 + xy[0], 50 + xy[1], 2, 2);
-//		ctx.stroke();
-//	}
-//
-//	hexes = hexRing(1);
-//	for (hex of hexes) {
-//		xy = pointy_hex_to_pixel(4, hex);
-//		console.log(xy);
-//		ctx.beginPath();
-//		ctx.rect(50 + xy[0], 50 + xy[1], 2, 2);
-//		ctx.stroke();
-//	}
-//
-//	ctx.beginPath();
-//	ctx.rect(50, 50, 2, 2);
-//	ctx.stroke();
-
-}
-
-
 window.onload = function() {
-
 	// Sanity checking
 	if (!("WebSocket" in window)) {
 		console.log("No websocket support!");
@@ -255,7 +203,5 @@ window.onload = function() {
 	const wsaddress = "ws://" + location.hostname + ":9001/"
 
 	window.shroomws = shroomws(wsaddress);
-
-	doit();
-
 };
+

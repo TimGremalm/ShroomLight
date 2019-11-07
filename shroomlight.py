@@ -14,6 +14,7 @@ import re
 import time
 from websocket_server import WebsocketServer #pip3 install git+https://github.com/Pithikos/python-websocket-server
 
+
 class ShroomLight:
 	def __init__(self, mac, version, gridx, gridy, gridz):
 		self.mac = mac
@@ -295,6 +296,7 @@ def parseArgs():
 			sys.exit(0)
 		else:
 			assert False, "unhandled option"
+
 
 if __name__ == '__main__':
 	parseArgs()
