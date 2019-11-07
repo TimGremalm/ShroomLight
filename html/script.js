@@ -16,11 +16,11 @@ var shroomws = (function(host) {
 	// Make sure to use SVG name space to let the browser know it isn't HTML any more
 	let xmlns = "http://www.w3.org/2000/svg";
 	let svg = document.createElementNS(xmlns, "svg");
-	svg.setAttributeNS(null, "viewBox", "-1000 -500 2000 1000");
+	svg.setAttributeNS(null, "viewBox", "-1500 -1000 3000 2000");
 	svg.setAttributeNS(null, "width", "100%");
 	svg.setAttributeNS(null, "height", "100%");
 	let svgg = document.createElementNS(xmlns, "g");
-	svgg.setAttributeNS(null, "transform", "rotate(-30)");
+	svgg.setAttributeNS(null, "transform", "rotate(30)");
 	svgg.setAttributeNS(null, "fill", "gray");
 	svgg.setAttributeNS(null, "stroke", "black");
 	svg.appendChild(svgg);
@@ -29,10 +29,13 @@ var shroomws = (function(host) {
 
 	let hexes = hexRing(1);
 	for (hex of hexes) {
-		draw_hex_svg(svgg, hex);
+		//draw_hex_svg(svgg, hex);
 	}
 
-	hexes = hexRing(2);
+	//hexes = hexRing(2);
+	//hexes = makeRhombusShape(10, 5);
+	hexes = makeHexagonalShape(20);
+	//hexes = makeRDoubledRectangularShape(-3, 3, -3, 3);
 	for (hex of hexes) {
 		draw_hex_svg(svgg, hex);
 	}
@@ -172,19 +175,58 @@ function pointy_hex_to_pixel(size, hex) {
 	return [x,y];
 }
 
+function cube_to_axial(hex) {
+	var q = hex.x
+	var r = hex.z
+	return new Hex(q, r)
+}
+
+function axial_to_cube(hex) {
+	var x = hex.q
+	var y = hex.r
+	var z = -x-y
+	return new Hex(x, y, z)
+}
+
 // svg is an svg element, hex is an object with q and r keys
 function draw_hex_svg(svg, hex) {
 	let xmlns = "http://www.w3.org/2000/svg";
 	xy = pointy_hex_to_pixel(100, hex);
-	let el = document.createElementNS(xmlns, "g");
-	el.setAttributeNS(null, "transform", "translate(" + xy[0] + "," + xy[1] + ")");
-	let elg = document.createElementNS(xmlns, "g");
-	elg.setAttributeNS(null, "transform", "rotate(-30)");
+	let gPos = document.createElementNS(xmlns, "g");
+	gPos.setAttributeNS(null, "transform", "translate(" + xy[0] + "," + xy[1] + ")");
+	let gPol = document.createElementNS(xmlns, "g");
+	gPol.setAttributeNS(null, "transform", "rotate(-30)");
 	let poly = document.createElementNS(xmlns, "polygon");
 	poly.setAttributeNS(null, "points", "100,0 50,-87 -50,-87 -100,-0 -50,87 50,87");
-	elg.appendChild(poly);
-	el.appendChild(elg);
-	svg.appendChild(el);
+
+	// x, y, z labels
+	let textCont = document.createElementNS(xmlns, "text");
+	textCont.setAttributeNS(null, "transform", "rotate(0)");
+	textCont.setAttributeNS(null, "font-size", "31");
+	cubecoords = axial_to_cube(hex);
+	let tspanX = document.createElementNS(xmlns, "tspan");
+	tspanX.setAttributeNS(null, "x", "-80");
+	tspanX.setAttributeNS(null, "y", "-16");
+	tspanX.setAttributeNS(null, "class", "q-coord");
+	tspanX.textContent = "x " + cubecoords.q
+	let tspanY = document.createElementNS(xmlns, "tspan");
+	tspanY.setAttributeNS(null, "x", "8");
+	tspanY.setAttributeNS(null, "y", "-16");
+	tspanY.setAttributeNS(null, "class", "r-coord");
+	tspanY.textContent = "y " + cubecoords.r
+	let tspanZ = document.createElementNS(xmlns, "tspan");
+	tspanZ.setAttributeNS(null, "x", "-30");
+	tspanZ.setAttributeNS(null, "y", "60");
+	tspanZ.setAttributeNS(null, "class", "s-coord");
+	tspanZ.textContent = "z " + cubecoords.s
+
+	textCont.appendChild(tspanX);
+	textCont.appendChild(tspanY);
+	textCont.appendChild(tspanZ);
+	gPol.appendChild(poly);
+	gPol.appendChild(textCont);
+	gPos.appendChild(gPol);
+	svg.appendChild(gPos);
 
 	poly.onmouseenter = function(el) {
 		el.target.parentElement.setAttributeNS(null, "fill", "green");
