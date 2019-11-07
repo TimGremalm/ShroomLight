@@ -22,7 +22,15 @@
 	padding: 5px;
 }
 
-.shrooms {
-	border: 1px solid green;
+#shrooms {
+	border: 0px solid green;
+	/*display: none;*/
+}
+
+#shroommap {
+	border: 1px solid red;
+	display: block;
+	width: 100%;
+	height: 400px;
 }
 

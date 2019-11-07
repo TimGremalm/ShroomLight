@@ -16,13 +16,16 @@ var shroomws = (function(host) {
 	// Make sure to use SVG name space to let the browser know it isn't HTML any more
 	let xmlns = "http://www.w3.org/2000/svg";
 	let svg = document.createElementNS(xmlns, "svg");
-	svg.setAttributeNS(null, "viewBox", "-600 -600 1200 1200");
+	svg.setAttributeNS(null, "viewBox", "-1000 -500 2000 1000");
+	svg.setAttributeNS(null, "width", "100%");
+	svg.setAttributeNS(null, "height", "100%");
 	let svgg = document.createElementNS(xmlns, "g");
 	svgg.setAttributeNS(null, "transform", "rotate(-30)");
 	svgg.setAttributeNS(null, "fill", "gray");
 	svgg.setAttributeNS(null, "stroke", "black");
 	svg.appendChild(svgg);
-	document.body.appendChild(svg);
+	let dom_shroommap = document.getElementById("shroommap");
+	dom_shroommap.appendChild(svg);
 
 	let hexes = hexRing(1);
 	for (hex of hexes) {
