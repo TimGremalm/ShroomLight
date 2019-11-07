@@ -2,35 +2,20 @@
 <html>
 	<head>
 		<title>Shroom Commander</title>
-		<script type = "text/javascript">
-			function WebSocketTest() {
-				if ("WebSocket" in window) {
-					var wsaddress = "ws://" + location.hostname + ":9001/"
-					console.log("Connect websocket " + wsaddress);
-					var ws = new WebSocket(wsaddress);
-
-					ws.onopen = function() {
-						ws.send("Message to send");
-						console.log("Message is sent...");
-					};
-
-					ws.onmessage = function (evt) { 
-						var received_msg = evt.data;
-						console.log("Message is received..." +  received_msg);
-					};
-
-					ws.onclose = function() { 
-						console.log("Connection is closed..."); 
-					};
-				}
-			}
-		</script>
+		<link rel="stylesheet" href="style.css" />
 	</head>
 	<body>
 		<h1>Shroom Commander</h1>
 		<div>
 			<a href = "javascript:WebSocketTest()">Run WebSocket</a>
 		</div>
+
+		<div id="shrooms">
+		</div>
+
+		<script type = "text/javascript" src="lib.js"></script>
+		<script type = "text/javascript" src="hex-algorithms.js"></script>
+		<script type = "text/javascript" src="script.js"></script>
 	</body>
 </html>
 

@@ -1,0 +1,28 @@
+.version {
+	padding: 4px;
+	color: #aaa;
+}
+
+.x {
+	padding: 3px;
+}
+
+.y {
+	padding: 3px;
+}
+
+.z {
+	padding: 3px;
+}
+
+.shroom {
+	border: 1px solid black;
+	margin: 4px;
+	font-size: 14px;
+	padding: 5px;
+}
+
+.shrooms {
+	border: 1px solid green;
+}
+
