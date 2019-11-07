@@ -257,6 +257,29 @@ function setShroomLightMode(mode) {
 	shroomws.ws.send("LIGHTMODE " + mac + " " + mode);
 }
 
+function checkCoordToMoveShroom(id) {
+	let frameCommand = document.getElementById("shroomcommand");
+	let fmac = frameCommand.querySelector("[id=commandmac]");
+	let mac = fmac.textContent;
+	let fmove = frameCommand.querySelector("[id=moveshroomid]");
+	if (mac.length !== 12) {
+		console.log("A shroom light must be selected before you can move.")
+		return;
+	}
+	if (fmove.checked === false) {
+		console.log("Checkbox must be check to move a shroom")
+		return;
+	}
+	console.log("Move shroom "+id)
+	// Parse id to extract coordinates
+	coords = id.split("_");
+	x = parseInt(coords[0]);
+	y = parseInt(coords[1]);
+	z = parseInt(coords[2]);
+	console.log("Move shroom to "+x+" "+y+" "+z)
+	shroomws.ws.send("SETGRID " + mac + " " + x + " " + y + " " + z);
+}
+
 function selectShroom(id, shroomwsobj) {
 	console.log("selected " + id);
 	if (id.length !== 20) {
@@ -345,9 +368,10 @@ function draw_hex_svg(svg, hex, shroomwsobj, gid='', gclass='hexgrid', gbgcolor=
 	if (gclass === "hexgrid") {
 		gPos.onclick = function(el) {
 			//el.target.setAttributeNS(null, "fill", "green");
-			console.log("click " + el.currentTarget.id);
-			el.currentTarget.setAttributeNS(null, "fill", "green");
+			//console.log("click " + el.currentTarget.id);
+			//el.currentTarget.setAttributeNS(null, "fill", "green");
 			//el.currentTarget.setAttributeNS(null, "transform", "translate(0, 0)");
+			checkCoordToMoveShroom(el.currentTarget.id);
 		}
 	}
 	if (gclass === "shroomlight") {
