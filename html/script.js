@@ -95,11 +95,40 @@ var shroomws = (function(host) {
 					}
 				}
 			} else {
-				shrooms[mac].version = version;
-				shrooms[mac].x = x;
-				shrooms[mac].y = y;
-				// Move existing svg graphics
-				//shrooms[mac].svg.setAttributeNS(null, "transform", "");
+				//Only modify if corrdinates is changed
+				if (shrooms[mac].version == version && shrooms[mac].x == x && shrooms[mac].y == y && shrooms[mac].z == z) {
+					console.log(mac+" no changes")
+				} else {
+					shrooms[mac].version = version;
+					shrooms[mac].x = x;
+					shrooms[mac].y = y;
+					shrooms[mac].z = z;
+					shrooms[mac].shroomhex[0] = new Hex(x+0, y+0, z+0);  // First shroom
+					shrooms[mac].shroomhex[1] = new Hex(x+0, y-1, z+1);  // Shorom around first, offset
+					shrooms[mac].shroomhex[2] = new Hex(x+1, y-1, z+0);
+					shrooms[mac].shroomhex[3] = new Hex(x+1, y+0, z-1);
+					shrooms[mac].shroomhex[4] = new Hex(x+0, y+1, z-1);
+					shrooms[mac].shroomhex[5] = new Hex(x-1, y+1, z+0);
+					shrooms[mac].shroomhex[6] = new Hex(x-1, y+0, z+1);
+					// Move existing svg graphics for eventual new position
+					for (i=0; i< shrooms[mac].shroomhex.length; i++) {
+						xy = pointy_hex_to_pixel(100, shrooms[mac].shroomhex[i]);
+						gPos = document.getElementById('Shroom'+mac+'_'+i);
+						gPos.setAttributeNS(null, "transform", "translate(" + xy[0] + "," + xy[1] + ")");
+						console.log(mac+" - new address x "+xy[0]+" new y "+xy[1]);
+						// Change x, y, z coordinate text
+						qLabel = gPos.getElementsByClassName("q-coord")[0];
+						qLabel.textContent = "x "+shrooms[mac].shroomhex[i].q;
+						rLabel = gPos.getElementsByClassName("r-coord")[0];
+						rLabel.textContent = "y "+shrooms[mac].shroomhex[i].r;
+						sLabel = gPos.getElementsByClassName("s-coord")[0];
+						sLabel.textContent = "z "+shrooms[mac].shroomhex[i].s;
+						if (i == 0) {  // Only set version lebel on center hex in Shroom Light
+							versionLabel = gPos.getElementsByClassName("labelversion")[0];
+							versionLabel.textContent = shrooms[mac].version;
+						}
+					}
+				}
 			}
 
 			// Add (or update) this device in the shroom table on the website
@@ -161,6 +190,9 @@ var shroomws = (function(host) {
 		} else if (data_parts[0] === "information") {
 			// Not interested in this currently, just
 			// making sure every case is caught.
+		} else if (data_parts[0] === "SETGRID") {
+			// An address is changed, ask Shroom Lights to report information
+			ws.send("information");
 		} else {
 			console.log("uncaught incoming command: %s", evt.data);
 		}
