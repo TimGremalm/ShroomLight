@@ -27,15 +27,7 @@ var shroomws = (function(host) {
 	let dom_shroommap = document.getElementById("shroommap");
 	dom_shroommap.appendChild(svg);
 
-	let hexes = hexRing(1);
-	for (hex of hexes) {
-		//draw_hex_svg(svgg, hex);
-	}
-
-	//hexes = hexRing(2);
-	//hexes = makeRhombusShape(10, 5);
-	hexes = makeHexagonalShape(20);
-	//hexes = makeRDoubledRectangularShape(-3, 3, -3, 3);
+	let hexes = makeHexagonalShape(20);
 	for (hex of hexes) {
 		draw_hex_svg(svgg, hex);
 	}
@@ -66,9 +58,9 @@ var shroomws = (function(host) {
 			//   Shroom <mac> Version <version> Grid <x> <y> <z>
 			const mac = data_parts[1];
 			const version = data_parts[3];
-			const x = data_parts[5];
-			const y = data_parts[6];
-			const z = data_parts[7];
+			const x = parseInt(data_parts[5]);
+			const y = parseInt(data_parts[6]);
+			const z = parseInt(data_parts[7]);
 
 			console.log("Shroom %s (running version %d) is at (%d, %d, %d).",
 				mac, version, x, y, z
@@ -76,19 +68,37 @@ var shroomws = (function(host) {
 
 			// Add (or update) this device in the shrooms hash table
 			if (undefined === shrooms[mac]) {
-				// This is a new device; let's create a SVG element for it
 				shrooms[mac] = {
 					version: version,
 					x: x,
 					y: y,
 					z: z,
-					svg: null
+					shroomhex: new Array(7)
 				}
-				//svg.appendChild();
+				shrooms[mac].shroomhex[0] = new Hex(x+0, y+0, z+0);  // First shroom
+				shrooms[mac].shroomhex[1] = new Hex(x+0, y-1, z+1);  // Shorom around first, offset
+				shrooms[mac].shroomhex[2] = new Hex(x+1, y-1, z+0);
+				shrooms[mac].shroomhex[3] = new Hex(x+1, y+0, z-1);
+				shrooms[mac].shroomhex[4] = new Hex(x+0, y+1, z-1);
+				shrooms[mac].shroomhex[5] = new Hex(x-1, y+1, z+0);
+				shrooms[mac].shroomhex[6] = new Hex(x-1, y+0, z+1);
+				// This is a new device; let's create 7 SVG elements for it for each shroom in device
+				for (i=0; i< shrooms[mac].shroomhex.length; i++) {
+					// Generate color for Shoroom Light based on it's MAC address
+					var myrng = new Math.seedrandom(mac);
+					var rgb = hslToRgb(myrng.quick(), 0.3, 0.8);
+					var color = getColorStringFromRGB(rgb);
+					if (i == 0) {
+						draw_hex_svg(svgg, shrooms[mac].shroomhex[i], 'Shroom'+mac+'_'+i, 'shroomlight', color, mac, version);
+					} else {
+						draw_hex_svg(svgg, shrooms[mac].shroomhex[i], 'Shroom'+mac+'_'+i, 'shroomlight', color);
+					}
+				}
 			} else {
 				shrooms[mac].version = version;
 				shrooms[mac].x = x;
 				shrooms[mac].y = y;
+				// Move existing svg graphics
 				//shrooms[mac].svg.setAttributeNS(null, "transform", "");
 			}
 
@@ -188,12 +198,34 @@ function axial_to_cube(hex) {
 	return new Hex(x, y, z)
 }
 
+function toPaddedHexString(num, len) {
+	str = num.toString(16);
+	return "0".repeat(len - str.length) + str;
+}
+
+function getColorStringFromRGB(rgbarray) {
+	var colorout = "#"
+	colorout += toPaddedHexString(parseInt(rgbarray[0]), 2);
+	colorout += toPaddedHexString(parseInt(rgbarray[1]), 2);
+	colorout += toPaddedHexString(parseInt(rgbarray[2]), 2);
+	return colorout;
+}
+
 // svg is an svg element, hex is an object with q and r keys
-function draw_hex_svg(svg, hex) {
+function draw_hex_svg(svg, hex, gid='', gclass='hexgrid', gbgcolor='#ddd', glabelmac='', glabelversion='') {
+	cubecoords = axial_to_cube(hex);
 	let xmlns = "http://www.w3.org/2000/svg";
 	xy = pointy_hex_to_pixel(100, hex);
 	let gPos = document.createElementNS(xmlns, "g");
 	gPos.setAttributeNS(null, "transform", "translate(" + xy[0] + "," + xy[1] + ")");
+
+	if (gid === "") {
+		gPos.setAttributeNS(null, "id", cubecoords.q + "_" + cubecoords.r + "_" + cubecoords.s);
+	} else {
+		gPos.setAttributeNS(null, "id", gid);
+	}
+	gPos.setAttributeNS(null, "class", gclass);
+	gPos.setAttributeNS(null, "fill", gbgcolor);
 	let gPol = document.createElementNS(xmlns, "g");
 	gPol.setAttributeNS(null, "transform", "rotate(-30)");
 	let poly = document.createElementNS(xmlns, "polygon");
@@ -203,7 +235,6 @@ function draw_hex_svg(svg, hex) {
 	let textCont = document.createElementNS(xmlns, "text");
 	textCont.setAttributeNS(null, "transform", "rotate(0)");
 	textCont.setAttributeNS(null, "font-size", "31");
-	cubecoords = axial_to_cube(hex);
 	let tspanX = document.createElementNS(xmlns, "tspan");
 	tspanX.setAttributeNS(null, "x", "-80");
 	tspanX.setAttributeNS(null, "y", "-16");
@@ -219,21 +250,46 @@ function draw_hex_svg(svg, hex) {
 	tspanZ.setAttributeNS(null, "y", "60");
 	tspanZ.setAttributeNS(null, "class", "s-coord");
 	tspanZ.textContent = "z " + cubecoords.s
+	let tspanMac = document.createElementNS(xmlns, "tspan");
+	tspanMac.setAttributeNS(null, "x", "-90");
+	tspanMac.setAttributeNS(null, "y", "20");
+	tspanMac.setAttributeNS(null, "class", "labelmac");
+	tspanMac.setAttributeNS(null, "fill", "black");
+	tspanMac.textContent = glabelmac;
+	let tspanVersion = document.createElementNS(xmlns, "tspan");
+	tspanVersion.setAttributeNS(null, "x", "-30");
+	tspanVersion.setAttributeNS(null, "y", "-50");
+	tspanVersion.setAttributeNS(null, "class", "labelversion");
+	tspanVersion.setAttributeNS(null, "fill", "black");
+	tspanVersion.textContent = glabelversion;
 
 	textCont.appendChild(tspanX);
 	textCont.appendChild(tspanY);
 	textCont.appendChild(tspanZ);
+	textCont.appendChild(tspanMac);
+	textCont.appendChild(tspanVersion);
 	gPol.appendChild(poly);
 	gPol.appendChild(textCont);
 	gPos.appendChild(gPol);
 	svg.appendChild(gPos);
 
-	poly.onmouseenter = function(el) {
-		el.target.parentElement.setAttributeNS(null, "fill", "green");
+	if (gclass === "hexgrid") {
+		gPos.onclick = function(el) {
+			//el.target.setAttributeNS(null, "fill", "green");
+			console.log("click " + el.currentTarget.id);
+			el.currentTarget.setAttributeNS(null, "fill", "green");
+			//el.currentTarget.setAttributeNS(null, "transform", "translate(0, 0)");
+		}
+	}
+	if (gclass === "shroomlight") {
 	}
 
-	poly.onmouseout = function(el) {
-		el.target.parentElement.setAttributeNS(null, "fill", "gray");
+	gPos.onmouseenter = function(el) {
+		//el.target.setAttributeNS(null, "fill", "green");
+	}
+
+	gPos.onmouseout = function(el) {
+		//el.target.setAttributeNS(null, "fill", 'none');
 	}
 }
 
