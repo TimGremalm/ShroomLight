@@ -29,7 +29,7 @@ var shroomws = (function(host) {
 
 	let hexes = makeHexagonalShape(20);
 	for (hex of hexes) {
-		draw_hex_svg(svgg, hex);
+		draw_hex_svg(svgg, hex, shrooms);
 	}
 
 	// Let's connect to the websocket..
@@ -89,9 +89,9 @@ var shroomws = (function(host) {
 					var rgb = hslToRgb(myrng.quick(), 0.3, 0.8);
 					var color = getColorStringFromRGB(rgb);
 					if (i == 0) {
-						draw_hex_svg(svgg, shrooms[mac].shroomhex[i], 'Shroom'+mac+'_'+i, 'shroomlight', color, mac, version);
+						draw_hex_svg(svgg, shrooms[mac].shroomhex[i], shrooms, 'Shroom'+mac+'_'+i, 'shroomlight', color, mac, version);
 					} else {
-						draw_hex_svg(svgg, shrooms[mac].shroomhex[i], 'Shroom'+mac+'_'+i, 'shroomlight', color);
+						draw_hex_svg(svgg, shrooms[mac].shroomhex[i], shrooms, 'Shroom'+mac+'_'+i, 'shroomlight', color);
 					}
 				}
 			} else {
@@ -243,8 +243,31 @@ function getColorStringFromRGB(rgbarray) {
 	return colorout;
 }
 
+function selectShroom(id, shroomsdict) {
+	console.log("selected " + id);
+	if (id.length !== 20) {
+		console.log("A valid SHroom Light ID should be 20 characters long");
+		return;
+	}
+	var mac = id.substring(6, 18);
+	console.log("Selectes Mac: "+mac);
+	let frameCommand = document.getElementById("shroomcommand");
+	let fmac = frameCommand.querySelector("[id=commandmac]");
+	fmac.textContent = mac;
+	let fver = frameCommand.querySelector("[id=commandversion]");
+	fver.textContent = shroomsdict[mac].version;
+	let fx = frameCommand.querySelector("[id=commandx]");
+	fx.textContent = shroomsdict[mac].x;
+	let fy = frameCommand.querySelector("[id=commandy]");
+	fy.textContent = shroomsdict[mac].y;
+	let fz = frameCommand.querySelector("[id=commandz]");
+	fz.textContent = shroomsdict[mac].z;
+	let fmove = frameCommand.querySelector("[id=moveshroomid]");
+	fmove.checked = false;
+}
+
 // svg is an svg element, hex is an object with q and r keys
-function draw_hex_svg(svg, hex, gid='', gclass='hexgrid', gbgcolor='#ddd', glabelmac='', glabelversion='') {
+function draw_hex_svg(svg, hex, shroomsdict, gid='', gclass='hexgrid', gbgcolor='#ddd', glabelmac='', glabelversion='') {
 	cubecoords = axial_to_cube(hex);
 	let xmlns = "http://www.w3.org/2000/svg";
 	xy = pointy_hex_to_pixel(100, hex);
@@ -314,6 +337,9 @@ function draw_hex_svg(svg, hex, gid='', gclass='hexgrid', gbgcolor='#ddd', glabe
 		}
 	}
 	if (gclass === "shroomlight") {
+		gPos.onclick = function(el) {
+			selectShroom(el.currentTarget.id, shroomsdict);
+		}
 	}
 
 	gPos.onmouseenter = function(el) {

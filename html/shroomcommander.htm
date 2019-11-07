@@ -8,6 +8,20 @@
 	<body>
 		<h1>Shroom Commander</h1>
 		<div id="shrooms"></div>
+		<div id="shroomcommand" class="shroom">
+			<h3>Selected Shroom Light:</h3>
+			MAC: <span id="commandmac">?</span>
+			Version: <span id="commandversion">?</span>
+			Coordinates: <span id="commandx">0</span> <span id="commandy">0</span> <span id="commandz">0</span>
+			<button>idle</button>
+			<button>off</button>
+			<button>solid</button>
+			<button>wave-light</button>
+			<button>wave-medium</button>
+			<button>wave-hard</button>
+			<input type="checkbox" id="moveshroomid" name="moveshroom" value="yes">
+			<label for="moveshroomid">Move shroom</label>
+		</div>
 		<div id="shroommap"></div>
 
 		<script type = "text/javascript" src="lib.js"></script>
