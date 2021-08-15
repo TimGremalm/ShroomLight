@@ -63,3 +63,6 @@ sdkconfig.old
 # Version number
 main/version.h
 
+# Visual Studio Code
+*/.vscode
+
