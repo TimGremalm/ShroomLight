@@ -15,6 +15,9 @@
 
 #include "esp_ble_mesh_provisioning_api.h"
 
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+
 #include "board.h"
 #include "ble_mesh_example_init.h"
 
@@ -29,11 +32,7 @@ static uint8_t dev_uuid[16] = { 0xdd, 0xdd };
 static esp_ble_mesh_cfg_srv_t config_server = {
     .relay = ESP_BLE_MESH_RELAY_DISABLED,
     .beacon = ESP_BLE_MESH_BEACON_ENABLED,
-#if defined(CONFIG_BLE_MESH_FRIEND)
-    .friend_state = ESP_BLE_MESH_FRIEND_ENABLED,
-#else
     .friend_state = ESP_BLE_MESH_FRIEND_NOT_SUPPORTED,
-#endif
 #if defined(CONFIG_BLE_MESH_GATT_PROXY_SERVER)
     .gatt_proxy = ESP_BLE_MESH_GATT_PROXY_ENABLED,
 #else
@@ -304,11 +303,19 @@ static esp_err_t ble_mesh_init(void)
     return err;
 }
 
+void testtask(void *pvParameters) {
+	ESP_LOGI(TAG, "testtask init");
+    while(1) {
+    	ESP_LOGI(TAG, "testtask loop");
+        vTaskDelay(10000 / portTICK_PERIOD_MS);
+    }
+}
+
 void app_main(void)
 {
     esp_err_t err;
 
-    ESP_LOGI(TAG, "Initializing...");
+    ESP_LOGI(TAG, "Initializing Shroom Light...");
 
     board_init();
 
@@ -334,4 +341,6 @@ void app_main(void)
     }
 
     esp_ble_mesh_set_unprovisioned_device_name("Shroom");
+
+    xTaskCreate(&testtask, "testtask", 8192, NULL, 5, NULL);
 }
