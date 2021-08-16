@@ -1,4 +1,5 @@
-/* FU */
+/* ShroomLight
+Tim Gremalm */
 #include <stdio.h>
 #include <string.h>
 
@@ -255,6 +256,30 @@ static void example_ble_mesh_custom_model_cb(esp_ble_mesh_model_cb_event_t event
                                                             sizeof(setcoord.raw), setcoord.raw);
                     if (err) {
                         ESP_LOGE(TAG, "Failed to send message 0x%06x", MESH_SHROOM_MODEL_OP_COORDINATE_SET_STATUS);
+                    }
+                    break;
+                case MESH_SHROOM_MODEL_OP_LIGHTSTATE_GET:
+                    ESP_LOGI(TAG, "MESH_SHROOM_MODEL_OP_LIGHTSTATE_GET");
+                    MESH_SHROOM_MODEL_LIGHTSTATE_t state;
+                    state.shroomid = 1;
+                    state.state = 2;
+                    err = esp_ble_mesh_server_model_send_msg(&vnd_models[0],
+                                                            param->model_operation.ctx, MESH_SHROOM_MODEL_OP_LIGHTSTATE_GET_STATUS,
+                                                            sizeof(state.raw), state.raw);
+                    if (err) {
+                        ESP_LOGE(TAG, "Failed to send get status message 0x%06x", MESH_SHROOM_MODEL_OP_LIGHTSTATE_GET_STATUS);
+                    }
+                    break;
+                case MESH_SHROOM_MODEL_OP_LIGHTSTATE_SET:
+                    ESP_LOGI(TAG, "MESH_SHROOM_MODEL_OP_LIGHTSTATE_SET");
+                    MESH_SHROOM_MODEL_LIGHTSTATE_t newstate;
+                    memcpy(newstate.raw, param->model_operation.msg, param->model_operation.length);
+                    ESP_LOGI(TAG, "Set new light state on shroom id: %d to: %d", newstate.shroomid, newstate.state);
+                    err = esp_ble_mesh_server_model_send_msg(&vnd_models[0],
+                                                            param->model_operation.ctx, MESH_SHROOM_MODEL_OP_LIGHTSTATE_SET_STATUS,
+                                                            sizeof(newstate.raw), newstate.raw);
+                    if (err) {
+                        ESP_LOGE(TAG, "Failed to send message 0x%06x", MESH_SHROOM_MODEL_OP_LIGHTSTATE_SET_STATUS);
                     }
                     break;
                 default:
