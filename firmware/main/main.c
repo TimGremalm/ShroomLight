@@ -18,19 +18,16 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 
+#include "shroom_mesh_model.h"
+
 #include "board.h"
 #include "ble_mesh_example_init.h"
 
 #define TAG "ShroomLight"
 
-#define CID_ESP 0x02E5
-
 extern struct _led_state led_state[3];
 
 static uint8_t dev_uuid[16] = { 0xdd, 0xdd };
-
-#define ESP_BLE_MESH_VND_MODEL_ID_CLIENT    0x0000
-#define ESP_BLE_MESH_VND_MODEL_ID_SERVER    0x0001
 
 static esp_ble_mesh_cfg_srv_t config_server = {
     .relay = ESP_BLE_MESH_RELAY_DISABLED,
@@ -58,19 +55,6 @@ static esp_ble_mesh_model_t root_models[] = {
     ESP_BLE_MESH_MODEL_GEN_ONOFF_SRV(&onoff_pub_0, &onoff_server_0),
 };
 
-/* OP Code and Vendor ID */
-#define MESH_SHROOM_MODEL_OP_COORDINATE_GET ESP_BLE_MESH_MODEL_OP_3(0x00, CID_ESP)
-#define MESH_SHROOM_MODEL_OP_COORDINATE_SET ESP_BLE_MESH_MODEL_OP_3(0x01, CID_ESP)
-#define MESH_SHROOM_MODEL_OP_COORDINATE_GET_STATUS ESP_BLE_MESH_MODEL_OP_3(0x02, CID_ESP)
-#define MESH_SHROOM_MODEL_OP_COORDINATE_SET_STATUS ESP_BLE_MESH_MODEL_OP_3(0x03, CID_ESP)
-
-/* Define the vendor light model operation */
-static esp_ble_mesh_model_op_t shroom_op_server[] = {
-    ESP_BLE_MESH_MODEL_OP(MESH_SHROOM_MODEL_OP_COORDINATE_GET, 0),
-    ESP_BLE_MESH_MODEL_OP(MESH_SHROOM_MODEL_OP_COORDINATE_SET, 6),
-    ESP_BLE_MESH_MODEL_OP_END,
-};
-
 static esp_ble_mesh_model_t vnd_models[] = {
     ESP_BLE_MESH_VENDOR_MODEL(CID_ESP, ESP_BLE_MESH_VND_MODEL_ID_SERVER,
                               shroom_op_server, NULL, NULL),
@@ -79,15 +63,6 @@ static esp_ble_mesh_model_t vnd_models[] = {
 static esp_ble_mesh_elem_t elements[] = {
     ESP_BLE_MESH_ELEMENT(0, root_models, vnd_models),
 };
-
-typedef union {
-	struct {
-		int16_t x;
-        int16_t y;
-        int16_t z;
-	} __attribute__((packed, aligned(1)));
-	uint8_t raw[6];
-} MESH_SHROOM_MODEL_COORDINATE_t;
 
 static esp_ble_mesh_comp_t composition = {
     .cid = CID_ESP,
