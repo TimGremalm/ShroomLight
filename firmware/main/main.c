@@ -23,12 +23,28 @@ Tim Gremalm */
 
 #include "board.h"
 #include "ble_mesh_example_init.h"
+#include "ble_mesh_example_nvs.h"
 
 #define TAG "ShroomLight"
 
 extern struct _led_state led_state[3];
 
 static uint8_t dev_uuid[16] = { 0xdd, 0xdd };
+
+static struct example_info_store {
+    uint16_t net_idx;         /* NetKey Index */
+    uint16_t server_app_idx;  /* AppKey Index */
+    uint16_t client_app_idx;  /* AppKey Index */
+    uint8_t  tid;             /* Message TID */
+} __attribute__((packed)) store = {
+    .net_idx = ESP_BLE_MESH_KEY_UNUSED,
+    .server_app_idx = ESP_BLE_MESH_KEY_UNUSED,
+    .client_app_idx = ESP_BLE_MESH_KEY_UNUSED,
+    .tid = 0x0,
+};
+
+static nvs_handle_t NVS_HANDLE;
+static const char * NVS_KEY = "vendor_client";
 
 static esp_ble_mesh_cfg_srv_t config_server = {
     .relay = ESP_BLE_MESH_RELAY_DISABLED,
@@ -96,10 +112,44 @@ static esp_ble_mesh_prov_t provision = {
 #endif
 };
 
+static void mesh_example_info_store(void) {
+    //E (1195) EXAMPLE_NVS: Restore, nvs_get_blob failed, err 4359
+    //E (1139395) EXAMPLE_NVS: Store, nvs_set_blob failed, err 4359
+    esp_err_t err = ESP_OK;
+    err = ble_mesh_nvs_store(NVS_HANDLE, NVS_KEY, &store, sizeof(store));
+    if (err) {
+        ESP_LOGE(TAG, "Couldn't store.");
+    }
+}
+
+static void mesh_example_info_restore(void) {
+    esp_err_t err = ESP_OK;
+    bool exist = false;
+    err = ble_mesh_nvs_restore(NVS_HANDLE, NVS_KEY, &store, sizeof(store), &exist);
+    if (err != ESP_OK) {
+        return;
+    }
+    if (exist) {
+        ESP_LOGI(TAG, "Restore, net_idx 0x%04x, client app_idx 0x%04x, server app_idx 0x%04x, tid 0x%02x",
+            store.net_idx, store.client_app_idx, store.server_app_idx, store.tid);
+    }
+}
+
 static void prov_complete(uint16_t net_idx, uint16_t addr, uint8_t flags, uint32_t iv_index) {
+    ESP_LOGI(TAG, "Provision complete, store Net key.");
     ESP_LOGI(TAG, "net_idx: 0x%04x, addr: 0x%04x", net_idx, addr);
     ESP_LOGI(TAG, "flags: 0x%02x, iv_index: 0x%08x", flags, iv_index);
     board_led_operation(LED_G, LED_OFF);
+    store.net_idx = net_idx;
+    /* mesh_example_info_store() shall not be invoked here, because if the device
+     * is restarted and goes into a provisioned state, then the following events
+     * will come:
+     * 1st: ESP_BLE_MESH_NODE_PROV_COMPLETE_EVT
+     * 2nd: ESP_BLE_MESH_PROV_REGISTER_COMP_EVT
+     * So the store.net_idx will be updated here, and if we store the mesh example
+     * info here, the wrong app_idx (initialized with 0xFFFF) will be stored in nvs
+     * just before restoring it.
+     */
 }
 
 static void example_change_led_state(esp_ble_mesh_model_t *model,
@@ -163,6 +213,7 @@ static void example_ble_mesh_provisioning_cb(esp_ble_mesh_prov_cb_event_t event,
     switch (event) {
         case ESP_BLE_MESH_PROV_REGISTER_COMP_EVT:
             ESP_LOGI(TAG, "ESP_BLE_MESH_PROV_REGISTER_COMP_EVT, err_code %d", param->prov_register_comp.err_code);
+            mesh_example_info_restore(); /* Restore proper mesh example info */
             break;
         case ESP_BLE_MESH_NODE_PROV_ENABLE_COMP_EVT:
             ESP_LOGI(TAG, "ESP_BLE_MESH_NODE_PROV_ENABLE_COMP_EVT, err_code %d", param->node_prov_enable_comp.err_code);
@@ -241,6 +292,12 @@ static void example_ble_mesh_custom_model_cb(esp_ble_mesh_model_cb_event_t event
         case ESP_BLE_MESH_MODEL_OPERATION_EVT:
             /*!< User-defined models receive messages from peer devices (e.g. get, set, status, etc) event */
             // d_addr = param->model_operation.ctx->addr;
+            ESP_LOGI(TAG, "ESP_BLE_MESH_MODEL_OPERATION_EVT net_idx %X app_idx %X Remote address %X Destination address %X",
+                            param->model_operation.ctx->net_idx,
+                            param->model_operation.ctx->app_idx,
+                            param->model_operation.ctx->addr,
+                            param->model_operation.ctx->recv_dst
+                            );
             switch (param->model_operation.opcode) {
                 /* ------ server messages treatment ------ */
                 case MESH_SHROOM_MODEL_OP_COORDINATE_GET:
@@ -359,7 +416,7 @@ void send_wave_message() {
     esp_ble_mesh_msg_ctx_t ctx = {0};
     ctx.net_idx = 0;
     ctx.app_idx = vnd_models[1].keys[0];
-    ctx.addr = 0xFFFF;  // To all nodes
+    ctx.addr = ESP_BLE_MESH_ADDR_ALL_NODES;
     ctx.send_ttl = 3;
     ctx.send_rel = false;
 
@@ -392,31 +449,43 @@ static void example_ble_mesh_config_server_cb(esp_ble_mesh_cfg_server_cb_event_t
                                               esp_ble_mesh_cfg_server_cb_param_t *param) {
     if (event == ESP_BLE_MESH_CFG_SERVER_STATE_CHANGE_EVT) {
         switch (param->ctx.recv_op) {
-        case ESP_BLE_MESH_MODEL_OP_APP_KEY_ADD:
-            ESP_LOGI(TAG, "ESP_BLE_MESH_MODEL_OP_APP_KEY_ADD");
-            ESP_LOGI(TAG, "net_idx 0x%04x, app_idx 0x%04x",
-                param->value.state_change.appkey_add.net_idx,
-                param->value.state_change.appkey_add.app_idx);
-            ESP_LOG_BUFFER_HEX("AppKey", param->value.state_change.appkey_add.app_key, 16);
-            break;
-        case ESP_BLE_MESH_MODEL_OP_MODEL_APP_BIND:
-            ESP_LOGI(TAG, "ESP_BLE_MESH_MODEL_OP_MODEL_APP_BIND");
-            ESP_LOGI(TAG, "elem_addr 0x%04x, app_idx 0x%04x, cid 0x%04x, mod_id 0x%04x",
-                param->value.state_change.mod_app_bind.element_addr,
-                param->value.state_change.mod_app_bind.app_idx,
-                param->value.state_change.mod_app_bind.company_id,
-                param->value.state_change.mod_app_bind.model_id);
-            break;
-        case ESP_BLE_MESH_MODEL_OP_MODEL_SUB_ADD:
-            ESP_LOGI(TAG, "ESP_BLE_MESH_MODEL_OP_MODEL_SUB_ADD");
-            ESP_LOGI(TAG, "elem_addr 0x%04x, sub_addr 0x%04x, cid 0x%04x, mod_id 0x%04x",
-                param->value.state_change.mod_sub_add.element_addr,
-                param->value.state_change.mod_sub_add.sub_addr,
-                param->value.state_change.mod_sub_add.company_id,
-                param->value.state_change.mod_sub_add.model_id);
-            break;
-        default:
-            break;
+            case ESP_BLE_MESH_MODEL_OP_APP_KEY_ADD:
+                ESP_LOGI(TAG, "ESP_BLE_MESH_MODEL_OP_APP_KEY_ADD");
+                ESP_LOGI(TAG, "net_idx 0x%04x, app_idx 0x%04x",
+                    param->value.state_change.appkey_add.net_idx,
+                    param->value.state_change.appkey_add.app_idx);
+                ESP_LOG_BUFFER_HEX("AppKey", param->value.state_change.appkey_add.app_key, 16);
+                break;
+            case ESP_BLE_MESH_MODEL_OP_MODEL_APP_BIND:
+                ESP_LOGI(TAG, "ESP_BLE_MESH_MODEL_OP_MODEL_APP_BIND");
+                ESP_LOGI(TAG, "elem_addr 0x%04x, app_idx 0x%04x, cid 0x%04x, mod_id 0x%04x",
+                    param->value.state_change.mod_app_bind.element_addr,
+                    param->value.state_change.mod_app_bind.app_idx,
+                    param->value.state_change.mod_app_bind.company_id,
+                    param->value.state_change.mod_app_bind.model_id);
+                if (param->value.state_change.mod_app_bind.company_id == CID_ESP &&
+                    param->value.state_change.mod_app_bind.model_id == ESP_BLE_MESH_VND_MODEL_ID_CLIENT) {
+                    ESP_LOGI(TAG, "Store Shroom Client APP Key");
+                    store.client_app_idx = param->value.state_change.mod_app_bind.app_idx;
+                    mesh_example_info_store(); /* Store proper mesh example info */
+                }
+                if (param->value.state_change.mod_app_bind.company_id == CID_ESP &&
+                    param->value.state_change.mod_app_bind.model_id == ESP_BLE_MESH_VND_MODEL_ID_SERVER) {
+                    ESP_LOGI(TAG, "Store Shroom Server APP Key");
+                    store.server_app_idx = param->value.state_change.mod_app_bind.app_idx;
+                    mesh_example_info_store(); /* Store proper mesh example info */
+                }
+                break;
+            case ESP_BLE_MESH_MODEL_OP_MODEL_SUB_ADD:
+                ESP_LOGI(TAG, "ESP_BLE_MESH_MODEL_OP_MODEL_SUB_ADD");
+                ESP_LOGI(TAG, "elem_addr 0x%04x, sub_addr 0x%04x, cid 0x%04x, mod_id 0x%04x",
+                    param->value.state_change.mod_sub_add.element_addr,
+                    param->value.state_change.mod_sub_add.sub_addr,
+                    param->value.state_change.mod_sub_add.company_id,
+                    param->value.state_change.mod_sub_add.model_id);
+                break;
+            default:
+                break;
         }
     }
 }
@@ -468,17 +537,23 @@ void testtask(void *pvParameters) {
             net_idx     NetKey Index of the subnet through which to send the message
             app_idx     AppKey Index for message encryption
         */
-        ESP_LOGI(TAG, "Vendor Model 0");
+        ESP_LOGI(TAG, "\n----\nVendor Model 0");
         ESP_LOGI(TAG, "keys %X %X %X", vnd_models[0].keys[0], vnd_models[0].keys[1], vnd_models[0].keys[2]);
         ESP_LOGI(TAG, "groups %X %X %X", vnd_models[0].groups[0], vnd_models[0].groups[1], vnd_models[0].groups[2]);
         ESP_LOGI(TAG, "element_idx %X", vnd_models[0].element_idx);
         ESP_LOGI(TAG, "model_idx %X", vnd_models[0].model_idx);
 
-        ESP_LOGI(TAG, "Vendor Model 1");
+        ESP_LOGI(TAG, "\nVendor Model 1");
         ESP_LOGI(TAG, "keys %X %X %X", vnd_models[1].keys[0], vnd_models[1].keys[1], vnd_models[1].keys[2]);
         ESP_LOGI(TAG, "groups %X %X %X", vnd_models[1].groups[0], vnd_models[1].groups[1], vnd_models[1].groups[2]);
         ESP_LOGI(TAG, "element_idx %X", vnd_models[1].element_idx);
         ESP_LOGI(TAG, "model_idx %X", vnd_models[1].model_idx);
+
+        ESP_LOGI(TAG, "\nStore");
+        ESP_LOGI(TAG, "net_idx %X", store.net_idx);
+        ESP_LOGI(TAG, "client_app_idx %X", store.client_app_idx);
+        ESP_LOGI(TAG, "server_app_idx %X", store.server_app_idx);
+        ESP_LOGI(TAG, "tid %X", store.tid);
         send_wave_message();
     }
 }
@@ -490,16 +565,26 @@ void app_main(void) {
 
     board_init();
 
+    ESP_LOGI(TAG, "nvs_flash_init()");
     err = nvs_flash_init();
     if (err == ESP_ERR_NVS_NO_FREE_PAGES) {
+        ESP_LOGI(TAG, "ESP_ERR_NVS_NO_FREE_PAGES do a nvs_flash_erase()");
         ESP_ERROR_CHECK(nvs_flash_erase());
+        ESP_LOGI(TAG, "nvs_flash_init()");
         err = nvs_flash_init();
+        ESP_LOGI(TAG, "NVS reinitialized.");
     }
     ESP_ERROR_CHECK(err);
 
     err = bluetooth_init();
     if (err) {
         ESP_LOGE(TAG, "esp32_bluetooth_init failed (err %d)", err);
+        return;
+    }
+
+    /* Open nvs namespace for storing/restoring mesh example info */
+    err = ble_mesh_nvs_open(&NVS_HANDLE);
+    if (err) {
         return;
     }
 
