@@ -8,7 +8,6 @@
 #include <string.h>
 
 #include "apa106.h"
-#include "shroomlistener.h"
 #include "coordinates.h"
 
 #define APA106_PIN		19
@@ -20,10 +19,10 @@ uint8_t color[7] = {0};
 int breathecycle[7];
 int wavecycle[7];
 uint32_t previoustriggeruniqs[7][10];
-uint8_t mac[6];
-char macstring[12];
 
 trigger_t triggers[7];
+
+light_config_t lightconfig;
 
 void addTriggerToPreviousUnique(int shroomnr, uint32_t uniqueorigin) {
 	//Shigt array over to leave room for 1 new
@@ -33,7 +32,7 @@ void addTriggerToPreviousUnique(int shroomnr, uint32_t uniqueorigin) {
 	previoustriggeruniqs[shroomnr][0] = uniqueorigin;
 }
 
-uint32_t isUniueHandeledBefore(int shroomnr, uint32_t uniqueorigin) {
+uint32_t isUniueHandeledBefore(uint8_t shroomnr, uint32_t uniqueorigin) {
 	for (int i=0; i<7; i++) {
 		if (previoustriggeruniqs[shroomnr][i] == uniqueorigin) {
 			//It's been handled before
@@ -45,10 +44,10 @@ uint32_t isUniueHandeledBefore(int shroomnr, uint32_t uniqueorigin) {
 }
 
 void sendPirTrigger() {
-	sendTrigger(0, macstring, 0, 1, shroomsx[0], shroomsy[0], shroomsz[0], xTaskGetTickCount());
+	sendTrigger(0, lightconfig.store.addr, 0, 1, shroomsx[0], shroomsy[0], shroomsz[0], xTaskGetTickCount());
 }
 
-void sendTrigger(int shroomnr, char macorigin[12], int hops, int wavegen, int x, int y, int z, uint32_t uniqueorigin) {
+void sendTrigger(uint8_t shroomnr, uint16_t macorigin, uint16_t hops, uint8_t wavegen, int16_t x, int16_t y, int16_t z, uint32_t uniqueorigin) {
 	//ESP_LOGI(TAG, "Send Trigger to %d", shroomnr);
 	//If the same wave returns, ignore it
 	if (isUniueHandeledBefore(shroomnr, uniqueorigin) != 0) {
@@ -57,32 +56,31 @@ void sendTrigger(int shroomnr, char macorigin[12], int hops, int wavegen, int x,
 	}
 	triggers[shroomnr].arrived = xTaskGetTickCount();
 	triggers[shroomnr].shroomnr = shroomnr;
-	memset(triggers[shroomnr].macorigin, 0, sizeof(triggers[shroomnr].macorigin));
-	memcpy(triggers[shroomnr].macorigin, macorigin, 12);
+	//If already waiting for a trigger, or is in a trigger, escalate the wavegen
+	if (triggers[shroomnr].macorigin != 0 &&
+			triggers[shroomnr].macorigin != macorigin) {
+		triggers[shroomnr].wavegen += 1;
+	} else {
+		triggers[shroomnr].wavegen = wavegen;
+	}
+	triggers[shroomnr].macorigin = macorigin;
 	triggers[shroomnr].hops = hops;
 	triggers[shroomnr].x = x;
 	triggers[shroomnr].y = y;
 	triggers[shroomnr].z = z;
 	triggers[shroomnr].uniqueorigin = uniqueorigin;
-	//If already waiting for a trigger, or is in a trigger, escalate the wavegen
-	if (triggers[shroomnr].macorigin[0] != 0 &&
-			strncmp(triggers[shroomnr].macorigin, macorigin, 12) != 0) {
-		triggers[shroomnr].wavegen += 1;
-	} else {
-		triggers[shroomnr].wavegen = wavegen;
-	}
 	addTriggerToPreviousUnique(shroomnr, uniqueorigin);
 }
 
 void checkTriggers() {
 	int delta;
 	for (int i = 0; i < 7; i++) {
-		if (triggers[i].macorigin[0] != 0) {
+		if (triggers[i].macorigin != 0) {
 			delta = xTaskGetTickCount() - triggers[i].arrived;
 			delta = delta * portTICK_PERIOD_MS;
 			//Throw away if too many hops
 			if (triggers[i].hops > 30) {
-				memset(triggers[i].macorigin, 0, 12);
+				triggers[i].macorigin = 0;
 			}
 			//After some delay, trigger the shroom, send message
 			if (delta > 1500) {
@@ -95,15 +93,18 @@ void checkTriggers() {
 				}
 				//Send shroom message, echo it forward from a new address
 				sendShroomWave(i, triggers[i].macorigin, triggers[i].hops + 1, triggers[i].wavegen, triggers[i].uniqueorigin);
-				//Send trigger to own shrooms on unit, because unit won't catch own multicast send
-				for (int j = 0; j < 7; j++) {
-					int smallest;
-					smallest = closestDistanceToShroomWaves(i, shroomsx[j], shroomsy[j], shroomsz[j]);
-					//This shroom is a neighbor, trigger
-					if (smallest == 1) {
-						sendTrigger(j, triggers[i].macorigin, triggers[i].hops + 1, triggers[i].wavegen, shroomsx[j], shroomsy[j], shroomsz[j], triggers[i].uniqueorigin);
-					}
-				}
+				// how to send???
+				
+				// BLE Mesh will get the message if the server is subscribed to the same group
+				// //Send trigger to own shrooms on unit, because unit won't catch own multicast send
+				// for (int j = 0; j < 7; j++) {
+				// 	int smallest;
+				// 	smallest = closestDistanceToShroomWaves(i, shroomsx[j], shroomsy[j], shroomsz[j]);
+				// 	//This shroom is a neighbor, trigger
+				// 	if (smallest == 1) {
+				// 		sendTrigger(j, triggers[i].macorigin, triggers[i].hops + 1, triggers[i].wavegen, shroomsx[j], shroomsy[j], shroomsz[j], triggers[i].uniqueorigin);
+				// 	}
+				// }
 				//Remove trigger
 				memset(triggers[i].macorigin, 0, 12);
 			}
@@ -113,6 +114,7 @@ void checkTriggers() {
 
 void lighttask(void *pvParameters) {
 	ESP_LOGI(TAG, "Light init");
+	lightconfig = *(light_config_t *) pvParameters;
 	gpio_reset_pin(APA106_PIN);
 	gpio_set_direction(APA106_PIN, GPIO_MODE_DEF_OUTPUT);
 	gpio_set_level(APA106_PIN, 0);
@@ -126,9 +128,6 @@ void lighttask(void *pvParameters) {
 	state[4] = LIGHTSTATE_Idle;
 	state[5] = LIGHTSTATE_Idle;
 	state[6] = LIGHTSTATE_Idle;
-
-	esp_read_mac(mac, ESP_MAC_WIFI_STA);
-	sprintf(macstring, "%02x%02x%02x%02x%02x%02x", mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
 
 	const int breathetime = 170;
 	const int wavelighttime = 120;

@@ -16,18 +16,23 @@ enum LIGHTSTATE {
 
 typedef struct {
 	uint32_t arrived;
-	int shroomnr;
-	char macorigin[13];
-	int hops;
-	int wavegen;
-	int x;
-	int y;
-	int z;
+	uint8_t shroomnr;
+	uint16_t macorigin;
+	uint16_t hops;
+	uint8_t wavegen;
+	int16_t x;
+	int16_t y;
+	int16_t z;
 	uint32_t uniqueorigin;
 } trigger_t;
 
+typedef struct {
+	settings_t *settings;
+	struct example_info_store *store;
+} light_config_t;
+
 void sendPirTrigger();
-void sendTrigger(int shroomnr, char macorigin[12], int hops, int wavegen, int x, int y, int z, uint32_t uniqueorigin);
+void sendTrigger(uint8_t shroomnr, uint16_t macorigin, uint16_t hops, uint8_t wavegen, int16_t x, int16_t y, int16_t z, uint32_t uniqueorigin);
 void setShroomLightState(int shroomid, enum LIGHTSTATE newstate);
 enum LIGHTSTATE newstate getShroomLightState(int shroomid);
 

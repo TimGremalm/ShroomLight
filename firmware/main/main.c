@@ -37,6 +37,7 @@ tim@gremalm.se */
 #include "pir.h"
 
 statsblink_config_t statsblinkconfig;
+light_config_t lightconfig;
 
 #define TAG "ShroomLight"
 
@@ -232,6 +233,7 @@ static void ble_mesh_custom_model_cb(esp_ble_mesh_model_cb_event_t event, esp_bl
                     settings.gridY = setcoord.y;
                     settings.gridZ = setcoord.z;
                     SaveSettings();
+                    calculateShroomCoordinates();
                     break;
                 case MESH_SHROOM_MODEL_OP_LIGHTSTATE_GET:
                     ESP_LOGI(TAG, "MESH_SHROOM_MODEL_OP_LIGHTSTATE_GET");
@@ -250,7 +252,18 @@ static void ble_mesh_custom_model_cb(esp_ble_mesh_model_cb_event_t event, esp_bl
                     MESH_SHROOM_MODEL_LIGHTSTATE_t newstate;
                     memcpy(newstate.raw, param->model_operation.msg, param->model_operation.length);
                     ESP_LOGI(TAG, "Set new light state on shroom id: %d to: %d", newstate.shroomid, newstate.state);
-                    setShroomLightState(newstate.shroomid, newstate.state);
+                    if (newstate.shroomid < 7) {
+                        setShroomLightState(newstate.shroomid, newstate.state);
+                    } else {
+                        /* Not a specific shroom, set all to value */
+                        setShroomLightState(0, newstate.state);
+                        setShroomLightState(1, newstate.state);
+                        setShroomLightState(2, newstate.state);
+                        setShroomLightState(3, newstate.state);
+                        setShroomLightState(4, newstate.state);
+                        setShroomLightState(5, newstate.state);
+                        setShroomLightState(6, newstate.state);
+                    }
                     err = esp_ble_mesh_server_model_send_msg(&vnd_models[0],
                                                             param->model_operation.ctx, MESH_SHROOM_MODEL_OP_LIGHTSTATE_SET_STATUS,
                                                             sizeof(newstate.raw), newstate.raw);
@@ -265,6 +278,14 @@ static void ble_mesh_custom_model_cb(esp_ble_mesh_model_cb_event_t event, esp_bl
                     ESP_LOGI(TAG, "Wave uniqueid: %d origin: %d hops: %d generation: %d x: %d y: %d z: %d",
                              newwave.uniqueid, newwave.origin, newwave.hops, newwave.generation,
                              newwave.x, newwave.y, newwave.z);
+                    int smallest;
+                    for (int i = 0; i < 7; i++) {
+                        smallest = closestDistanceToShroomWaves(i, newwave.x, newwave.y, newwave.z);
+                        if (smallest == 1) {
+                            ESP_LOGI(TAG, "This shroom is a neighbor, trigger");
+                            sendTrigger(i, argMac, argHops, argWaveGeneration, argX, argY, argZ, argUnique);
+                        }
+                    }
                     break;
                 default:
                     break;
@@ -429,8 +450,10 @@ void app_main(void) {
 
     esp_ble_mesh_set_unprovisioned_device_name("Shroom");
 
+    lightconfig.settings = &settings;  // Make settings accessable from light task
+    lightconfig.store = &store;
 	xTaskCreate(&statusblinktask, "statusblinktask", 8192, &statsblinkconfig, 5, NULL);
-	xTaskCreate(&lighttask, "lighttask", 8192, NULL, 5, NULL);
+	xTaskCreate(&lighttask, "lighttask", 8192, &lightconfig, 5, NULL);
 	xTaskCreate(&pirtask, "pirtask", 8192, NULL, 5, NULL);
     
     xTaskCreate(&testtask, "testtask", 8192, NULL, 5, NULL);
