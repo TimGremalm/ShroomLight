@@ -44,7 +44,7 @@ uint32_t isUniueHandeledBefore(uint8_t shroomnr, uint32_t uniqueorigin) {
 }
 
 void sendPirTrigger() {
-	sendTrigger(0, lightconfig.store.addr, 0, 1, shroomsx[0], shroomsy[0], shroomsz[0], xTaskGetTickCount());
+	sendTrigger(0, lightconfig.store->addr, 0, 1, shroomsx[0], shroomsy[0], shroomsz[0], xTaskGetTickCount());
 }
 
 void sendTrigger(uint8_t shroomnr, uint16_t macorigin, uint16_t hops, uint8_t wavegen, int16_t x, int16_t y, int16_t z, uint32_t uniqueorigin) {
@@ -92,9 +92,9 @@ void checkTriggers() {
 					setShroomLightState(i, LIGHTSTATE_WaveHard);
 				}
 				//Send shroom message, echo it forward from a new address
-				sendShroomWave(i, triggers[i].macorigin, triggers[i].hops + 1, triggers[i].wavegen, triggers[i].uniqueorigin);
+				// sendShroomWave(i, triggers[i].macorigin, triggers[i].hops + 1, triggers[i].wavegen, triggers[i].uniqueorigin);
 				// how to send???
-				
+
 				// BLE Mesh will get the message if the server is subscribed to the same group
 				// //Send trigger to own shrooms on unit, because unit won't catch own multicast send
 				// for (int j = 0; j < 7; j++) {
@@ -106,7 +106,7 @@ void checkTriggers() {
 				// 	}
 				// }
 				//Remove trigger
-				memset(triggers[i].macorigin, 0, 12);
+				triggers[i].macorigin = 0;
 			}
 		}
 	}
@@ -268,7 +268,7 @@ void setShroomLightState(int shroomid, enum LIGHTSTATE newstate) {
 	state[shroomid] = newstate;
 }
 
-enum LIGHTSTATE newstate getShroomLightState(int shroomid) {
+enum LIGHTSTATE getShroomLightState(int shroomid) {
 	return state[shroomid];
 }
 

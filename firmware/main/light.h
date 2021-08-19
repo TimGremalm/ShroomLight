@@ -2,6 +2,8 @@
 #define LIGHT_H
 
 #include <stdint.h>
+#include "settings.h"
+#include "store_mesh_idx_nvs.h"
 
 void lighttask(void *pvParameters);
 
@@ -28,13 +30,13 @@ typedef struct {
 
 typedef struct {
 	settings_t *settings;
-	struct example_info_store *store;
+	example_info_store_t *store;
 } light_config_t;
 
 void sendPirTrigger();
 void sendTrigger(uint8_t shroomnr, uint16_t macorigin, uint16_t hops, uint8_t wavegen, int16_t x, int16_t y, int16_t z, uint32_t uniqueorigin);
 void setShroomLightState(int shroomid, enum LIGHTSTATE newstate);
-enum LIGHTSTATE newstate getShroomLightState(int shroomid);
+enum LIGHTSTATE getShroomLightState(int shroomid);
 
 #endif /* LIGHT_H */
 

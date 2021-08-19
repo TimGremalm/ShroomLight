@@ -26,6 +26,7 @@ tim@gremalm.se */
 /* Store mesh keys on NVS flash */
 #include "ble_mesh_example_init.h"
 #include "ble_mesh_example_nvs.h"
+#include "store_mesh_idx_nvs.h"
 
 /* Application specific utils for Shroom Light */
 #include "settings.h"
@@ -43,13 +44,7 @@ light_config_t lightconfig;
 
 static uint8_t dev_uuid[16] = { 0xdd, 0xdd };
 
-static struct example_info_store {
-    uint16_t net_idx;         /* NetKey Index */
-    uint16_t server_app_idx;  /* AppKey Index */
-    uint16_t client_app_idx;  /* AppKey Index */
-    uint8_t  tid;             /* Message TID */
-    uint16_t addr;            /* Node Address */
-} __attribute__((packed)) store = {
+static example_info_store_t store = {
     .net_idx = ESP_BLE_MESH_KEY_UNUSED,
     .server_app_idx = ESP_BLE_MESH_KEY_UNUSED,
     .client_app_idx = ESP_BLE_MESH_KEY_UNUSED,
@@ -283,7 +278,7 @@ static void ble_mesh_custom_model_cb(esp_ble_mesh_model_cb_event_t event, esp_bl
                         smallest = closestDistanceToShroomWaves(i, newwave.x, newwave.y, newwave.z);
                         if (smallest == 1) {
                             ESP_LOGI(TAG, "This shroom is a neighbor, trigger");
-                            sendTrigger(i, argMac, argHops, argWaveGeneration, argX, argY, argZ, argUnique);
+                            sendTrigger(i, newwave.origin, newwave.hops, newwave.generation, newwave.x, newwave.y, newwave.z, newwave.uniqueid);
                         }
                     }
                     break;
