@@ -21,13 +21,10 @@ Tim Gremalm */
 
 #include "shroom_mesh_model.h"
 
-#include "board.h"
 #include "ble_mesh_example_init.h"
 #include "ble_mesh_example_nvs.h"
 
 #define TAG "ShroomLight"
-
-extern struct _led_state led_state[3];
 
 static uint8_t dev_uuid[16] = { 0xdd, 0xdd };
 
@@ -122,7 +119,6 @@ static void prov_complete(uint16_t net_idx, uint16_t addr, uint8_t flags, uint32
     ESP_LOGI(TAG, "Provision complete, store Net key.");
     ESP_LOGI(TAG, "net_idx: 0x%04x, addr: 0x%04x", net_idx, addr);
     ESP_LOGI(TAG, "flags: 0x%02x, iv_index: 0x%08x", flags, iv_index);
-    board_led_operation(LED_G, LED_OFF);
     store.net_idx = net_idx;
     /* mesh_example_info_store() shall not be invoked here, because if the device
      * is restarted and goes into a provisioned state, then the following events
@@ -348,9 +344,6 @@ static esp_err_t ble_mesh_init(void) {
     }
 
     ESP_LOGI(TAG, "BLE Mesh Node initialized");
-
-    board_led_operation(LED_G, LED_ON);
-
     return err;
 }
 
@@ -374,8 +367,6 @@ void app_main(void) {
     esp_err_t err;
 
     ESP_LOGI(TAG, "Initializing Shroom Light...");
-
-    board_init();
 
     ESP_LOGI(TAG, "nvs_flash_init()");
     err = nvs_flash_init();
