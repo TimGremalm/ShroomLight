@@ -27,7 +27,11 @@ tim@gremalm.se */
 #include "ble_mesh_example_init.h"
 #include "ble_mesh_example_nvs.h"
 
-/* Application specific for Shroom Light */
+/* Application specific utils for Shroom Light */
+#include "settings.h"
+#include "coordinates.h"
+
+/* Application specific tasks for Shroom Light */
 #include "statusblink.h"
 #include "light.h"
 #include "pir.h"
@@ -43,11 +47,13 @@ static struct example_info_store {
     uint16_t server_app_idx;  /* AppKey Index */
     uint16_t client_app_idx;  /* AppKey Index */
     uint8_t  tid;             /* Message TID */
+    uint16_t addr;            /* Node Address */
 } __attribute__((packed)) store = {
     .net_idx = ESP_BLE_MESH_KEY_UNUSED,
     .server_app_idx = ESP_BLE_MESH_KEY_UNUSED,
     .client_app_idx = ESP_BLE_MESH_KEY_UNUSED,
     .tid = 0x0,
+    .addr = 0,
 };
 
 static nvs_handle_t NVS_HANDLE;
@@ -127,7 +133,11 @@ static void prov_complete(uint16_t net_idx, uint16_t addr, uint8_t flags, uint32
     ESP_LOGI(TAG, "Provision complete, store Net key.");
     ESP_LOGI(TAG, "net_idx: 0x%04x, addr: 0x%04x", net_idx, addr);
     ESP_LOGI(TAG, "flags: 0x%02x, iv_index: 0x%08x", flags, iv_index);
+    /* Store net key index for later publish use */
     store.net_idx = net_idx;
+    /* Store node address reference to identify self later */
+    store.addr = addr;
+    ESP_LOGI(TAG, "Node address %X", addr);
     /* mesh_shroom_key_info_store() shall not be invoked here, because if the device
      * is restarted and goes into a provisioned state, then the following events
      * will come:
@@ -197,9 +207,9 @@ static void ble_mesh_custom_model_cb(esp_ble_mesh_model_cb_event_t event, esp_bl
                 case MESH_SHROOM_MODEL_OP_COORDINATE_GET:
                     ESP_LOGI(TAG, "MESH_SHROOM_MODEL_OP_COORDINATE_GET");
                     MESH_SHROOM_MODEL_COORDINATE_t coordinate;
-                    coordinate.x = 1;
-                    coordinate.y = 2;
-                    coordinate.z = 3;
+                    coordinate.x = settings.gridX;
+                    coordinate.y = settings.gridY;
+                    coordinate.z = settings.gridZ;
                     err = esp_ble_mesh_server_model_send_msg(&vnd_models[0],
                                                             param->model_operation.ctx, MESH_SHROOM_MODEL_OP_COORDINATE_GET_STATUS,
                                                             sizeof(coordinate.raw), coordinate.raw);
@@ -218,12 +228,16 @@ static void ble_mesh_custom_model_cb(esp_ble_mesh_model_cb_event_t event, esp_bl
                     if (err) {
                         ESP_LOGE(TAG, "Failed to send message 0x%06x", MESH_SHROOM_MODEL_OP_COORDINATE_SET_STATUS);
                     }
+                    settings.gridX = setcoord.x;
+                    settings.gridY = setcoord.y;
+                    settings.gridZ = setcoord.z;
+                    SaveSettings();
                     break;
                 case MESH_SHROOM_MODEL_OP_LIGHTSTATE_GET:
                     ESP_LOGI(TAG, "MESH_SHROOM_MODEL_OP_LIGHTSTATE_GET");
                     MESH_SHROOM_MODEL_LIGHTSTATE_t state;
-                    state.shroomid = 1;
-                    state.state = 2;
+                    state.shroomid = 0;
+                    state.state = (uint8_t)getShroomLightState(state.shroomid);
                     err = esp_ble_mesh_server_model_send_msg(&vnd_models[0],
                                                             param->model_operation.ctx, MESH_SHROOM_MODEL_OP_LIGHTSTATE_GET_STATUS,
                                                             sizeof(state.raw), state.raw);
@@ -236,6 +250,7 @@ static void ble_mesh_custom_model_cb(esp_ble_mesh_model_cb_event_t event, esp_bl
                     MESH_SHROOM_MODEL_LIGHTSTATE_t newstate;
                     memcpy(newstate.raw, param->model_operation.msg, param->model_operation.length);
                     ESP_LOGI(TAG, "Set new light state on shroom id: %d to: %d", newstate.shroomid, newstate.state);
+                    setShroomLightState(newstate.shroomid, newstate.state);
                     err = esp_ble_mesh_server_model_send_msg(&vnd_models[0],
                                                             param->model_operation.ctx, MESH_SHROOM_MODEL_OP_LIGHTSTATE_SET_STATUS,
                                                             sizeof(newstate.raw), newstate.raw);
@@ -247,8 +262,8 @@ static void ble_mesh_custom_model_cb(esp_ble_mesh_model_cb_event_t event, esp_bl
                     ESP_LOGI(TAG, "MESH_SHROOM_MODEL_OP_WAVE");
                     MESH_SHROOM_MODEL_WAVE_t newwave;
                     memcpy(newwave.raw, param->model_operation.msg, param->model_operation.length);
-                    ESP_LOGI(TAG, "Wave id: %d origin: %d hops: %d generation: %d x: %d y: %d z: %d",
-                             newwave.id, newwave.origin, newwave.hops, newwave.generation,
+                    ESP_LOGI(TAG, "Wave uniqueid: %d origin: %d hops: %d generation: %d x: %d y: %d z: %d",
+                             newwave.uniqueid, newwave.origin, newwave.hops, newwave.generation,
                              newwave.x, newwave.y, newwave.z);
                     break;
                 default:
@@ -362,7 +377,7 @@ void testtask(void *pvParameters) {
     while(1) {
         vTaskDelay(10000 / portTICK_PERIOD_MS);
         MESH_SHROOM_MODEL_WAVE_t newwave;
-        newwave.id = 1;
+        newwave.uniqueid = 1;
         newwave.origin = 2;
         newwave.hops = 3;
         newwave.generation = 4;
@@ -388,6 +403,9 @@ void app_main(void) {
         ESP_LOGI(TAG, "NVS reinitialized.");
     }
     ESP_ERROR_CHECK(err);
+
+	LoadSettings();
+	calculateShroomCoordinates();
 
     err = bluetooth_init();
     if (err) {

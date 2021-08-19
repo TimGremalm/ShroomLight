@@ -60,7 +60,7 @@ typedef union {
 
 typedef union {
     struct {
-        uint32_t id;
+        uint32_t uniqueid;
         uint16_t origin;
         uint16_t hops;
         uint8_t generation;

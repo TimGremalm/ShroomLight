@@ -269,3 +269,7 @@ void setShroomLightState(int shroomid, enum LIGHTSTATE newstate) {
 	state[shroomid] = newstate;
 }
 
+enum LIGHTSTATE newstate getShroomLightState(int shroomid) {
+	return state[shroomid];
+}
+
