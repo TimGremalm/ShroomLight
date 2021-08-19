@@ -64,8 +64,8 @@ static esp_ble_mesh_client_t vendor_client;
 ESP_BLE_MESH_MODEL_PUB_DEFINE(vendor_client_pub, 3 + 15, ROLE_NODE);
 
 static esp_ble_mesh_model_t vnd_models[] = {
-    ESP_BLE_MESH_VENDOR_MODEL(CID_ESP, ESP_BLE_MESH_VND_MODEL_ID_SERVER, shroom_op_server, NULL, NULL),
-    ESP_BLE_MESH_VENDOR_MODEL(CID_ESP, ESP_BLE_MESH_VND_MODEL_ID_CLIENT, shroom_op_client, &vendor_client_pub, &vendor_client),
+    ESP_BLE_MESH_VENDOR_MODEL(CID_ESP, ESP_BLE_MESH_VENDOR_MODEL_ID_SHROOM_SERVER, shroom_op_server, NULL, NULL),
+    ESP_BLE_MESH_VENDOR_MODEL(CID_ESP, ESP_BLE_MESH_VENDOR_MODEL_ID_SHROOM_CLIENT, shroom_op_client, &vendor_client_pub, &vendor_client),
 };
 
 static esp_ble_mesh_elem_t elements[] = {
@@ -92,9 +92,7 @@ static esp_ble_mesh_prov_t provision = {
 #endif
 };
 
-static void mesh_example_info_store(void) {
-    //E (1195) EXAMPLE_NVS: Restore, nvs_get_blob failed, err 4359
-    //E (1139395) EXAMPLE_NVS: Store, nvs_set_blob failed, err 4359
+static void mesh_shroom_key_info_store(void) {
     esp_err_t err = ESP_OK;
     err = ble_mesh_nvs_store(NVS_HANDLE, NVS_KEY, &store, sizeof(store));
     if (err) {
@@ -102,7 +100,7 @@ static void mesh_example_info_store(void) {
     }
 }
 
-static void mesh_example_info_restore(void) {
+static void mesh_shroom_key_info_restore(void) {
     esp_err_t err = ESP_OK;
     bool exist = false;
     err = ble_mesh_nvs_restore(NVS_HANDLE, NVS_KEY, &store, sizeof(store), &exist);
@@ -120,7 +118,7 @@ static void prov_complete(uint16_t net_idx, uint16_t addr, uint8_t flags, uint32
     ESP_LOGI(TAG, "net_idx: 0x%04x, addr: 0x%04x", net_idx, addr);
     ESP_LOGI(TAG, "flags: 0x%02x, iv_index: 0x%08x", flags, iv_index);
     store.net_idx = net_idx;
-    /* mesh_example_info_store() shall not be invoked here, because if the device
+    /* mesh_shroom_key_info_store() shall not be invoked here, because if the device
      * is restarted and goes into a provisioned state, then the following events
      * will come:
      * 1st: ESP_BLE_MESH_NODE_PROV_COMPLETE_EVT
@@ -131,33 +129,41 @@ static void prov_complete(uint16_t net_idx, uint16_t addr, uint8_t flags, uint32
      */
 }
 
-static void example_ble_mesh_provisioning_cb(esp_ble_mesh_prov_cb_event_t event,
+static void ble_mesh_provisioning_cb(esp_ble_mesh_prov_cb_event_t event,
                                              esp_ble_mesh_prov_cb_param_t *param) {
     switch (event) {
         case ESP_BLE_MESH_PROV_REGISTER_COMP_EVT:
+            /* Initialize BLE Mesh provisioning capabilities and internal data information completion event */
             ESP_LOGI(TAG, "ESP_BLE_MESH_PROV_REGISTER_COMP_EVT, err_code %d", param->prov_register_comp.err_code);
-            mesh_example_info_restore(); /* Restore proper mesh example info */
+            /* Restore proper NVS mesh info */
+            mesh_shroom_key_info_restore();
             break;
         case ESP_BLE_MESH_NODE_PROV_ENABLE_COMP_EVT:
+            /* Enable node provisioning functionality completion event */
             ESP_LOGI(TAG, "ESP_BLE_MESH_NODE_PROV_ENABLE_COMP_EVT, err_code %d", param->node_prov_enable_comp.err_code);
             break;
         case ESP_BLE_MESH_NODE_PROV_LINK_OPEN_EVT:
+            /* Establish a BLE Mesh link event */
             ESP_LOGI(TAG, "ESP_BLE_MESH_NODE_PROV_LINK_OPEN_EVT, bearer %s",
                 param->node_prov_link_open.bearer == ESP_BLE_MESH_PROV_ADV ? "PB-ADV" : "PB-GATT");
             break;
         case ESP_BLE_MESH_NODE_PROV_LINK_CLOSE_EVT:
+            /* Close a BLE Mesh link event */
             ESP_LOGI(TAG, "ESP_BLE_MESH_NODE_PROV_LINK_CLOSE_EVT, bearer %s",
                 param->node_prov_link_close.bearer == ESP_BLE_MESH_PROV_ADV ? "PB-ADV" : "PB-GATT");
             break;
         case ESP_BLE_MESH_NODE_PROV_COMPLETE_EVT:
+            /* Provisioning done event */
             ESP_LOGI(TAG, "ESP_BLE_MESH_NODE_PROV_COMPLETE_EVT");
             prov_complete(param->node_prov_complete.net_idx, param->node_prov_complete.addr,
                 param->node_prov_complete.flags, param->node_prov_complete.iv_index);
             break;
         case ESP_BLE_MESH_NODE_PROV_RESET_EVT:
+            /* Provisioning reset event */
             ESP_LOGI(TAG, "ESP_BLE_MESH_NODE_PROV_RESET_EVT");
             break;
         case ESP_BLE_MESH_NODE_SET_UNPROV_DEV_NAME_COMP_EVT:
+            /* Set the unprovisioned device name completion event */
             ESP_LOGI(TAG, "ESP_BLE_MESH_NODE_SET_UNPROV_DEV_NAME_COMP_EVT, err_code %d", param->node_set_unprov_dev_name_comp.err_code);
             break;
         default:
@@ -165,14 +171,11 @@ static void example_ble_mesh_provisioning_cb(esp_ble_mesh_prov_cb_event_t event,
     }
 }
 
-static void example_ble_mesh_custom_model_cb(esp_ble_mesh_model_cb_event_t event, esp_ble_mesh_model_cb_param_t *param) {
-    // uint16_t d_addr;
+static void ble_mesh_custom_model_cb(esp_ble_mesh_model_cb_event_t event, esp_ble_mesh_model_cb_param_t *param) {
     esp_err_t err;
-
     switch (event) {
         case ESP_BLE_MESH_MODEL_OPERATION_EVT:
             /*!< User-defined models receive messages from peer devices (e.g. get, set, status, etc) event */
-            // d_addr = param->model_operation.ctx->addr;
             ESP_LOGI(TAG, "ESP_BLE_MESH_MODEL_OPERATION_EVT net_idx %X app_idx %X Remote address %X Destination address %X",
                             param->model_operation.ctx->net_idx,
                             param->model_operation.ctx->app_idx,
@@ -257,12 +260,10 @@ static void example_ble_mesh_custom_model_cb(esp_ble_mesh_model_cb_event_t event
         case ESP_BLE_MESH_CLIENT_MODEL_SEND_TIMEOUT_EVT:
             /*!< Timeout event for the user-defined client models that failed to receive response from peer server models */
             ESP_LOGW(TAG, "message 0x%06x timeout", param->client_send_timeout.opcode);
-            //example_ble_mesh_send_vendor_message(ESP_BLE_MESH_VND_MODEL_OP_SET,0,d_addr);
             break;
         case ESP_BLE_MESH_MODEL_PUBLISH_UPDATE_EVT:
             /*!< When a model is configured to publish messages periodically, this event will occur during every publish period */
             ESP_LOGI(TAG, "ESP_BLE_MESH_MODEL_PUBLISH_UPDATE_EVT");
-            //publish_temp();
             break;
         default:
             break;
@@ -279,7 +280,7 @@ void wave_publish(MESH_SHROOM_MODEL_WAVE_t newwave) {
     }
 }
 
-static void example_ble_mesh_config_server_cb(esp_ble_mesh_cfg_server_cb_event_t event,
+static void ble_mesh_config_server_cb(esp_ble_mesh_cfg_server_cb_event_t event,
                                               esp_ble_mesh_cfg_server_cb_param_t *param) {
     if (event == ESP_BLE_MESH_CFG_SERVER_STATE_CHANGE_EVT) {
         switch (param->ctx.recv_op) {
@@ -298,16 +299,16 @@ static void example_ble_mesh_config_server_cb(esp_ble_mesh_cfg_server_cb_event_t
                     param->value.state_change.mod_app_bind.company_id,
                     param->value.state_change.mod_app_bind.model_id);
                 if (param->value.state_change.mod_app_bind.company_id == CID_ESP &&
-                    param->value.state_change.mod_app_bind.model_id == ESP_BLE_MESH_VND_MODEL_ID_CLIENT) {
+                    param->value.state_change.mod_app_bind.model_id == ESP_BLE_MESH_VENDOR_MODEL_ID_SHROOM_CLIENT) {
                     ESP_LOGI(TAG, "Store Shroom Client APP Key");
                     store.client_app_idx = param->value.state_change.mod_app_bind.app_idx;
-                    mesh_example_info_store(); /* Store proper mesh example info */
+                    mesh_shroom_key_info_store(); /* Store proper mesh shroom keys info */
                 }
                 if (param->value.state_change.mod_app_bind.company_id == CID_ESP &&
-                    param->value.state_change.mod_app_bind.model_id == ESP_BLE_MESH_VND_MODEL_ID_SERVER) {
+                    param->value.state_change.mod_app_bind.model_id == ESP_BLE_MESH_VENDOR_MODEL_ID_SHROOM_SERVER) {
                     ESP_LOGI(TAG, "Store Shroom Server APP Key");
                     store.server_app_idx = param->value.state_change.mod_app_bind.app_idx;
-                    mesh_example_info_store(); /* Store proper mesh example info */
+                    mesh_shroom_key_info_store(); /* Store proper mesh shroom keys info */
                 }
                 break;
             case ESP_BLE_MESH_MODEL_OP_MODEL_SUB_ADD:
@@ -325,12 +326,11 @@ static void example_ble_mesh_config_server_cb(esp_ble_mesh_cfg_server_cb_event_t
 }
 
 static esp_err_t ble_mesh_init(void) {
+    esp_ble_mesh_register_prov_callback(ble_mesh_provisioning_cb);
+    esp_ble_mesh_register_config_server_callback(ble_mesh_config_server_cb);
+    esp_ble_mesh_register_custom_model_callback(ble_mesh_custom_model_cb);
+
     esp_err_t err = ESP_OK;
-
-    esp_ble_mesh_register_prov_callback(example_ble_mesh_provisioning_cb);
-    esp_ble_mesh_register_config_server_callback(example_ble_mesh_config_server_cb);
-    esp_ble_mesh_register_custom_model_callback(example_ble_mesh_custom_model_cb);
-
     err = esp_ble_mesh_init(&provision, &composition);
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Failed to initialize mesh stack (err %d)", err);
@@ -366,7 +366,7 @@ void testtask(void *pvParameters) {
 void app_main(void) {
     esp_err_t err;
 
-    ESP_LOGI(TAG, "Initializing Shroom Light...");
+    ESP_LOGI(TAG, "Shroom Light by Tim Gremalm");
 
     ESP_LOGI(TAG, "nvs_flash_init()");
     err = nvs_flash_init();
@@ -385,7 +385,7 @@ void app_main(void) {
         return;
     }
 
-    /* Open nvs namespace for storing/restoring mesh example info */
+    /* Open nvs namespace for storing/restoring mesh shroom keys info */
     err = ble_mesh_nvs_open(&NVS_HANDLE);
     if (err) {
         return;

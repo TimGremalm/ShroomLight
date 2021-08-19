@@ -5,8 +5,8 @@
 
 #define CID_ESP 0x02E5
 
-#define ESP_BLE_MESH_VND_MODEL_ID_CLIENT 0x0000
-#define ESP_BLE_MESH_VND_MODEL_ID_SERVER 0x0001
+#define ESP_BLE_MESH_VENDOR_MODEL_ID_SHROOM_CLIENT 0x0023
+#define ESP_BLE_MESH_VENDOR_MODEL_ID_SHROOM_SERVER 0x0042
 
 /* OP Code and Vendor ID */
 /* Coordinate - x, y, z position of the center shroom */
