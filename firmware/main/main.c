@@ -1,5 +1,7 @@
-/* ShroomLight
-Tim Gremalm */
+/* ShroomLight by Tim Gremalm
+http://tim.gremalm.se/
+tim@gremalm.se */
+
 #include <stdio.h>
 #include <string.h>
 
@@ -13,16 +15,24 @@ Tim Gremalm */
 #include "esp_ble_mesh_config_model_api.h"
 #include "esp_ble_mesh_generic_model_api.h"
 #include "esp_ble_mesh_local_data_operation_api.h"
-
 #include "esp_ble_mesh_provisioning_api.h"
 
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 
+/* Bluetooth Mesh Vendor Model Shroom Light */
 #include "shroom_mesh_model.h"
 
+/* Store mesh keys on NVS flash */
 #include "ble_mesh_example_init.h"
 #include "ble_mesh_example_nvs.h"
+
+/* Application specific for Shroom Light */
+#include "statusblink.h"
+#include "light.h"
+#include "pir.h"
+
+statsblink_config_t statsblinkconfig;
 
 #define TAG "ShroomLight"
 
@@ -359,7 +369,7 @@ void testtask(void *pvParameters) {
         newwave.x = 5;
         newwave.y = 6;
         newwave.z = 7;
-        wave_publish(newwave);
+        //wave_publish(newwave);
     }
 }
 
@@ -401,5 +411,9 @@ void app_main(void) {
 
     esp_ble_mesh_set_unprovisioned_device_name("Shroom");
 
+	xTaskCreate(&statusblinktask, "statusblinktask", 8192, &statsblinkconfig, 5, NULL);
+	xTaskCreate(&lighttask, "lighttask", 8192, NULL, 5, NULL);
+	xTaskCreate(&pirtask, "pirtask", 8192, NULL, 5, NULL);
+    
     xTaskCreate(&testtask, "testtask", 8192, NULL, 5, NULL);
 }
