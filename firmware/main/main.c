@@ -388,61 +388,14 @@ static void example_ble_mesh_custom_model_cb(esp_ble_mesh_model_cb_event_t event
     }
 }
 
-void send_wave_message() {
-    // esp_ble_mesh_msg_ctx_t ctx = {0};
-    // uint32_t opcode;
-    // esp_err_t err;
-    // 
-    // ctx.net_idx = prov_key.net_idx;
-    // ctx.app_idx = prov_key.app_idx;
-    // ctx.addr = store.server_addr;
-    // ctx.send_ttl = MSG_SEND_TTL;
-    // ctx.send_rel = MSG_SEND_REL;
-    // opcode = MESH_SHROOM_MODEL_OP_WAVE;
-    // 
-    // 
-    // esp_ble_mesh_client_common_param_t common = {0};
-    // common.opcode = ESP_BLE_MESH_MODEL_OP_GEN_ONOFF_SET_UNACK;
-    // common.model = onoff_client.model;
-    // common.ctx.net_idx = store.net_idx;
-    // common.ctx.app_idx = store.app_idx;
-    // common.ctx.addr = 0xFFFF;   /* to all nodes */
-    // common.ctx.send_ttl = 3;
-    // common.ctx.send_rel = false;
-    // common.msg_timeout = 0;     /* 0 indicates that timeout value from menuconfig will be used */
-    // common.msg_role = ROLE_NODE;
-
-
-    esp_ble_mesh_msg_ctx_t ctx = {0};
-    ctx.net_idx = 0;
-    ctx.app_idx = vnd_models[1].keys[0];
-    ctx.addr = ESP_BLE_MESH_ADDR_ALL_NODES;
-    ctx.send_ttl = 3;
-    ctx.send_rel = false;
-
-    // Build wave
-    MESH_SHROOM_MODEL_WAVE_t newwave;
-    newwave.id = 1;
-    newwave.origin = 2;
-    newwave.hops = 3;
-    newwave.generation = 4;
-    newwave.x = 5;
-    newwave.y = 6;
-    newwave.z = 7;
-
+void wave_message_publish(MESH_SHROOM_MODEL_WAVE_t newwave) {
+    /* Publish wave to all units subscribed to wave client. */
     esp_err_t err = ESP_OK;
-    // err = esp_ble_mesh_client_model_send_msg(vendor_client.model, &ctx, MESH_SHROOM_MODEL_OP_WAVE,
-    //         sizeof(newwave.raw), newwave.raw, 0, false, ROLE_NODE);
-    // err = esp_ble_mesh_model_publish(vendor_client.model, IOT_BLE_MESH_VND_MODEL_OP_SET, i, send_buf, ROLE_NODE);
-    // err = esp_ble_mesh_model_publish(vnd_models[1], MESH_SHROOM_MODEL_OP_WAVE, sizeof(newwave.raw), newwave.raw, ROLE_NODE);
-    // err = esp_ble_mesh_model_publish(vendor_client.model, MESH_SHROOM_MODEL_OP_WAVE, sizeof(newwave.raw), newwave.raw, ROLE_NODE);
-    // err = esp_ble_mesh_client_model_send_msg(vendor_client.model, &ctx, MESH_SHROOM_MODEL_OP_WAVE, sizeof(newwave.raw), newwave.raw, 0, false, ROLE_NODE);
+    err = esp_ble_mesh_model_publish(&vnd_models[1], MESH_SHROOM_MODEL_OP_WAVE, sizeof(newwave.raw), newwave.raw, ROLE_NODE);
     if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to send vendor message 0x%06x", MESH_SHROOM_MODEL_OP_WAVE);
+        ESP_LOGE(TAG, "Failed to send vendor message 0x%06x error %X", MESH_SHROOM_MODEL_OP_WAVE, err);
         return;
     }
-
-    //mesh_example_info_store(); /* Store proper mesh example info */
 }
 
 static void example_ble_mesh_config_server_cb(esp_ble_mesh_cfg_server_cb_event_t event,
@@ -521,40 +474,15 @@ void testtask(void *pvParameters) {
 	ESP_LOGI(TAG, "testtask init");
     while(1) {
         vTaskDelay(10000 / portTICK_PERIOD_MS);
-    	ESP_LOGI(TAG, "try send_wave_message");
-        //send_wave_message();
-
-        esp_ble_mesh_msg_ctx_t ctx = {0};
-        ctx.net_idx = 0;
-        ctx.app_idx = vnd_models[0].keys[0];
-        ctx.addr = 0xFFFF;  // To all nodes
-        ctx.send_ttl = 3;
-        ctx.send_rel = false;
-        /*
-        esp-idf/components/bt/esp_ble_mesh/api/esp_ble_mesh_defs.h
-        esp_ble_mesh_model
-        esp_ble_mesh_msg_ctx_t
-            net_idx     NetKey Index of the subnet through which to send the message
-            app_idx     AppKey Index for message encryption
-        */
-        ESP_LOGI(TAG, "\n----\nVendor Model 0");
-        ESP_LOGI(TAG, "keys %X %X %X", vnd_models[0].keys[0], vnd_models[0].keys[1], vnd_models[0].keys[2]);
-        ESP_LOGI(TAG, "groups %X %X %X", vnd_models[0].groups[0], vnd_models[0].groups[1], vnd_models[0].groups[2]);
-        ESP_LOGI(TAG, "element_idx %X", vnd_models[0].element_idx);
-        ESP_LOGI(TAG, "model_idx %X", vnd_models[0].model_idx);
-
-        ESP_LOGI(TAG, "\nVendor Model 1");
-        ESP_LOGI(TAG, "keys %X %X %X", vnd_models[1].keys[0], vnd_models[1].keys[1], vnd_models[1].keys[2]);
-        ESP_LOGI(TAG, "groups %X %X %X", vnd_models[1].groups[0], vnd_models[1].groups[1], vnd_models[1].groups[2]);
-        ESP_LOGI(TAG, "element_idx %X", vnd_models[1].element_idx);
-        ESP_LOGI(TAG, "model_idx %X", vnd_models[1].model_idx);
-
-        ESP_LOGI(TAG, "\nStore");
-        ESP_LOGI(TAG, "net_idx %X", store.net_idx);
-        ESP_LOGI(TAG, "client_app_idx %X", store.client_app_idx);
-        ESP_LOGI(TAG, "server_app_idx %X", store.server_app_idx);
-        ESP_LOGI(TAG, "tid %X", store.tid);
-        send_wave_message();
+        MESH_SHROOM_MODEL_WAVE_t newwave;
+        newwave.id = 1;
+        newwave.origin = 2;
+        newwave.hops = 3;
+        newwave.generation = 4;
+        newwave.x = 5;
+        newwave.y = 6;
+        newwave.z = 7;
+        wave_message_publish(newwave);
     }
 }
 
