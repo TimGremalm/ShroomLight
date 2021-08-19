@@ -57,27 +57,10 @@ static esp_ble_mesh_cfg_srv_t config_server = {
     .relay_retransmit = ESP_BLE_MESH_TRANSMIT(2, 20),
 };
 
-ESP_BLE_MESH_MODEL_PUB_DEFINE(onoff_pub_0, 2 + 3, ROLE_NODE);
-static esp_ble_mesh_gen_onoff_srv_t onoff_server_0 = {
-    .rsp_ctrl.get_auto_rsp = ESP_BLE_MESH_SERVER_AUTO_RSP,
-    .rsp_ctrl.set_auto_rsp = ESP_BLE_MESH_SERVER_AUTO_RSP,
-};
-
 static esp_ble_mesh_model_t root_models[] = {
     ESP_BLE_MESH_MODEL_CFG_SRV(&config_server),
-    ESP_BLE_MESH_MODEL_GEN_ONOFF_SRV(&onoff_pub_0, &onoff_server_0),
 };
 
-/*
-static const esp_ble_mesh_client_op_pair_t vnd_op_pair[] = {
-    { MESH_SHROOM_MODEL_OP_WAVE, MESH_SHROOM_MODEL_OP_WAVE },
-};
-
-static esp_ble_mesh_client_t vendor_client = {
-    .op_pair_size = ARRAY_SIZE(vnd_op_pair),
-    .op_pair = vnd_op_pair,
-};
-*/
 static esp_ble_mesh_client_t vendor_client;
 
 /* Vendor-OP-Code=3 + Maximum payload length of MESH_SHROOM_MODEL_WAVE_t=15 */
@@ -152,62 +135,6 @@ static void prov_complete(uint16_t net_idx, uint16_t addr, uint8_t flags, uint32
      */
 }
 
-static void example_change_led_state(esp_ble_mesh_model_t *model,
-                                     esp_ble_mesh_msg_ctx_t *ctx, uint8_t onoff) {
-    uint16_t primary_addr = esp_ble_mesh_get_primary_element_address();
-    uint8_t elem_count = esp_ble_mesh_get_element_count();
-    struct _led_state *led = NULL;
-    uint8_t i;
-
-    if (ESP_BLE_MESH_ADDR_IS_UNICAST(ctx->recv_dst)) {
-        for (i = 0; i < elem_count; i++) {
-            if (ctx->recv_dst == (primary_addr + i)) {
-                led = &led_state[i];
-                board_led_operation(led->pin, onoff);
-            }
-        }
-    } else if (ESP_BLE_MESH_ADDR_IS_GROUP(ctx->recv_dst)) {
-        if (esp_ble_mesh_is_model_subscribed_to_group(model, ctx->recv_dst)) {
-            led = &led_state[model->element->element_addr - primary_addr];
-            board_led_operation(led->pin, onoff);
-        }
-    } else if (ctx->recv_dst == 0xFFFF) {
-        led = &led_state[model->element->element_addr - primary_addr];
-        board_led_operation(led->pin, onoff);
-    }
-}
-
-static void example_handle_gen_onoff_msg(esp_ble_mesh_model_t *model,
-                                         esp_ble_mesh_msg_ctx_t *ctx,
-                                         esp_ble_mesh_server_recv_gen_onoff_set_t *set) {
-    esp_ble_mesh_gen_onoff_srv_t *srv = model->user_data;
-
-    switch (ctx->recv_op) {
-        case ESP_BLE_MESH_MODEL_OP_GEN_ONOFF_GET:
-            esp_ble_mesh_server_model_send_msg(model, ctx,
-                ESP_BLE_MESH_MODEL_OP_GEN_ONOFF_STATUS, sizeof(srv->state.onoff), &srv->state.onoff);
-            break;
-        case ESP_BLE_MESH_MODEL_OP_GEN_ONOFF_SET:
-        case ESP_BLE_MESH_MODEL_OP_GEN_ONOFF_SET_UNACK:
-            if (set->op_en == false) {
-                srv->state.onoff = set->onoff;
-            } else {
-                /* TODO: Delay and state transition */
-                srv->state.onoff = set->onoff;
-            }
-            if (ctx->recv_op == ESP_BLE_MESH_MODEL_OP_GEN_ONOFF_SET) {
-                esp_ble_mesh_server_model_send_msg(model, ctx,
-                    ESP_BLE_MESH_MODEL_OP_GEN_ONOFF_STATUS, sizeof(srv->state.onoff), &srv->state.onoff);
-            }
-            esp_ble_mesh_model_publish(model, ESP_BLE_MESH_MODEL_OP_GEN_ONOFF_STATUS,
-                sizeof(srv->state.onoff), &srv->state.onoff, ROLE_NODE);
-            example_change_led_state(model, ctx, srv->state.onoff);
-            break;
-        default:
-            break;
-    }
-}
-
 static void example_ble_mesh_provisioning_cb(esp_ble_mesh_prov_cb_event_t event,
                                              esp_ble_mesh_prov_cb_param_t *param) {
     switch (event) {
@@ -238,48 +165,6 @@ static void example_ble_mesh_provisioning_cb(esp_ble_mesh_prov_cb_event_t event,
             ESP_LOGI(TAG, "ESP_BLE_MESH_NODE_SET_UNPROV_DEV_NAME_COMP_EVT, err_code %d", param->node_set_unprov_dev_name_comp.err_code);
             break;
         default:
-            break;
-    }
-}
-
-static void example_ble_mesh_generic_server_cb(esp_ble_mesh_generic_server_cb_event_t event,
-                                               esp_ble_mesh_generic_server_cb_param_t *param)
-{
-    esp_ble_mesh_gen_onoff_srv_t *srv;
-    ESP_LOGI(TAG, "event 0x%02x, opcode 0x%04x, src 0x%04x, dst 0x%04x",
-        event, param->ctx.recv_op, param->ctx.addr, param->ctx.recv_dst);
-
-    switch (event) {
-        case ESP_BLE_MESH_GENERIC_SERVER_STATE_CHANGE_EVT:
-            ESP_LOGI(TAG, "ESP_BLE_MESH_GENERIC_SERVER_STATE_CHANGE_EVT");
-            if (param->ctx.recv_op == ESP_BLE_MESH_MODEL_OP_GEN_ONOFF_SET ||
-                param->ctx.recv_op == ESP_BLE_MESH_MODEL_OP_GEN_ONOFF_SET_UNACK) {
-                ESP_LOGI(TAG, "onoff 0x%02x", param->value.state_change.onoff_set.onoff);
-                example_change_led_state(param->model, &param->ctx, param->value.state_change.onoff_set.onoff);
-            }
-            break;
-        case ESP_BLE_MESH_GENERIC_SERVER_RECV_GET_MSG_EVT:
-            ESP_LOGI(TAG, "ESP_BLE_MESH_GENERIC_SERVER_RECV_GET_MSG_EVT");
-            if (param->ctx.recv_op == ESP_BLE_MESH_MODEL_OP_GEN_ONOFF_GET) {
-                srv = param->model->user_data;
-                ESP_LOGI(TAG, "onoff 0x%02x", srv->state.onoff);
-                example_handle_gen_onoff_msg(param->model, &param->ctx, NULL);
-            }
-            break;
-        case ESP_BLE_MESH_GENERIC_SERVER_RECV_SET_MSG_EVT:
-            ESP_LOGI(TAG, "ESP_BLE_MESH_GENERIC_SERVER_RECV_SET_MSG_EVT");
-            if (param->ctx.recv_op == ESP_BLE_MESH_MODEL_OP_GEN_ONOFF_SET ||
-                param->ctx.recv_op == ESP_BLE_MESH_MODEL_OP_GEN_ONOFF_SET_UNACK) {
-                ESP_LOGI(TAG, "onoff 0x%02x, tid 0x%02x", param->value.set.onoff.onoff, param->value.set.onoff.tid);
-                if (param->value.set.onoff.op_en) {
-                    ESP_LOGI(TAG, "trans_time 0x%02x, delay 0x%02x",
-                        param->value.set.onoff.trans_time, param->value.set.onoff.delay);
-                }
-                example_handle_gen_onoff_msg(param->model, &param->ctx, &param->value.set.onoff);
-            }
-            break;
-        default:
-            ESP_LOGE(TAG, "Unknown Generic Server event 0x%02x", event);
             break;
     }
 }
@@ -388,7 +273,7 @@ static void example_ble_mesh_custom_model_cb(esp_ble_mesh_model_cb_event_t event
     }
 }
 
-void wave_message_publish(MESH_SHROOM_MODEL_WAVE_t newwave) {
+void wave_publish(MESH_SHROOM_MODEL_WAVE_t newwave) {
     /* Publish wave to all units subscribed to wave client. */
     esp_err_t err = ESP_OK;
     err = esp_ble_mesh_model_publish(&vnd_models[1], MESH_SHROOM_MODEL_OP_WAVE, sizeof(newwave.raw), newwave.raw, ROLE_NODE);
@@ -448,7 +333,6 @@ static esp_err_t ble_mesh_init(void) {
 
     esp_ble_mesh_register_prov_callback(example_ble_mesh_provisioning_cb);
     esp_ble_mesh_register_config_server_callback(example_ble_mesh_config_server_cb);
-    esp_ble_mesh_register_generic_server_callback(example_ble_mesh_generic_server_cb);
     esp_ble_mesh_register_custom_model_callback(example_ble_mesh_custom_model_cb);
 
     err = esp_ble_mesh_init(&provision, &composition);
@@ -482,7 +366,7 @@ void testtask(void *pvParameters) {
         newwave.x = 5;
         newwave.y = 6;
         newwave.z = 7;
-        wave_message_publish(newwave);
+        wave_publish(newwave);
     }
 }
 
