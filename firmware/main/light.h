@@ -2,7 +2,7 @@
 #define LIGHT_H
 
 #include <stdint.h>
-#include "settings.h"
+#include "shroom_settings.h"
 #include "store_mesh_idx_nvs.h"
 
 void lighttask(void *pvParameters);
@@ -29,7 +29,7 @@ typedef struct {
 } trigger_t;
 
 typedef struct {
-	settings_t *settings;
+	shroomsettings_t *shroomsettings;
 	example_info_store_t *store;
 } light_config_t;
 

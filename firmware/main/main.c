@@ -29,7 +29,7 @@ tim@gremalm.se */
 #include "store_mesh_idx_nvs.h"
 
 /* Application specific utils for Shroom Light */
-#include "settings.h"
+#include "shroom_settings.h"
 #include "coordinates.h"
 
 /* Application specific tasks for Shroom Light */
@@ -203,9 +203,9 @@ static void ble_mesh_custom_model_cb(esp_ble_mesh_model_cb_event_t event, esp_bl
                 case MESH_SHROOM_MODEL_OP_COORDINATE_GET:
                     ESP_LOGI(TAG, "MESH_SHROOM_MODEL_OP_COORDINATE_GET");
                     MESH_SHROOM_MODEL_COORDINATE_t coordinate;
-                    coordinate.x = settings.gridX;
-                    coordinate.y = settings.gridY;
-                    coordinate.z = settings.gridZ;
+                    coordinate.x = shroomsettings.gridX;
+                    coordinate.y = shroomsettings.gridY;
+                    coordinate.z = shroomsettings.gridZ;
                     err = esp_ble_mesh_server_model_send_msg(&vnd_models[0],
                                                             param->model_operation.ctx, MESH_SHROOM_MODEL_OP_COORDINATE_GET_STATUS,
                                                             sizeof(coordinate.raw), coordinate.raw);
@@ -224,9 +224,9 @@ static void ble_mesh_custom_model_cb(esp_ble_mesh_model_cb_event_t event, esp_bl
                     if (err) {
                         ESP_LOGE(TAG, "Failed to send message 0x%06x", MESH_SHROOM_MODEL_OP_COORDINATE_SET_STATUS);
                     }
-                    settings.gridX = setcoord.x;
-                    settings.gridY = setcoord.y;
-                    settings.gridZ = setcoord.z;
+                    shroomsettings.gridX = setcoord.x;
+                    shroomsettings.gridY = setcoord.y;
+                    shroomsettings.gridZ = setcoord.z;
                     SaveSettings();
                     calculateShroomCoordinates();
                     break;
@@ -392,14 +392,14 @@ void testtask(void *pvParameters) {
 	ESP_LOGI(TAG, "testtask init");
     while(1) {
         vTaskDelay(10000 / portTICK_PERIOD_MS);
-        MESH_SHROOM_MODEL_WAVE_t newwave;
-        newwave.uniqueid = 1;
-        newwave.origin = 2;
-        newwave.hops = 3;
-        newwave.generation = 4;
-        newwave.x = 5;
-        newwave.y = 6;
-        newwave.z = 7;
+        //MESH_SHROOM_MODEL_WAVE_t newwave;
+        //newwave.uniqueid = 1;
+        //newwave.origin = 2;
+        //newwave.hops = 3;
+        //newwave.generation = 4;
+        //newwave.x = 5;
+        //newwave.y = 6;
+        //newwave.z = 7;
         //wave_publish(newwave);
     }
 }
@@ -445,7 +445,8 @@ void app_main(void) {
 
     esp_ble_mesh_set_unprovisioned_device_name("Shroom");
 
-    lightconfig.settings = &settings;  // Make settings accessable from light task
+    /* Make settings accessable from light task */
+    lightconfig.shroomsettings = &shroomsettings;
     lightconfig.store = &store;
 	xTaskCreate(&statusblinktask, "statusblinktask", 8192, &statsblinkconfig, 5, NULL);
 	xTaskCreate(&lighttask, "lighttask", 8192, &lightconfig, 5, NULL);

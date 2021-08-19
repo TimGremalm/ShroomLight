@@ -3,7 +3,7 @@ set(srcs "main.c"
     "coordinates.c"
     "light.c"
     "pir.c"
-    "settings.c"
+    "shroom_settings.c"
     "statusblink.c"
     )
 

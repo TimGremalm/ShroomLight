@@ -1,4 +1,4 @@
-#include "settings.h"
+#include "shroom_settings.h"
 
 #include <stdint.h>
 
@@ -30,7 +30,7 @@ void LoadSettings() {
 		err = nvs_get_i32(load_handle, "gridx", &temp);
 		switch (err) {
 			case ESP_OK:
-				settings.gridX = temp;
+				shroomsettings.gridX = temp;
 				break;
 			case ESP_ERR_NVS_NOT_FOUND:
 				ESP_LOGI(TAG, "The gridX is not initialized yet %d", err);
@@ -41,7 +41,7 @@ void LoadSettings() {
 		err = nvs_get_i32(load_handle, "gridy", &temp);
 		switch (err) {
 			case ESP_OK:
-				settings.gridY = temp;
+				shroomsettings.gridY = temp;
 				break;
 			case ESP_ERR_NVS_NOT_FOUND:
 				ESP_LOGI(TAG, "The gridY is not initialized yet %d", err);
@@ -52,7 +52,7 @@ void LoadSettings() {
 		err = nvs_get_i32(load_handle, "gridz", &temp);
 		switch (err) {
 			case ESP_OK:
-				settings.gridZ = temp;
+				shroomsettings.gridZ = temp;
 				break;
 			case ESP_ERR_NVS_NOT_FOUND:
 				ESP_LOGI(TAG, "The gridZ is not initialized yet %d", err);
@@ -81,17 +81,17 @@ void SaveSettings() {
 		ESP_LOGE(TAG, "Error %s opening NVS handle", esp_err_to_name(err));
 	} else {
 		int32_t temp = 0;
-		temp = settings.gridX;
+		temp = shroomsettings.gridX;
 		err = nvs_set_i32(save_handle, "gridx", temp);
 		if (err != ESP_OK) {
 			ESP_LOGE(TAG, "Error %s saving gridX", esp_err_to_name(err));
 		}
-		temp = settings.gridY;
+		temp = shroomsettings.gridY;
 		err = nvs_set_i32(save_handle, "gridy", temp);
 		if (err != ESP_OK) {
 			ESP_LOGE(TAG, "Error %s saving gridY", esp_err_to_name(err));
 		}
-		temp = settings.gridZ;
+		temp = shroomsettings.gridZ;
 		err = nvs_set_i32(save_handle, "gridz", temp);
 		if (err != ESP_OK) {
 			ESP_LOGE(TAG, "Error %s saving gridZ", esp_err_to_name(err));
