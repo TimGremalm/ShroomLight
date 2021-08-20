@@ -310,8 +310,28 @@ static void ble_mesh_custom_model_cb(esp_ble_mesh_model_cb_event_t event, esp_bl
             break;
     }
 }
+void wave_publish(uint32_t uniqueid, uint16_t origin, uint16_t hops, uint8_t generation, int16_t x, int16_t y, int16_t z) {
+    ESP_LOGI(TAG, "Wave publish uniqueid %d origin %d hops %d generation %d x %d y %d z %d",
+        uniqueid, origin, hops, generation, x, y ,z);
+    MESH_SHROOM_MODEL_WAVE_t newwave;
+    newwave.uniqueid = uniqueid;
+    newwave.origin = origin;
+    newwave.hops = hops;
+    newwave.generation = generation;
+    newwave.x = x;
+    newwave.y = y;
+    newwave.z = z;
+    /* Publish wave to all units subscribed to wave client. */
+    esp_err_t err = ESP_OK;
+    err = esp_ble_mesh_model_publish(&vnd_models[1], MESH_SHROOM_MODEL_OP_WAVE, sizeof(newwave.raw), newwave.raw, ROLE_NODE);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to send vendor message 0x%06x error %X", MESH_SHROOM_MODEL_OP_WAVE, err);
+        return;
+    }
 
-void wave_publish(MESH_SHROOM_MODEL_WAVE_t newwave) {
+}
+
+void wave_publishh(MESH_SHROOM_MODEL_WAVE_t newwave) {
     /* Publish wave to all units subscribed to wave client. */
     esp_err_t err = ESP_OK;
     err = esp_ble_mesh_model_publish(&vnd_models[1], MESH_SHROOM_MODEL_OP_WAVE, sizeof(newwave.raw), newwave.raw, ROLE_NODE);
@@ -388,22 +408,6 @@ static esp_err_t ble_mesh_init(void) {
     return err;
 }
 
-void testtask(void *pvParameters) {
-	ESP_LOGI(TAG, "testtask init");
-    while(1) {
-        vTaskDelay(10000 / portTICK_PERIOD_MS);
-        //MESH_SHROOM_MODEL_WAVE_t newwave;
-        //newwave.uniqueid = 1;
-        //newwave.origin = 2;
-        //newwave.hops = 3;
-        //newwave.generation = 4;
-        //newwave.x = 5;
-        //newwave.y = 6;
-        //newwave.z = 7;
-        //wave_publish(newwave);
-    }
-}
-
 void app_main(void) {
     esp_err_t err;
 
@@ -422,6 +426,7 @@ void app_main(void) {
 
 	LoadSettings();
 	calculateShroomCoordinates();
+    ESP_LOGI(TAG, "Loaded coordinated from settings x %X y %X z %X", shroomsettings.gridX, shroomsettings.gridY, shroomsettings.gridZ);
 
     err = bluetooth_init();
     if (err) {
@@ -448,9 +453,8 @@ void app_main(void) {
     /* Make settings accessable from light task */
     lightconfig.shroomsettings = &shroomsettings;
     lightconfig.store = &store;
+    lightconfig.send_wave_cb = &wave_publish;
 	xTaskCreate(&statusblinktask, "statusblinktask", 8192, &statsblinkconfig, 5, NULL);
 	xTaskCreate(&lighttask, "lighttask", 8192, &lightconfig, 5, NULL);
 	xTaskCreate(&pirtask, "pirtask", 8192, NULL, 5, NULL);
-    
-    xTaskCreate(&testtask, "testtask", 8192, NULL, 5, NULL);
 }

@@ -31,6 +31,7 @@ typedef struct {
 typedef struct {
 	shroomsettings_t *shroomsettings;
 	example_info_store_t *store;
+	void (*send_wave_cb)(uint32_t, uint16_t, uint16_t, uint8_t, int16_t, int16_t, int16_t);
 } light_config_t;
 
 void sendPirTrigger();

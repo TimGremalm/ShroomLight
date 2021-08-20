@@ -92,9 +92,14 @@ void checkTriggers() {
 					setShroomLightState(i, LIGHTSTATE_WaveHard);
 				}
 				//Send shroom message, echo it forward from a new address
-				// sendShroomWave(i, triggers[i].macorigin, triggers[i].hops + 1, triggers[i].wavegen, triggers[i].uniqueorigin);
-				// how to send???
-
+				(*lightconfig.send_wave_cb)(triggers[i].uniqueorigin,
+											triggers[i].macorigin,
+											triggers[i].hops + 1,
+											triggers[i].wavegen,
+											shroomsx[i],
+											shroomsy[i],
+											shroomsz[i]
+											);
 				// BLE Mesh will get the message if the server is subscribed to the same group
 				// //Send trigger to own shrooms on unit, because unit won't catch own multicast send
 				// for (int j = 0; j < 7; j++) {
