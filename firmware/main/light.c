@@ -25,7 +25,7 @@ trigger_t triggers[7];
 light_config_t lightconfig;
 
 void addTriggerToPreviousUnique(int shroomnr, uint32_t uniqueorigin) {
-	//Shigt array over to leave room for 1 new
+	//Shift array over to leave room for 1 new
 	for (int i=8; i>0; i--) {
 		previoustriggeruniqs[shroomnr][i+1] = previoustriggeruniqs[shroomnr][i];
 	}
@@ -48,17 +48,17 @@ void sendPirTrigger() {
 }
 
 void sendTrigger(uint8_t shroomnr, uint16_t macorigin, uint16_t hops, uint8_t wavegen, int16_t x, int16_t y, int16_t z, uint32_t uniqueorigin) {
-	//ESP_LOGI(TAG, "Send Trigger to %d", shroomnr);
+	ESP_LOGI(TAG, "Send Trigger to %d", shroomnr);
 	//If the same wave returns, ignore it
 	if (isUniueHandeledBefore(shroomnr, uniqueorigin) != 0) {
-		//ESP_LOGI(TAG, "Wave %d handeled before, ignore", uniqueorigin);
+		ESP_LOGI(TAG, "Wave %d handeled before, ignore", uniqueorigin);
 		return;
 	}
 	triggers[shroomnr].arrived = xTaskGetTickCount();
 	triggers[shroomnr].shroomnr = shroomnr;
 	//If already waiting for a trigger, or is in a trigger, escalate the wavegen
 	if (triggers[shroomnr].macorigin != 0 &&
-			triggers[shroomnr].macorigin != macorigin) {
+			triggers[shroomnr].uniqueorigin != uniqueorigin) {
 		triggers[shroomnr].wavegen += 1;
 	} else {
 		triggers[shroomnr].wavegen = wavegen;
