@@ -426,7 +426,7 @@ void app_main(void) {
 
 	LoadSettings();
 	calculateShroomCoordinates();
-    ESP_LOGI(TAG, "Loaded coordinated from settings x %X y %X z %X", shroomsettings.gridX, shroomsettings.gridY, shroomsettings.gridZ);
+    ESP_LOGI(TAG, "Loaded coordinated from settings x %d y %d z %d", shroomsettings.gridX, shroomsettings.gridY, shroomsettings.gridZ);
 
     err = bluetooth_init();
     if (err) {
